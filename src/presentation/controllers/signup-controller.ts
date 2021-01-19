@@ -4,8 +4,11 @@ import { badRequest } from '@/presentation/helpers/http-helper'
 
 export class SignUpController implements Controller<SignUpRequestParameters> {
   async execute (request: SignUpRequestParameters): Promise<HttpResponse> {
-    if (!request.name) {
-      return badRequest(new MissingParamError('name'))
+    const requiredField = ['name', 'email']
+    for (const field of requiredField) {
+      if (!request[field]) {
+        return badRequest(new MissingParamError(field))
+      }
     }
   }
 }
