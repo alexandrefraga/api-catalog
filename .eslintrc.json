@@ -2,10 +2,13 @@
   "extends": "standard-with-typescript",
   
   "parserOptions": {
-      "project": "./tsconfig.json"        
+    "tsconfigRootDir": "C:/nodejs/apiLogin",  
+    "project": "./tsconfig.json"        
   },
   "rules": {
     "@typescript-eslint/no-redeclare" : "off",
-    "@typescript-eslint/consistent-type-definitions": "off"
+    "@typescript-eslint/consistent-type-definitions": "off",
+    "@typescript-eslint/method-signature-style": "off",
+    "@typescript-eslint/return-await": "off"
   }
 }
