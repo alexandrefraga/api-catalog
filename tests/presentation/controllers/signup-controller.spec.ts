@@ -1,5 +1,5 @@
 import { SignUpController } from '@/presentation/controllers/signup-controller'
-
+import { MissingParamError } from '@/presentation/errors'
 type SutTypes = {
   sut: SignUpController
 }
@@ -19,6 +19,6 @@ describe('SignUpController', () => {
     }
     const httpResponse = await sut.execute(httpRequest)
     expect(httpResponse.statusCode).toBe(400)
-    expect(httpResponse.body).toEqual(new Error('Missing param: name'))
+    expect(httpResponse.body).toEqual(new MissingParamError('name'))
   })
 })
