@@ -9,7 +9,7 @@ export class SignUpController implements Controller<SignUpRequestParameters> {
 
   async execute (request: SignUpRequestParameters): Promise<HttpResponse> {
     try {
-      const error = this.validator.validate(request)
+      const error = await this.validator.validate(request)
       if (error) {
         return badRequest(error)
       }
@@ -17,27 +17,4 @@ export class SignUpController implements Controller<SignUpRequestParameters> {
       return serverError()
     }
   }
-
-  // async handles (httpRequest: HttpRequest): Promise<HttpResponse> {
-  //   try {
-  //     const error = this.validation.validate(httpRequest.body)
-  //     if (error) {
-  //       return badRequest(error)
-  //     }
-
-  //     const { name, email, password } = httpRequest.body
-  //     const account = await this.addAccount.add({
-  //       name,
-  //       email,
-  //       password
-  //     })
-  //     if (!account) {
-  //       return forbidden(new EmailInUseError())
-  //     }
-  //     const authenticationModel = await this.authenticator.auth({ email, password })
-  //     return success(authenticationModel)
-  //   } catch (error) {
-  //     return serverError(error)
-  //   }
-  // }
 }
