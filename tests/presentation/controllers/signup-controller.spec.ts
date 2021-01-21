@@ -31,7 +31,7 @@ describe('SignUpController', () => {
 
   test('Should return 400 if Validator return an error', async () => {
     const { sut, validatorStub } = makeSut()
-    jest.spyOn(validatorStub, 'validate').mockReturnValueOnce(new Error('specific error'))
+    jest.spyOn(validatorStub, 'validate').mockReturnValueOnce(Promise.resolve(new Error('specific error')))
     const httpRequest = {
       name: 'any_name',
       email: 'any_email@mail.com',
