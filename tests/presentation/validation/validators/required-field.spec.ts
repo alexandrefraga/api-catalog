@@ -10,7 +10,7 @@ describe('Required Field Validation', () => {
 
   test('Should returns null if validation succeeds', async () => {
     const sut = new RequiredFieldValidation('field')
-    const response = await sut.validate({ field: 'any' })
+    const response = await sut.validate({ field: 'any_value' })
     expect(response).toBeNull()
   })
 })
