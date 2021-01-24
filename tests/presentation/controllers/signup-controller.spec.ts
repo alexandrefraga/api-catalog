@@ -8,14 +8,14 @@ import { SignUpRequestParameters } from '../protocolls'
 
 const mockAddAccount = (): AddAccount => {
   class AddAccountStub implements AddAccount {
-    add (account: AddAccountParams): AccountModel {
+    async add (account: AddAccountParams): Promise<AccountModel> {
       const fakeAccount = {
         id: 'valid_id',
         name: 'valid_name',
         email: 'valida_email@mail.com',
         password: 'valid_password'
       }
-      return fakeAccount
+      return Promise.resolve(fakeAccount)
     }
   }
   return new AddAccountStub()
