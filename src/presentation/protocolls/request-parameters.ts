@@ -1,5 +1,5 @@
 export type SignUpRequestParameters = {
-  name?: string
+  name: string
   email: string
   password: string
   passwordConfirmation: string

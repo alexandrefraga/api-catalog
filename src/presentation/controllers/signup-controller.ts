@@ -1,5 +1,5 @@
 import { Controller, SignUpRequestParameters, HttpResponse } from '../protocolls'
-import { badRequest, serverError } from '@/presentation/helpers/http-helper'
+import { badRequest, serverError, success } from '@/presentation/helpers/http-helper'
 import { Validation } from '../protocolls/validation'
 import { AddAccount } from '@/domain/usecases/add-account'
 
@@ -16,7 +16,8 @@ export class SignUpController implements Controller<SignUpRequestParameters> {
         return badRequest(error)
       }
       const { name, email, password } = request
-      this.addAccount.add({ name, email, password })
+      const account = this.addAccount.add({ name, email, password })
+      return success(account)
     } catch (error) {
       return serverError()
     }
