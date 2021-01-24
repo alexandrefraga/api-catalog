@@ -72,11 +72,12 @@ describe('SignUpController', () => {
   test('Should call AddAccount with correct values', async () => {
     const { sut, addAccountStub } = makeSut()
     const addSpy = jest.spyOn(addAccountStub, 'add')
-    await sut.execute(fakeRequest())
+    const request = fakeRequest()
+    await sut.execute(request)
     expect(addSpy).toHaveBeenCalledWith({
-      name: 'any_name',
-      email: 'any_email@mail.com',
-      password: 'any_password'
+      name: request.name,
+      email: request.email,
+      password: request.password
     })
   })
 
@@ -86,5 +87,18 @@ describe('SignUpController', () => {
     const httpResponse = await sut.execute(fakeRequest())
     expect(httpResponse.statusCode).toBe(500)
     expect(httpResponse.body).toEqual(new ServerError())
+  })
+
+  test('Should return 200 if valid data is provided', async () => {
+    const { sut } = makeSut()
+    const request = fakeRequest()
+    const httpResponse = await sut.execute(request)
+    expect(httpResponse.statusCode).toBe(200)
+    expect(httpResponse.body).toEqual({
+      id: 'valid_id',
+      name: 'valid_name',
+      email: 'valida_email@mail.com',
+      password: 'valid_password'
+    })
   })
 })
