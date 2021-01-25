@@ -2,7 +2,7 @@ import { Validation } from '@/presentation/protocolls'
 
 export const mockValidator = (): Validation => {
   class ValidatorStub implements Validation {
-    validate (input: any): Error {
+    async validate (input: any): Promise<Error> {
       return null
     }
   }
