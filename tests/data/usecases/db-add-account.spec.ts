@@ -27,4 +27,11 @@ describe('DbAddAccount Usecase', () => {
     await sut.add(fakeAccount())
     expect(hashSpy).toBeCalledWith(fakeAccount().password)
   })
+
+  test('Should DbAddAccount throw if Hasher throws', async () => {
+    const { sut, hasherStub } = makeSut()
+    jest.spyOn(hasherStub, 'hash').mockImplementationOnce(() => { throw new Error() })
+    const promise = sut.add(fakeAccount())
+    await expect(promise).rejects.toThrow()
+  })
 })
