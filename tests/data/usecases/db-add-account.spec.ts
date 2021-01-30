@@ -2,7 +2,7 @@ import { DbAddAccount } from '@/data/usecases/db-add-account'
 import { Hasher } from '@/data/protocols/criptography'
 import { AddAccountRepository } from '@/data/protocols/db/add-account-repository'
 import { mockHasher, mockAddAccountRepository } from '../mocks'
-import { mockAddAccountParams } from '../../domain/mocks/mock-account'
+import { mockAccountModel, mockAddAccountParams } from '../../domain/mocks/mock-account'
 
 type SutTypes = {
   sut: DbAddAccount
@@ -46,5 +46,11 @@ describe('DbAddAccount Usecase', () => {
     jest.spyOn(addAccountRepositoryStub, 'add').mockImplementationOnce(() => { throw new Error() })
     const promise = sut.add(mockAddAccountParams())
     await expect(promise).rejects.toThrow()
+  })
+
+  test('Should DbAddAccount return an account on success', async () => {
+    const { sut } = makeSut()
+    const response = await sut.add(mockAddAccountParams())
+    expect(response).toEqual(mockAccountModel())
   })
 })
