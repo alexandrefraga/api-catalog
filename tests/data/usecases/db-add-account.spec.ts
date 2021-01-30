@@ -2,7 +2,7 @@ import { DbAddAccount } from '@/data/usecases/db-add-account'
 import { Hasher } from '@/data/protocols/criptography'
 import { AddAccountRepository } from '@/data/protocols/db/add-account-repository'
 import { mockHasher, mockAddAccountRepository } from '../mocks'
-import { mockAddAccountParams } from '../../domain/mocks/mock-account-model'
+import { mockAddAccountParams } from '../../domain/mocks/mock-account'
 
 type SutTypes = {
   sut: DbAddAccount
@@ -39,5 +39,12 @@ describe('DbAddAccount Usecase', () => {
     const addSpy = jest.spyOn(addAccountRepositoryStub, 'add')
     await sut.add(mockAddAccountParams())
     expect(addSpy).toBeCalledWith(Object.assign(mockAddAccountParams(), { password: 'hashed_value' }))
+  })
+
+  test('Should DbAddAccount throw if AddAccountRepository throws', async () => {
+    const { sut, addAccountRepositoryStub } = makeSut()
+    jest.spyOn(addAccountRepositoryStub, 'add').mockImplementationOnce(() => { throw new Error() })
+    const promise = sut.add(mockAddAccountParams())
+    await expect(promise).rejects.toThrow()
   })
 })
