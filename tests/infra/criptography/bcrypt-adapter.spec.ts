@@ -4,6 +4,12 @@ import bcrypt from 'bcrypt'
 
 const salt = 12
 
+jest.mock('bcrypt', () => ({
+  async hash (): Promise<string> {
+    return Promise.resolve('hash_value')
+  }
+}))
+
 type SutTypes = {
   sut: Hasher
 }
@@ -26,5 +32,11 @@ describe('Brcypt Adapter', () => {
     jest.spyOn(bcrypt, 'hash').mockImplementationOnce(() => { throw new Error() })
     const promise = sut.hash('any_value')
     await expect(promise).rejects.toThrowError()
+  })
+
+  test('Should return a hash on success', async () => {
+    const { sut } = makeSut()
+    const hash = await sut.hash('any_value')
+    expect(hash).toBe('hash_value')
   })
 })
