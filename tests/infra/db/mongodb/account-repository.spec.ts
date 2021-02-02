@@ -17,6 +17,11 @@ describe('Account Mongo Repository', () => {
     await MongoHelper.connect(process.env.MONGO_URL)
   })
 
+  beforeEach(async () => {
+    const accountCollection = MongoHelper.getCollection('accounts')
+    await accountCollection.deleteMany({})
+  })
+
   afterAll(async () => {
     await MongoHelper.disconnect()
   })
@@ -25,6 +30,9 @@ describe('Account Mongo Repository', () => {
     const { sut } = makeSut()
     const account = await sut.add(mockAddAccountParams())
     expect(account).toBeTruthy()
+    expect(account.id).toBeTruthy()
     expect(account.name).toBe(mockAddAccountParams().name)
+    expect(account.email).toBe(mockAddAccountParams().email)
+    expect(account.password).toBe(mockAddAccountParams().password)
   })
 })
