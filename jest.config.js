@@ -25,7 +25,10 @@ module.exports = {
   moduleNameMapper: {
     '@/tests/(.*)': '<rootDir>/tests/$1',
     '@/(.*)': '<rootDir>/src/$1'
-  }
+  },
+
+  // A preset that is used as a base for Jest's configuration
+  preset: '@shelf/jest-mongodb'
 
   // All imported modules in your tests should be mocked automatically
   // automock: false,
@@ -108,9 +111,6 @@ module.exports = {
 
   // An enum that specifies notification mode. Requires { notify: true }
   // notifyMode: "failure-change",
-
-  // A preset that is used as a base for Jest's configuration
-  // preset: undefined,
 
   // Run tests from one or more projects
   // projects: undefined,
