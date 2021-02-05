@@ -1,6 +1,21 @@
+import { LogErrorRepository } from '@/data/protocols/db/log-error-repository'
 import { LogControllerDecorator } from '@/main/decorator/log-controller-decorator'
-import { success } from '@/presentation/helpers/http-helper'
+import { serverError, success } from '@/presentation/helpers/http-helper'
 import { Controller, HttpResponse } from '@/presentation/protocolls'
+
+const mockError = (): Error => {
+  const error = new Error()
+  error.stack = 'any_stack'
+  return error
+}
+const mockLogErrorRepository = (): LogErrorRepository => {
+  class LogErrorRepositoryStub implements LogErrorRepository {
+    async saveLog (stack: string): Promise<void> {
+      return Promise.resolve()
+    }
+  }
+  return new LogErrorRepositoryStub()
+}
 
 const mockController = (): Controller => {
   class ControllerStub implements Controller<{field: string}> {
@@ -14,13 +29,16 @@ const mockController = (): Controller => {
 type SutTypes = {
   sut: LogControllerDecorator
   controllerStub: Controller
+  logErrorRepositoryStub: LogErrorRepository
 }
 const makeSut = (): SutTypes => {
   const controllerStub = mockController()
-  const sut = new LogControllerDecorator(controllerStub)
+  const logErrorRepositoryStub = mockLogErrorRepository()
+  const sut = new LogControllerDecorator(controllerStub, logErrorRepositoryStub)
   return {
     sut,
-    controllerStub
+    controllerStub,
+    logErrorRepositoryStub
   }
 }
 describe('Log Controller Decorator', () => {
@@ -35,5 +53,13 @@ describe('Log Controller Decorator', () => {
     const { sut } = makeSut()
     const response = await sut.execute({ field: 'this_value' })
     expect(response).toEqual(success({ value: 'any_value' }))
+  })
+
+  test('Should calls LogErrorRepository with correct error if controler return 500', async () => {
+    const { sut, controllerStub, logErrorRepositoryStub } = makeSut()
+    jest.spyOn(controllerStub, 'execute').mockReturnValueOnce(Promise.resolve(serverError(mockError())))
+    const saveLogSpy = jest.spyOn(logErrorRepositoryStub, 'saveLog')
+    await sut.execute({})
+    expect(saveLogSpy).toHaveBeenCalledWith(mockError().stack)
   })
 })
