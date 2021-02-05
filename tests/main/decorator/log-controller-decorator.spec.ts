@@ -5,7 +5,7 @@ import { Controller, HttpResponse } from '@/presentation/protocolls'
 const mockController = (): Controller => {
   class ControllerStub implements Controller<{field: string}> {
     async execute (data: {field: string}): Promise<HttpResponse> {
-      return Promise.resolve(success({ field: 'any_value' }))
+      return Promise.resolve(success({ value: 'any_value' }))
     }
   }
   return new ControllerStub()
@@ -29,5 +29,11 @@ describe('Log Controller Decorator', () => {
     const executeSpy = jest.spyOn(controllerStub, 'execute')
     await sut.execute({ field: 'this_value' })
     expect(executeSpy).toHaveBeenCalledWith({ field: 'this_value' })
+  })
+
+  test('should return the same result of the controller', async () => {
+    const { sut } = makeSut()
+    const response = await sut.execute({ field: 'this_value' })
+    expect(response).toEqual(success({ value: 'any_value' }))
   })
 })
