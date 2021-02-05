@@ -1,6 +1,7 @@
 import app from '@/main/config/app'
 import request from 'supertest'
 import { MongoHelper } from '@/infra/db/mongodb/mongo-helper'
+import { fakeSignUpRequestParams } from '../mocks/mock-request'
 
 describe('SignUp Routes', () => {
   beforeAll(async () => {
@@ -18,12 +19,7 @@ describe('SignUp Routes', () => {
   test('Should return an account on success', async () => {
     await request(app)
       .post('/api/signup')
-      .send({
-        name: 'any_name',
-        email: 'any_email@mail.com',
-        password: 'any_value',
-        passwordConfirmation: 'any_value'
-      })
+      .send(fakeSignUpRequestParams())
       .expect(200)
   })
 })
