@@ -9,6 +9,7 @@ import { EmailValidation } from '@/validation/validators/email-validation'
 import { RequiredAndCompareFieldsValidation } from '@/validation/validators/required-and-compare-fields'
 import { RequiredFieldValidation } from '@/validation/validators/required-field'
 import { ValidationComposite } from '@/validation/validators/validation-composite'
+import { LogErrorMongoRepository } from '@/infra/db/mongodb/log-error-repository'
 
 export const makeSignUpControler = (): Controller => {
   const validation = new ValidationComposite([
@@ -18,5 +19,6 @@ export const makeSignUpControler = (): Controller => {
   ])
   const addAccount = new DbAddAccount(new BcryptAdapter(12), new AccountMongoRepository())
   const signUpController = new SignUpController(validation, addAccount)
-  return new LogControllerDecorator(signUpController)
+  const logErrorMongoRepository = new LogErrorMongoRepository()
+  return new LogControllerDecorator(signUpController, logErrorMongoRepository)
 }
