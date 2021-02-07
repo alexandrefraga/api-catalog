@@ -2,7 +2,7 @@
   "extends": "standard-with-typescript",
   
   "parserOptions": {
-    "tsconfigRootDir": "C:/nodejs/apiLogin",  
+    "tsconfigRootDir": "C:/nodejs/apiCatalog",  
     "project": "./tsconfig.json"        
   },
   "rules": {

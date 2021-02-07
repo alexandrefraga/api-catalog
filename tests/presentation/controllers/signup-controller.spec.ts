@@ -66,7 +66,7 @@ describe('SignUpController', () => {
     jest.spyOn(validatorStub, 'validate').mockImplementationOnce(() => { throw new Error() })
     const httpResponse = await sut.execute(fakeRequest())
     expect(httpResponse.statusCode).toBe(500)
-    expect(httpResponse.body).toEqual(new ServerError())
+    expect(httpResponse.body).toEqual(new ServerError('any'))
   })
 
   test('Should call AddAccount with correct values', async () => {
@@ -86,7 +86,7 @@ describe('SignUpController', () => {
     jest.spyOn(addAccountStub, 'add').mockImplementationOnce(() => { throw new Error() })
     const httpResponse = await sut.execute(fakeRequest())
     expect(httpResponse.statusCode).toBe(500)
-    expect(httpResponse.body).toEqual(new ServerError())
+    expect(httpResponse.body).toEqual(new ServerError('any'))
   })
 
   test('Should return 200 if valid data is provided', async () => {
