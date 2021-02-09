@@ -4,3 +4,8 @@ export type SignUpRequestParameters = {
   password: string
   passwordConfirmation: string
 }
+
+export type LoginRequestParameters = {
+  email: string
+  password: string
+}
