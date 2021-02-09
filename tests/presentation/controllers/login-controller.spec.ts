@@ -28,4 +28,11 @@ describe('LoginController', () => {
     await sut.execute(request)
     expect(validateSpy).toHaveBeenCalledWith(request)
   })
+
+  test('Should return 400 if Validator return an error', async () => {
+    const { sut, validatorStub } = makeSut()
+    jest.spyOn(validatorStub, 'validate').mockReturnValueOnce(Promise.resolve(new Error('specific error')))
+    const response = await sut.execute(fakeRequest())
+    expect(response.statusCode).toBe(400)
+  })
 })
