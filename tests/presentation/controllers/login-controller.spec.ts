@@ -1,6 +1,7 @@
 import { LoginRequestParameters, Validation } from '@/presentation/protocolls'
 import { LoginController } from '@/presentation/controllers/login-controller'
 import { mockValidator } from '../mocks'
+import { ServerError } from '@/presentation/errors'
 
 const fakeRequest = (): LoginRequestParameters => ({
   email: 'any_email@mail.com',
@@ -34,5 +35,14 @@ describe('LoginController', () => {
     jest.spyOn(validatorStub, 'validate').mockReturnValueOnce(Promise.resolve(new Error('specific error')))
     const response = await sut.execute(fakeRequest())
     expect(response.statusCode).toBe(400)
+    expect(response.body).toEqual(new Error('specific error'))
+  })
+
+  test('Should return 500 if Validator throws', async () => {
+    const { sut, validatorStub } = makeSut()
+    jest.spyOn(validatorStub, 'validate').mockImplementationOnce(() => { throw new Error('this_error') })
+    const httpResponse = await sut.execute(fakeRequest())
+    expect(httpResponse.statusCode).toBe(500)
+    expect(httpResponse.body).toEqual(new ServerError(''))
   })
 })
