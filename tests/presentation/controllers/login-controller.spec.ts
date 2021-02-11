@@ -1,22 +1,8 @@
-import { LoginRequestParameters, Validation } from '@/presentation/protocolls'
+import { Validation } from '@/presentation/protocolls'
 import { LoginController } from '@/presentation/controllers/login-controller'
-import { mockValidator } from '../mocks'
-import { ServerError } from '@/presentation/errors'
-import { Authentication, AuthenticationParameters } from '@/domain/usecases/authentication'
-
-const mockAuthenticator = (): Authentication => {
-  class AuthenticatorStub implements Authentication {
-    async auth (data: AuthenticationParameters): Promise<AuthenticatorResponse> {
-      return Promise.resolve(null)
-    }
-  }
-  return new AuthenticatorStub()
-}
-
-const fakeRequest = (): LoginRequestParameters => ({
-  email: 'any_email@mail.com',
-  password: 'any_password'
-})
+import { mockValidator, mockAuthenticator, mockLoginRequestParams, mockAuthenticationResponse } from '../mocks'
+import { ServerError, UnauthorizedError } from '@/presentation/errors'
+import { Authentication } from '@/domain/usecases/authentication'
 
 type SutTypes = {
   sut: LoginController
@@ -38,7 +24,7 @@ describe('LoginController', () => {
   test('Should call Validator with correct values', async () => {
     const { sut, validatorStub } = makeSut()
     const validateSpy = jest.spyOn(validatorStub, 'validate')
-    const request = fakeRequest()
+    const request = mockLoginRequestParams()
     await sut.execute(request)
     expect(validateSpy).toHaveBeenCalledWith(request)
   })
@@ -46,7 +32,7 @@ describe('LoginController', () => {
   test('Should return 400 if Validator return an error', async () => {
     const { sut, validatorStub } = makeSut()
     jest.spyOn(validatorStub, 'validate').mockReturnValueOnce(Promise.resolve(new Error('specific error')))
-    const response = await sut.execute(fakeRequest())
+    const response = await sut.execute(mockLoginRequestParams())
     expect(response.statusCode).toBe(400)
     expect(response.body).toEqual(new Error('specific error'))
   })
@@ -54,7 +40,7 @@ describe('LoginController', () => {
   test('Should return 500 if Validator throws', async () => {
     const { sut, validatorStub } = makeSut()
     jest.spyOn(validatorStub, 'validate').mockImplementationOnce(() => { throw new Error() })
-    const httpResponse = await sut.execute(fakeRequest())
+    const httpResponse = await sut.execute(mockLoginRequestParams())
     expect(httpResponse.statusCode).toBe(500)
     expect(httpResponse.body).toEqual(new ServerError(''))
   })
@@ -62,7 +48,7 @@ describe('LoginController', () => {
   test('Should call Authenticator with correct values', async () => {
     const { sut, authenticatorStub } = makeSut()
     const authSpy = jest.spyOn(authenticatorStub, 'auth')
-    const request = fakeRequest()
+    const request = mockLoginRequestParams()
     await sut.execute(request)
     expect(authSpy).toHaveBeenCalledWith(request)
   })
@@ -70,8 +56,23 @@ describe('LoginController', () => {
   test('Should return 500 if Authenticator throws', async () => {
     const { sut, authenticatorStub } = makeSut()
     jest.spyOn(authenticatorStub, 'auth').mockImplementationOnce(() => { throw new Error() })
-    const httpResponse = await sut.execute(fakeRequest())
+    const httpResponse = await sut.execute(mockLoginRequestParams())
     expect(httpResponse.statusCode).toBe(500)
     expect(httpResponse.body).toEqual(new ServerError(''))
+  })
+
+  test('Should return 401 if authentication reject credentials', async () => {
+    const { sut, authenticatorStub } = makeSut()
+    jest.spyOn(authenticatorStub, 'auth').mockReturnValueOnce(Promise.resolve(null))
+    const httpResponse = await sut.execute(mockLoginRequestParams())
+    expect(httpResponse.statusCode).toBe(401)
+    expect(httpResponse.body).toEqual(new UnauthorizedError())
+  })
+
+  test('Should return 200 on success', async () => {
+    const { sut } = makeSut()
+    const httpResponse = await sut.execute(mockLoginRequestParams())
+    expect(httpResponse.statusCode).toBe(200)
+    expect(httpResponse.body).toEqual(mockAuthenticationResponse())
   })
 })
