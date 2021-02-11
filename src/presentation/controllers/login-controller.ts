@@ -1,6 +1,6 @@
 import { Authentication } from '@/domain/usecases/authentication'
 import { Controller, HttpResponse, LoginRequestParameters, Validation } from '@/presentation/protocolls'
-import { badRequest, serverError } from '../helpers/http-helper'
+import { badRequest, serverError, success, unauthorized } from '@/presentation/helpers/http-helper'
 
 export class LoginController implements Controller<LoginRequestParameters> {
   constructor (
@@ -14,8 +14,11 @@ export class LoginController implements Controller<LoginRequestParameters> {
       if (error) {
         return badRequest(error)
       }
-      await this.authenticator.auth(data)
-      return null
+      const authenticationResponse = await this.authenticator.auth(data)
+      if (!authenticationResponse) {
+        return unauthorized()
+      }
+      return success(authenticationResponse)
     } catch (error) {
       return serverError(error)
     }

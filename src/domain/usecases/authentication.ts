@@ -9,5 +9,5 @@ export type AuthenticationResponse = {
 }
 
 export interface Authentication {
-  auth (data: AuthenticationParameters): Promise<AuthenticatorResponse>
+  auth (data: AuthenticationParameters): Promise<AuthenticationResponse>
 }
