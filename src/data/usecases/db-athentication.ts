@@ -17,10 +17,12 @@ export class DbAuthentication implements Authentication {
       const isValidPassword = await this.hasherComparer.compare(data.password, account.password)
       if (isValidPassword) {
         const token = await this.encrypter.encrypt(account.id)
-        await this.updateTokenRepository.updateToken(token, account.id)
-        return {
-          token,
-          name: account.name
+        const inserted = await this.updateTokenRepository.updateToken(token, account.id)
+        if (inserted) {
+          return {
+            token,
+            name: account.name
+          }
         }
       }
     }

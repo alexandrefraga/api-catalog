@@ -25,8 +25,8 @@ export const mockLoadAccountByEmailRepository = (): LoadAccountByEmailRepository
 
 export const mockUpdateTokenRepository = (): UpdateTokenRepository => {
   class UpdateTokenRepositoryStub implements UpdateTokenRepository {
-    async updateToken (token: string, id: string): Promise<void> {
-      return Promise.resolve()
+    async updateToken (token: string, id: string): Promise<boolean> {
+      return Promise.resolve(true)
     }
   }
   return new UpdateTokenRepositoryStub()
