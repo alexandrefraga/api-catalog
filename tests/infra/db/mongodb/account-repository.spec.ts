@@ -51,4 +51,24 @@ describe('Account Mongo Repository', () => {
       expect(account.password).toBe(mockAddAccountParams().password)
     })
   })
+
+  describe('updateToken', () => {
+    test('Should return true and update the account with a token if updateToken success', async () => {
+      const sut = makeSut()
+      const result = await accountCollection.insertOne(mockAddAccountParams())
+      const fakeAccount = result.ops[0]
+      expect(fakeAccount.token).toBeFalsy()
+      const response = await sut.updateToken('any_token', fakeAccount._id)
+      expect(response).toBe(true)
+      const account = await accountCollection.findOne({ _id: fakeAccount._id })
+      expect(account).toBeTruthy()
+      expect(account.token).toBe('any_token')
+    })
+
+    test('Should return false if updateToken fail', async () => {
+      const sut = makeSut()
+      const response = await sut.updateToken('any_token', 'invalid_id')
+      expect(response).toBeFalsy()
+    })
+  })
 })
