@@ -2,7 +2,7 @@ import { AccountModel } from '@/domain/models/account-model'
 import { AddAccountParams } from '@/domain/usecases/add-account'
 import { AddAccountRepository } from '@/data/protocols/db/add-account-repository'
 import { mockAccountModel } from '../../domain/mocks/mock-account'
-import { LoadAccountByEmailRepository } from '@/domain/usecases/load-account'
+import { LoadAccountByEmailRepository } from '@/data/protocols/db/load-account-repository'
 import { UpdateTokenRepository } from '../protocols/db/update-token-repository'
 
 export const mockAddAccountRepository = (): AddAccountRepository => {

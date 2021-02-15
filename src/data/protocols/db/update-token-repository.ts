@@ -1,3 +1,3 @@
 export interface UpdateTokenRepository {
-  updateToken (token: string, id: string): Promise<void>
+  updateToken (token: string, id: string): Promise<boolean>
 }

@@ -1,5 +1,5 @@
 import { Authentication, AuthenticationParameters, AuthenticationResponse } from '@/domain/usecases/authentication'
-import { LoadAccountByEmailRepository } from '@/domain/usecases/load-account'
+import { LoadAccountByEmailRepository } from '@/data/protocols/db/load-account-repository'
 import { Encrypter, HasherComparer } from '../protocols/criptography'
 import { UpdateTokenRepository } from '../protocols/db/update-token-repository'
 
