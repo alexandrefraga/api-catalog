@@ -5,7 +5,7 @@ export class RequiredFieldValidation implements Validation {
   constructor (private readonly fieldName: string) {}
 
   async validate (input: any): Promise<Error> {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       let response = null
       if (!input[this.fieldName]) {
         response = new MissingParamError(this.fieldName)
