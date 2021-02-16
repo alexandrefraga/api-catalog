@@ -109,6 +109,13 @@ describe('DbAuthentication UseCase', () => {
     await expect(promise).rejects.toThrow()
   })
 
+  test('Should null if UpdateTokenRepository false', async () => {
+    const { sut, updateTokenRepositoryStub } = makeSut()
+    jest.spyOn(updateTokenRepositoryStub, 'updateToken').mockResolvedValueOnce(Promise.resolve(false))
+    const response = await sut.auth(params)
+    expect(response).toBeNull()
+  })
+
   test('should return an AuthenticationResponse if UpdateTokenRepository on success', async () => {
     const { sut } = makeSut()
     const response = await sut.auth(params)
