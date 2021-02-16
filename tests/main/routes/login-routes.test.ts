@@ -4,7 +4,7 @@ import { MongoHelper } from '@/infra/db/mongodb/mongo-helper'
 import { fakeLoginRequestParams, fakeSignUpRequestParams } from '../mocks/mock-request'
 import { Collection } from 'mongodb'
 import { hash } from 'bcrypt'
-import { InvalidParamError, MissingParamError, UnauthorizedError } from '@/presentation/errors'
+import { EmailInUseError, InvalidParamError, MissingParamError, UnauthorizedError } from '@/presentation/errors'
 
 let accountCollection: Collection
 describe('Login Routes', () => {
@@ -27,6 +27,93 @@ describe('Login Routes', () => {
         .post('/api/signup')
         .send(fakeSignUpRequestParams())
         .expect(200)
+    })
+
+    test('Should return 400 on signup if name no is provided', async () => {
+      await request(app)
+        .post('/api/signup')
+        .send({
+          email: 'any_email@mail.com',
+          password: 'any_password',
+          passwordConfirmation: 'any_password'
+        })
+        .expect(400)
+        .then(response => {
+          expect(response.body).toEqual({ error: new MissingParamError('name').message })
+        })
+    })
+
+    test('Should return 400 on signup if password no is provided', async () => {
+      await request(app)
+        .post('/api/signup')
+        .send({
+          name: 'any_name',
+          email: 'any_email@mail.com',
+          passwordConfirmation: 'any_password'
+        })
+        .expect(400)
+        .then(response => {
+          expect(response.body).toEqual({ error: new MissingParamError('password or passwordConfirmation').message })
+        })
+    })
+
+    test('Should return 400 on signup if passwordConfirmation no is provided', async () => {
+      await request(app)
+        .post('/api/signup')
+        .send({
+          name: 'any_name',
+          email: 'any_email@mail.com',
+          password: 'any_password'
+        })
+        .expect(400)
+        .then(response => {
+          expect(response.body).toEqual({ error: new MissingParamError('password or passwordConfirmation').message })
+        })
+    })
+
+    test('Should return 400 on signup if email no is provided', async () => {
+      await request(app)
+        .post('/api/signup')
+        .send({
+          name: 'any_name',
+          password: 'any_password',
+          passwordConfirmation: 'any_password'
+        })
+        .expect(400)
+        .then(response => {
+          expect(response.body).toEqual({ error: new MissingParamError('email').message })
+        })
+    })
+
+    test('Should return 400 on signup if invalid email is provided', async () => {
+      await request(app)
+        .post('/api/signup')
+        .send({
+          name: 'any-name',
+          email: 'invalid_email',
+          password: 'any_password',
+          passwordConfirmation: 'any_password'
+        })
+        .expect(400)
+        .then(response => {
+          expect(response.body).toEqual({ error: new InvalidParamError('email').message })
+        })
+    })
+
+    test('Should return 403 on signup if email in use', async () => {
+      const password = await hash('any_value', 12)
+      await accountCollection.insertOne({
+        name: 'any_name',
+        email: 'any_email@mail.com',
+        password
+      })
+      await request(app)
+        .post('/api/signup')
+        .send(fakeSignUpRequestParams())
+        .expect(403)
+        .then(response => {
+          expect(response.body).toEqual({ error: new EmailInUseError().message })
+        })
     })
   })
 
