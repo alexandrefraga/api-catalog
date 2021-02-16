@@ -1,5 +1,5 @@
 import { SignUpController } from '@/presentation/controllers/signup-controller'
-import { ServerError } from '@/presentation/errors'
+import { EmailInUseError, ServerError } from '@/presentation/errors'
 import { Validation } from '../protocolls/validation'
 import { mockAccountModel, mockAddAccount, mockSignUpRequestParams, mockValidator } from '../mocks'
 import { AddAccount } from '@/domain/usecases/add-account'
@@ -65,6 +65,13 @@ describe('SignUpController', () => {
     expect(httpResponse.body).toEqual(new ServerError('any'))
   })
 
+  test('Should return 403 if AddAccount returns null', async () => {
+    const { sut, addAccountStub } = makeSut()
+    jest.spyOn(addAccountStub, 'add').mockReturnValueOnce(Promise.resolve(null))
+    const httpResponse = await sut.execute(request)
+    expect(httpResponse.statusCode).toBe(403)
+    expect(httpResponse.body).toEqual(new EmailInUseError())
+  })
   test('Should return 200 if valid data is provided', async () => {
     const { sut } = makeSut()
     const httpResponse = await sut.execute(request)
