@@ -17,7 +17,11 @@ export const makeSignUpControler = (): Controller => {
     new RequiredAndCompareFieldsValidation('password', 'passwordConfirmation'),
     new EmailValidation(new EmailValidatorAdapter(), 'email')
   ])
-  const addAccount = new DbAddAccount(new BcryptAdapter(12), new AccountMongoRepository())
+  const loadAccountByEmailRepository = new AccountMongoRepository()
+  const salt = 12
+  const hasher = new BcryptAdapter(salt)
+  const addAccountRepository = new AccountMongoRepository()
+  const addAccount = new DbAddAccount(hasher, addAccountRepository, loadAccountByEmailRepository)
   const signUpController = new SignUpController(validation, addAccount)
   const logErrorMongoRepository = new LogErrorMongoRepository()
   return new LogControllerDecorator(signUpController, logErrorMongoRepository)
