@@ -14,8 +14,9 @@ describe('Jwt Adapter', () => {
   test('Should call Sign with correct values', async () => {
     const sut = makeSut()
     const signSpy = jest.spyOn(jwt, 'sign')
-    await sut.encrypt('any_value')
-    expect(signSpy).toHaveBeenCalledWith({ id: 'any_value' }, 'secret')
+    const param = JSON.stringify({ id: 'any_value' })
+    await sut.encrypt(param)
+    expect(signSpy).toHaveBeenCalledWith(param, 'secret')
   })
 
   test('Should JwtAdapter throw if Jwt throws', async () => {

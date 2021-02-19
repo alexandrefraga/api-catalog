@@ -84,7 +84,8 @@ describe('DbAuthentication UseCase', () => {
     const encryptSpy = jest.spyOn(encrypterStub, 'encrypt')
     const account = await mockLoadAccountByEmailRepository().loadByEmail('')
     await sut.auth(params)
-    expect(encryptSpy).toHaveBeenCalledWith(account.id)
+    const encryptParam = JSON.stringify({ id: account.id })
+    expect(encryptSpy).toHaveBeenCalledWith(encryptParam)
   })
 
   test('Should throw if Encrypter throws', async () => {
