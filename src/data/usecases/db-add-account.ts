@@ -23,7 +23,7 @@ export class DbAddAccount implements AddAccount {
       const token = await this.encrypter.encrypt(JSON.stringify({ id: accountData.id }))
       await this.mailService.send({
         address: accountData.email,
-        body: { token }
+        body: { token: token }
       })
       return accountData
     }

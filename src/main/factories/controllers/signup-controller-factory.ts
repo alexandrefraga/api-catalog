@@ -10,6 +10,9 @@ import { RequiredAndCompareFieldsValidation } from '@/validation/validators/requ
 import { RequiredFieldValidation } from '@/validation/validators/required-field'
 import { ValidationComposite } from '@/validation/validators/validation-composite'
 import { LogErrorMongoRepository } from '@/infra/db/mongodb/log-error-repository'
+import { JwtAdapter } from '@/infra/criptography/jwt-adapter'
+import { NodemailerAdapter } from '@/infra/service/nodemailer-adapter'
+import env from '@/main/config/env'
 
 export const makeSignUpControler = (): Controller => {
   const validation = new ValidationComposite([
@@ -21,7 +24,9 @@ export const makeSignUpControler = (): Controller => {
   const salt = 12
   const hasher = new BcryptAdapter(salt)
   const addAccountRepository = new AccountMongoRepository()
-  const addAccount = new DbAddAccount(hasher, addAccountRepository, loadAccountByEmailRepository)
+  const encrypter = new JwtAdapter(env.jwtSecret)
+  const mailService = new NodemailerAdapter()
+  const addAccount = new DbAddAccount(hasher, addAccountRepository, loadAccountByEmailRepository, encrypter, mailService)
   const signUpController = new SignUpController(validation, addAccount)
   const logErrorMongoRepository = new LogErrorMongoRepository()
   return new LogControllerDecorator(signUpController, logErrorMongoRepository)
