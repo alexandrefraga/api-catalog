@@ -12,7 +12,8 @@ export class DbAddAccount implements AddAccount {
     private readonly addAccountRepository: AddAccountRepository,
     private readonly loadAccountByEmailRepository: LoadAccountByEmailRepository,
     private readonly encrypter: Encrypter,
-    private readonly mailService: MailService
+    private readonly mailService: MailService,
+    private readonly mailTemplateName: string
   ) {}
 
   async add (account: AddAccountParams): Promise<AccountModel> {
@@ -22,8 +23,15 @@ export class DbAddAccount implements AddAccount {
       const accountData = await this.addAccountRepository.add(Object.assign(account, { password: passwordHashed }))
       const token = await this.encrypter.encrypt(JSON.stringify({ id: accountData.id }))
       await this.mailService.send({
-        address: accountData.email,
-        body: { token: token }
+        mailTo: `${accountData.name}<${accountData.email}>`,
+        subject: `Account confirmation to ${accountData.name}`,
+        template: {
+          name: this.mailTemplateName,
+          props: {
+            account: accountData,
+            token
+          }
+        }
       })
       return accountData
     }

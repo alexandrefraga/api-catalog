@@ -1,6 +1,17 @@
+import { AccountModel } from '@/domain/models/account-model'
+
+type Template = {
+  name: string
+  props: {
+    account?: AccountModel
+    token?: string
+  }
+}
+
 export type MailServiceParams = {
-  address: string
-  body: any
+  mailTo: string
+  subject: string
+  template: Template
 }
 
 export interface MailService {

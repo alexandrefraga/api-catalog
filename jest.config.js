@@ -31,7 +31,8 @@ module.exports = {
   },
 
   // A preset that is used as a base for Jest's configuration
-  preset: '@shelf/jest-mongodb'
+  preset: '@shelf/jest-mongodb',
+  testTimeout: 30000
 
   // All imported modules in your tests should be mocked automatically
   // automock: false,

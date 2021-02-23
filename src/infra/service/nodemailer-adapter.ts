@@ -1,39 +1,31 @@
 import { MailService, MailServiceParams } from '@/data/protocols/service/mail-service'
 import nodemailer from 'nodemailer'
-// import hbs from 'nodemailer-express-handlebars'
-// import exphbs from 'express-handlebars'
 import fs from 'fs'
 import path from 'path'
 import handlebars from 'handlebars'
+import SMTPTransport from 'nodemailer/lib/smtp-transport'
 
 export class NodemailerAdapter implements MailService {
+  constructor (
+    private readonly transportOptions: string | SMTPTransport | SMTPTransport.Options,
+    private readonly mailFrom: string
+  ) {}
+
   async send (data: MailServiceParams): Promise<void> {
-    const filePath = path.join(__dirname, '../../template/mail.html')
+    const filePath = path.join(__dirname, `../../template/${data.template.name}.html`)
     const source = fs.readFileSync(filePath, 'utf-8').toString()
     const template = handlebars.compile(source)
     const replacements = {
-      token: data.body.token
+      account: data.template.props.account,
+      token: data.template.props.token
     }
-    console.log(replacements)
     const htmlToSend = template(replacements)
-    console.log(htmlToSend)
-    const transport = nodemailer.createTransport({
-      host: 'smtp.mailtrap.io',
-      port: 2525,
-      auth: {
-        user: '664be95f8e43a4',
-        pass: 'caa9298ef4684e'
-      }
-    })
+    const transport = nodemailer.createTransport(this.transportOptions)
     await transport.sendMail({
-      to: data.address,
-      from: 'alexandrenfraga@yahoo.com.br',
+      to: data.mailTo,
+      from: this.mailFrom,
       html: htmlToSend,
-      subject: 'primeira mensagem'
-    }, (error) => {
-      if (error) {
-        console.log(error)
-      }
+      subject: data.subject
     })
   }
 }

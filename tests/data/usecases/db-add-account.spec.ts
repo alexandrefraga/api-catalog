@@ -1,7 +1,7 @@
 import { DbAddAccount } from '@/data/usecases/db-add-account'
 import { Encrypter, Hasher } from '@/data/protocols/criptography'
 import { AddAccountRepository } from '@/data/protocols/db/add-account-repository'
-import { mockHasher, mockAddAccountRepository, mockLoadAccountByEmailRepository, mockMailService, mockEncrypter } from '../mocks'
+import { mockHasher, mockAddAccountRepository, mockLoadAccountByEmailRepository, mockMailService, mockEncrypter, mockMailServiceParams } from '../mocks'
 import { mockAccountModel, mockAddAccountParams } from '../../domain/mocks/mock-account'
 import { LoadAccountByEmailRepository } from '../protocols/db/load-account-repository'
 import { MailService } from '../protocols/service/mail-service'
@@ -22,7 +22,7 @@ const makeSut = (): SutTypes => {
   const loadAccountByEmailStub = mockLoadAccountByEmailRepository()
   const encrypterStub = mockEncrypter()
   const mailServiceStub = mockMailService()
-  const sut = new DbAddAccount(hasherStub, addAccountRepositoryStub, loadAccountByEmailStub, encrypterStub, mailServiceStub)
+  const sut = new DbAddAccount(hasherStub, addAccountRepositoryStub, loadAccountByEmailStub, encrypterStub, mailServiceStub, 'mail')
   return {
     sut,
     hasherStub,
@@ -108,10 +108,7 @@ describe('DbAddAccount Usecase', () => {
     jest.spyOn(loadAccountByEmailStub, 'loadByEmail').mockReturnValueOnce(Promise.resolve(null))
     const sendSpy = jest.spyOn(mailServiceStub, 'send')
     await sut.add(addAccountParams)
-    expect(sendSpy).toBeCalledWith({
-      address: addAccountParams.email,
-      body: { token: 'encrypted_value' }
-    })
+    expect(sendSpy).toBeCalledWith(mockMailServiceParams())
   })
 
   test('Should DbAddAccount throw if MailService throws', async () => {
