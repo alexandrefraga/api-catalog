@@ -2,18 +2,13 @@ import { MailService } from '@/data/protocols/service/mail-service'
 import { NodemailerAdapter } from '@/infra/service/nodemailer-adapter'
 import fs from 'fs'
 import { mockMailServiceParams } from '../../data/mocks'
-
-jest.mock('fs', () => ({
-  readFileSync (path: string, encoding: string): string {
-    return 'any_template'
-  }
-}))
+import env from '@/main/config/env'
 
 type SutTypes = {
   sut: MailService
 }
 const makeSut = (): SutTypes => {
-  const sut = new NodemailerAdapter()
+  const sut = new NodemailerAdapter(env.mailParams, env.mailFrom, env.baseUrl)
   return {
     sut
   }

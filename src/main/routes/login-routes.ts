@@ -6,4 +6,8 @@ import { makeLoginControler } from '../factories/controllers/login-controller-fa
 export default (router: Router): void => {
   router.post('/signup', adaptRoute(makeSignUpControler()))
   router.post('/login', adaptRoute(makeLoginControler()))
+  router.get('/confirmation/:token', (req, res) => {
+    console.log(req.params.token)
+    res.send('email confirmado')
+  })
 }

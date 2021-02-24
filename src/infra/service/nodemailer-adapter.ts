@@ -8,7 +8,8 @@ import SMTPTransport from 'nodemailer/lib/smtp-transport'
 export class NodemailerAdapter implements MailService {
   constructor (
     private readonly transportOptions: string | SMTPTransport | SMTPTransport.Options,
-    private readonly mailFrom: string
+    private readonly mailFrom: string,
+    private readonly baseUrl: string
   ) {}
 
   async send (data: MailServiceParams): Promise<void> {
@@ -17,7 +18,8 @@ export class NodemailerAdapter implements MailService {
     const template = handlebars.compile(source)
     const replacements = {
       account: data.template.props.account,
-      token: data.template.props.token
+      token: data.template.props.token,
+      baseUrl: this.baseUrl
     }
     const htmlToSend = template(replacements)
     const transport = nodemailer.createTransport(this.transportOptions)

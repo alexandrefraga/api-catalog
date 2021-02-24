@@ -25,7 +25,7 @@ export const makeSignUpControler = (): Controller => {
   const hasher = new BcryptAdapter(salt)
   const addAccountRepository = new AccountMongoRepository()
   const encrypter = new JwtAdapter(env.jwtSecret)
-  const mailService = new NodemailerAdapter(env.mailParams, env.mailFrom)
+  const mailService = new NodemailerAdapter(env.mailParams, env.mailFrom, env.baseUrl)
   const addAccount = new DbAddAccount(hasher, addAccountRepository, loadAccountByEmailRepository, encrypter, mailService, 'mail')
   const signUpController = new SignUpController(validation, addAccount)
   const logErrorMongoRepository = new LogErrorMongoRepository()

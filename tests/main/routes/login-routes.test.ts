@@ -1,3 +1,4 @@
+/* eslint @typescript-eslint/no-var-requires: "off" */
 import app from '@/main/config/app'
 import request from 'supertest'
 import { MongoHelper } from '@/infra/db/mongodb/mongo-helper'
@@ -5,6 +6,16 @@ import { fakeLoginRequestParams, fakeSignUpRequestParams } from '../mocks/mock-r
 import { Collection } from 'mongodb'
 import { hash } from 'bcrypt'
 import { EmailInUseError, InvalidParamError, MissingParamError, UnauthorizedError } from '@/presentation/errors'
+
+const sendMailMock = jest.fn()
+jest.mock('nodemailer')
+const nodemailer = require('nodemailer')
+nodemailer.createTransport.mockReturnValue({ sendMail: sendMailMock })
+
+beforeEach(() => {
+  sendMailMock.mockClear()
+  nodemailer.createTransport.mockClear()
+})
 
 let accountCollection: Collection
 describe('Login Routes', () => {
