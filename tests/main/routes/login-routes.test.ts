@@ -33,11 +33,15 @@ describe('Login Routes', () => {
   })
 
   describe('/signup', () => {
-    test('Should return 200 on signup', async () => {
+    test('Should return 201 on signup', async () => {
       await request(app)
         .post('/api/signup')
         .send(fakeSignUpRequestParams())
-        .expect(200)
+        .expect(201)
+        .then(async () => {
+          const account = await accountCollection.findOne({ email: 'any_email@mail.com' })
+          expect(account).toBeTruthy()
+        })
     })
 
     test('Should return 400 on signup if name no is provided', async () => {
