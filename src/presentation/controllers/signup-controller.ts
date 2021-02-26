@@ -1,5 +1,5 @@
 import { Controller, SignUpRequestParameters, HttpResponse } from '../protocolls'
-import { badRequest, forbidden, serverError, success } from '@/presentation/helpers/http-helper'
+import { badRequest, created, forbidden, serverError } from '@/presentation/helpers/http-helper'
 import { Validation } from '../protocolls/validation'
 import { AddAccount } from '@/domain/usecases/add-account'
 import { EmailInUseError } from '../errors'
@@ -21,7 +21,7 @@ export class SignUpController implements Controller<SignUpRequestParameters> {
       if (!account) {
         return forbidden(new EmailInUseError())
       }
-      return success(account)
+      return created('Sent confirmation email!')
     } catch (error) {
       return serverError(error)
     }
