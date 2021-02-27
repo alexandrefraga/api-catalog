@@ -1,6 +1,6 @@
 import { ValidateAccount } from '@/domain/usecases/validate-account'
 import { Controller, HttpResponse, ValidateAccountParams, Validation } from '@/presentation/protocolls'
-import { badRequest, serverError } from '../helpers/http-helper'
+import { badRequest, serverError, unauthorized } from '../helpers/http-helper'
 
 export class ValidateAccountController implements Controller<ValidateAccountParams> {
   constructor (
@@ -14,7 +14,10 @@ export class ValidateAccountController implements Controller<ValidateAccountPara
       if (error) {
         return badRequest(error)
       }
-      await this.validateAccount.validate(data.tokenValidation)
+      const validated = await this.validateAccount.validate(data.tokenValidation)
+      if (!validated) {
+        return unauthorized()
+      }
       return null
     } catch (error) {
       return serverError(error)
