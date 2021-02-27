@@ -1,4 +1,5 @@
 import { Controller, HttpResponse, ValidateAccountParams, Validation } from '@/presentation/protocolls'
+import { badRequest } from '../helpers/http-helper'
 
 export class ValidateAccountController implements Controller<ValidateAccountParams> {
   constructor (
@@ -6,7 +7,10 @@ export class ValidateAccountController implements Controller<ValidateAccountPara
   ) {}
 
   async execute (data: ValidateAccountParams): Promise<HttpResponse> {
-    await this.validator.validate(data.tokenValidation)
-    return Promise.resolve(null)
+    const error = await this.validator.validate(data.tokenValidation)
+    if (error) {
+      return badRequest(error)
+    }
+    return null
   }
 }
