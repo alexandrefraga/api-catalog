@@ -1,5 +1,5 @@
 import { ValidateAccountController } from '@/presentation/controllers/validate-account-controller'
-import { ServerError } from '@/presentation/errors'
+import { ServerError, UnauthorizedError } from '@/presentation/errors'
 import { mockValidateAccountParams, mockValidator } from '../mocks'
 import { Validation } from '@/presentation/protocolls'
 import { ValidateAccount } from '@/domain/usecases/validate-account'
@@ -51,5 +51,21 @@ describe('ValidateAccount Controller', () => {
     const validateSpy = jest.spyOn(dbValidateAccountStub, 'validate')
     await sut.execute(validateParams)
     expect(validateSpy).toHaveBeenCalledWith(validateParams.tokenValidation)
+  })
+
+  test('Should return 500 if DbValidateAccount throws', async () => {
+    const { sut, dbValidateAccountStub } = makeSut()
+    jest.spyOn(dbValidateAccountStub, 'validate').mockImplementationOnce(() => { throw new Error() })
+    const httpResponse = await sut.execute(validateParams)
+    expect(httpResponse.statusCode).toBe(500)
+    expect(httpResponse.body).toEqual(new ServerError(''))
+  })
+
+  test('Should return 401 if DbValidateAccount return false', async () => {
+    const { sut, dbValidateAccountStub } = makeSut()
+    jest.spyOn(dbValidateAccountStub, 'validate').mockReturnValueOnce(Promise.resolve(false))
+    const httpResponse = await sut.execute(validateParams)
+    expect(httpResponse.statusCode).toBe(401)
+    expect(httpResponse.body).toEqual(new UnauthorizedError())
   })
 })
