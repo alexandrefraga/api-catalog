@@ -2,27 +2,32 @@ import { ValidateAccountController } from '@/presentation/controllers/validate-a
 import { ServerError } from '@/presentation/errors'
 import { mockValidateAccountParams, mockValidator } from '../mocks'
 import { Validation } from '@/presentation/protocolls'
+import { ValidateAccount } from '@/domain/usecases/validate-account'
+import { mockValidateAccount } from '../mocks/mockValidateAccount'
 
 const validateParams = mockValidateAccountParams()
 
 type SutTypes = {
   sut: ValidateAccountController
   validatorStub: Validation
+  dbValidateAccountStub: ValidateAccount
 }
 const makeSut = (): SutTypes => {
   const validatorStub = mockValidator()
-  const sut = new ValidateAccountController(validatorStub)
+  const dbValidateAccountStub = mockValidateAccount()
+  const sut = new ValidateAccountController(validatorStub, dbValidateAccountStub)
   return {
     sut,
-    validatorStub
+    validatorStub,
+    dbValidateAccountStub
   }
 }
 describe('ValidateAccount Controller', () => {
-  test('Should call validator with correct tokenValidation', async () => {
+  test('Should call Validator with correct tokenValidation', async () => {
     const { sut, validatorStub } = makeSut()
     const validateSpy = jest.spyOn(validatorStub, 'validate')
     await sut.execute(validateParams)
-    expect(validateSpy).toHaveBeenCalledWith(validateParams.tokenValidation)
+    expect(validateSpy).toHaveBeenCalledWith(validateParams)
   })
 
   test('Should return 400 if Validator return an error', async () => {
@@ -39,5 +44,12 @@ describe('ValidateAccount Controller', () => {
     const httpResponse = await sut.execute(validateParams)
     expect(httpResponse.statusCode).toBe(500)
     expect(httpResponse.body).toEqual(new ServerError(''))
+  })
+
+  test('Should call DbValidateAccount with correct tokenValidation', async () => {
+    const { sut, dbValidateAccountStub } = makeSut()
+    const validateSpy = jest.spyOn(dbValidateAccountStub, 'validate')
+    await sut.execute(validateParams)
+    expect(validateSpy).toHaveBeenCalledWith(validateParams.tokenValidation)
   })
 })
