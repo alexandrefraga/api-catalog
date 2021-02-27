@@ -9,3 +9,7 @@ export type LoginRequestParameters = {
   email: string
   password: string
 }
+
+export type ValidateAccountParams = {
+  tokenValidation: string
+}

@@ -1,4 +1,4 @@
-import { LoginRequestParameters, SignUpRequestParameters } from '@/presentation/protocolls'
+import { LoginRequestParameters, SignUpRequestParameters, ValidateAccountParams } from '@/presentation/protocolls'
 
 export const mockLoginRequestParams = (): LoginRequestParameters => ({
   email: 'any_email@mail.com',
@@ -10,4 +10,8 @@ export const mockSignUpRequestParams = (): SignUpRequestParameters => ({
   email: 'any_email@mail.com',
   password: 'any_password',
   passwordConfirmation: 'any_password'
+})
+
+export const mockValidateAccountParams = (): ValidateAccountParams => ({
+  tokenValidation: 'any_token'
 })
