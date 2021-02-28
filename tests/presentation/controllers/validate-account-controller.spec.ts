@@ -68,4 +68,11 @@ describe('ValidateAccount Controller', () => {
     expect(httpResponse.statusCode).toBe(401)
     expect(httpResponse.body).toEqual(new UnauthorizedError())
   })
+
+  test('Should return 200 if DbValidateAccount on success', async () => {
+    const { sut } = makeSut()
+    const httpResponse = await sut.execute(validateParams)
+    expect(httpResponse.statusCode).toBe(200)
+    expect(httpResponse.body).toEqual({ msg: 'Confirmated user account!' })
+  })
 })
