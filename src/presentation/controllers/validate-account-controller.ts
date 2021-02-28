@@ -1,6 +1,6 @@
 import { ValidateAccount } from '@/domain/usecases/validate-account'
 import { Controller, HttpResponse, ValidateAccountParams, Validation } from '@/presentation/protocolls'
-import { badRequest, serverError, unauthorized } from '../helpers/http-helper'
+import { badRequest, serverError, unauthorized, success } from '../helpers/http-helper'
 
 export class ValidateAccountController implements Controller<ValidateAccountParams> {
   constructor (
@@ -18,7 +18,7 @@ export class ValidateAccountController implements Controller<ValidateAccountPara
       if (!validated) {
         return unauthorized()
       }
-      return null
+      return success({ msg: 'Confirmated user account!' })
     } catch (error) {
       return serverError(error)
     }
