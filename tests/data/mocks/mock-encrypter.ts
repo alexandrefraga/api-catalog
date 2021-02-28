@@ -1,5 +1,4 @@
-import { Decrypter } from '../protocols/criptography/decrypter'
-import { Encrypter } from '../protocols/criptography/encrypter'
+import { Encrypter, Decrypter } from '@/data/protocols/criptography'
 
 export const mockEncrypter = (): Encrypter => {
   class EncrypterStub implements Encrypter {
@@ -10,10 +9,10 @@ export const mockEncrypter = (): Encrypter => {
   return new EncrypterStub()
 }
 
-export const mockDecrypter = (): Decrypter => {
+export const mockDecrypter = (decryptedResponse: any): Decrypter => {
   class DecrypterStub implements Decrypter {
-    async decrypt (value: string): Promise<string> {
-      return Promise.resolve('decrypted value')
+    async decrypt (value: string): Promise<any> {
+      return Promise.resolve(decryptedResponse)
     }
   }
   return new DecrypterStub()
