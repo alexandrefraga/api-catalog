@@ -12,11 +12,12 @@ export class DbValidateAccount implements ValidateAccount {
     let dataDecrypted
     try {
       dataDecrypted = await this.decrypter.decrypt(token)
-      if (!dataDecrypted.email) { throw new Error() }
+      if (!dataDecrypted.email || !dataDecrypted.id) { throw new Error() }
     } catch (error) {
       return null
     }
-    await this.updateEmailRepository.updateEmail(dataDecrypted.email, true)
-    return null
+    const { id, email } = dataDecrypted
+    const updated = await this.updateEmailRepository.updateEmail(id, email, true)
+    return updated
   }
 }

@@ -1,3 +1,3 @@
 export interface UpdateEmailRepository {
-  updateEmail (email: string, isValid: boolean): Promise<boolean>
+  updateEmail (id: string, email: string, isValid: boolean): Promise<boolean>
 }
