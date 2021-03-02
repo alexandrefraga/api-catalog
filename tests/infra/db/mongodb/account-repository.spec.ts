@@ -71,4 +71,24 @@ describe('Account Mongo Repository', () => {
       expect(response).toBeFalsy()
     })
   })
+
+  describe('updateEmail', () => {
+    test('Should return true and update the email as confirmed if updateEmail success', async () => {
+      const sut = makeSut()
+      const result = await accountCollection.insertOne(mockAddAccountParams())
+      const fakeAccount = result.ops[0]
+      expect(fakeAccount.emailConfirmation).toBeFalsy()
+      const response = await sut.updateEmail(fakeAccount._id, fakeAccount.email, true)
+      expect(response).toBe(true)
+      const account = await accountCollection.findOne({ _id: fakeAccount._id })
+      expect(account).toBeTruthy()
+      expect(account.emailConfirmation).toBe(true)
+    })
+
+    test('Should return false if updateEmail fail', async () => {
+      const sut = makeSut()
+      const response = await sut.updateEmail('invalid_id', 'any_email', true)
+      expect(response).toBeFalsy()
+    })
+  })
 })
