@@ -5,6 +5,7 @@ import { LoadAccountByEmailRepository } from '@/data/protocols/db/load-account-r
 import { MongoHelper } from '@/infra/db/mongodb/mongo-helper'
 import { UpdateTokenRepository } from '@/data/protocols/db/update-token-repository'
 import { UpdateEmailRepository } from '@/data/protocols/db/update-email-repository'
+import { ObjectId } from 'mongodb'
 
 export class AccountMongoRepository implements AddAccountRepository, LoadAccountByEmailRepository, UpdateTokenRepository, UpdateEmailRepository {
   async add (account: AddAccountParams): Promise<AccountModel> {
@@ -27,7 +28,8 @@ export class AccountMongoRepository implements AddAccountRepository, LoadAccount
 
   async updateEmail (id: string, email: string, isValid: boolean): Promise<boolean> {
     const accountCollection = await MongoHelper.getCollection('accounts')
-    const response = await accountCollection.updateOne({ _id: id }, { $set: { email: email, emailConfirmation: isValid } })
+    const response = await accountCollection.updateOne({ _id: new ObjectId(id) }, { $set: { email: email, emailConfirmation: isValid } })
+    console.log(response.modifiedCount)
     return !!response.modifiedCount
   }
 }
