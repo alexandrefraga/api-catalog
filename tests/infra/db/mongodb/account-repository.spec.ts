@@ -1,7 +1,7 @@
 import { mockAddAccountParams } from '@/../tests/domain/mocks/mock-account'
 import { AccountMongoRepository } from '@/infra/db/mongodb/account-repository'
 import { MongoHelper } from '@/infra/db/mongodb/mongo-helper'
-import { Collection } from 'mongodb'
+import { Collection, ObjectId } from 'mongodb'
 
 const makeSut = (): AccountMongoRepository => {
   return new AccountMongoRepository()
@@ -87,7 +87,8 @@ describe('Account Mongo Repository', () => {
 
     test('Should return false if updateEmail fail', async () => {
       const sut = makeSut()
-      const response = await sut.updateEmail('invalid_id', 'any_email', true)
+      const invalidId = new ObjectId().toHexString()
+      const response = await sut.updateEmail(invalidId, 'any_email', true)
       expect(response).toBeFalsy()
     })
   })

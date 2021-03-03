@@ -6,6 +6,8 @@ import { fakeLoginRequestParams, fakeSignUpRequestParams } from '../mocks/mock-r
 import { Collection } from 'mongodb'
 import { hash } from 'bcrypt'
 import { EmailInUseError, InvalidParamError, MissingParamError, UnauthorizedError } from '@/presentation/errors'
+import { sign } from 'jsonwebtoken'
+import env from '@/main/config/env'
 
 const sendMailMock = jest.fn()
 jest.mock('nodemailer')
@@ -219,6 +221,22 @@ describe('Login Routes', () => {
         .then(response => {
           expect(response.body).toEqual({ error: new MissingParamError('password').message })
         })
+    })
+  })
+
+  describe('/confirmation', () => {
+    test('Should return 200 on confirmation', async () => {
+      const password = await hash('any_value', 12)
+      const result = await accountCollection.insertOne({
+        name: 'any_name',
+        email: 'any_email@mail.com',
+        password
+      })
+      const _id = result.ops[0]._id
+      const tokenValidation = await sign({ id: _id, email: 'any_email@mail.com' }, env.jwtSecret)
+      await request(app)
+        .get(`/api/confirmation/${tokenValidation}`)
+        .expect(200)
     })
   })
 })
