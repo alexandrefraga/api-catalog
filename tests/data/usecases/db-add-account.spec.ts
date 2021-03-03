@@ -91,7 +91,7 @@ describe('DbAddAccount Usecase', () => {
     const encryptSpy = jest.spyOn(encrypterStub, 'encrypt')
     const account = await mockLoadAccountByEmailRepository().loadByEmail('')
     await sut.add(addAccountParams)
-    const encryptParam = JSON.stringify({ id: account.id })
+    const encryptParam = JSON.stringify({ id: account.id, email: account.email })
     expect(encryptSpy).toHaveBeenCalledWith(encryptParam)
   })
 
