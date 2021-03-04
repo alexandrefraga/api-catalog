@@ -33,7 +33,7 @@ const makeSut = (): SutTypes => {
   }
 }
 describe('DbAddAccount Usecase', () => {
-  test('Should call LoadAccountByEmail with correct email', async () => {
+  test('Should call LoadAccountByEmail only with the correct email', async () => {
     const { sut, loadAccountByEmailStub } = makeSut()
     const hashSpy = jest.spyOn(loadAccountByEmailStub, 'loadByEmail')
     await sut.add(addAccountParams)
@@ -89,7 +89,7 @@ describe('DbAddAccount Usecase', () => {
     const { sut, loadAccountByEmailStub, encrypterStub } = makeSut()
     jest.spyOn(loadAccountByEmailStub, 'loadByEmail').mockReturnValueOnce(Promise.resolve(null))
     const encryptSpy = jest.spyOn(encrypterStub, 'encrypt')
-    const account = await mockLoadAccountByEmailRepository().loadByEmail('')
+    const account = await mockLoadAccountByEmailRepository().loadByEmail('', true)
     await sut.add(addAccountParams)
     const encryptParam = JSON.stringify({ id: account.id, email: account.email })
     expect(encryptSpy).toHaveBeenCalledWith(encryptParam)

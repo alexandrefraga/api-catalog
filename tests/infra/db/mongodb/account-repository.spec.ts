@@ -36,8 +36,15 @@ describe('Account Mongo Repository', () => {
   describe('loadByEmail', () => {
     test('Should return null if loadByEmail fail', async () => {
       const sut = makeSut()
-      const account = await sut.loadByEmail(mockAddAccountParams().email)
+      const account = await sut.loadByEmail(mockAddAccountParams().email, true)
       expect(account).toBeFalsy()
+    })
+
+    test('Should return null if loadByEmail dont return an confirmated account', async () => {
+      await accountCollection.insertOne(mockAddAccountParams())
+      const sut = makeSut()
+      const account = await sut.loadByEmail(mockAddAccountParams().email, true)
+      expect(account).toBeNull()
     })
 
     test('Should return an account if loadByEmail on success', async () => {
@@ -49,6 +56,19 @@ describe('Account Mongo Repository', () => {
       expect(account.name).toBe(mockAddAccountParams().name)
       expect(account.email).toBe(mockAddAccountParams().email)
       expect(account.password).toBe(mockAddAccountParams().password)
+    })
+
+    test('Should return an account confirmated if loadByEmail on success', async () => {
+      const accountConfirmated = Object.assign({}, mockAddAccountParams(), { emailConfirmation: true })
+      await accountCollection.insertOne(accountConfirmated)
+      const sut = makeSut()
+      const account = await sut.loadByEmail(mockAddAccountParams().email, true)
+      expect(account).toBeTruthy()
+      expect(account.id).toBeTruthy()
+      expect(account.name).toBe(mockAddAccountParams().name)
+      expect(account.email).toBe(mockAddAccountParams().email)
+      expect(account.password).toBe(mockAddAccountParams().password)
+      expect(account.emailConfirmation).toBe(true)
     })
   })
 

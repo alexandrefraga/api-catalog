@@ -140,6 +140,7 @@ describe('Login Routes', () => {
       await accountCollection.insertOne({
         name: 'any_name',
         email: 'any_email@mail.com',
+        emailConfirmation: true,
         password
       })
       await request(app)

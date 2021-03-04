@@ -36,11 +36,11 @@ const makeSut = (): SutTypes => {
   }
 }
 describe('DbAuthentication UseCase', () => {
-  test('Should call LoadAccountByEmailRepository with correct email', async () => {
+  test('Should call LoadAccountByEmailRepository with correct values', async () => {
     const { sut, loadAccountByEmailRepositoryStub } = makeSut()
     const loadByEmailSpy = jest.spyOn(loadAccountByEmailRepositoryStub, 'loadByEmail')
     await sut.auth(params)
-    expect(loadByEmailSpy).toHaveBeenCalledWith(params.email)
+    expect(loadByEmailSpy).toHaveBeenCalledWith(params.email, true)
   })
 
   test('Should throw if LoadAccountByEmailRepository throws', async () => {
