@@ -10,8 +10,10 @@ export class DbValidateAccount implements ValidateAccount {
 
   async validate (token: string): Promise<boolean> {
     let dataDecrypted
+    console.log(token)
     try {
       dataDecrypted = await this.decrypter.decrypt(token)
+      console.log(dataDecrypted)
       if (!dataDecrypted.email || !dataDecrypted.id) { throw new Error() }
     } catch (error) {
       return null
