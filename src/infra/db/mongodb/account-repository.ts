@@ -14,8 +14,8 @@ export class AccountMongoRepository implements AddAccountRepository, LoadAccount
     return MongoHelper.map(result.ops[0])
   }
 
-  async loadByEmail (email: string, emailConfirmation?: boolean): Promise<AccountModel> {
-    const query = emailConfirmation === undefined ? { email } : { email, emailConfirmation: { $eq: emailConfirmation } }
+  async loadByEmail (email: string, emailConfirmation?: Date): Promise<AccountModel> {
+    const query = emailConfirmation === undefined ? { email } : { email, emailConfirmation: { $lte: emailConfirmation } }
     const accountCollection = await MongoHelper.getCollection('accounts')
     const account = await accountCollection.findOne(query)
     return account && MongoHelper.map(account)
@@ -27,10 +27,16 @@ export class AccountMongoRepository implements AddAccountRepository, LoadAccount
     return !!response.modifiedCount
   }
 
-  async updateEmail (id: string, email: string, isValid: boolean): Promise<boolean> {
+  async updateEmail (id: string, email: string, confirmation: Date): Promise<boolean> {
     const accountCollection = await MongoHelper.getCollection('accounts')
-    const response = await accountCollection.updateOne({ _id: new ObjectId(id) }, { $set: { email: email, emailConfirmation: isValid } })
-    console.log(response.modifiedCount)
+    const response = await accountCollection.updateOne({
+      _id: new ObjectId(id)
+    }, {
+      $set: {
+        email: email,
+        emailConfirmation: confirmation
+      }
+    })
     return !!response.modifiedCount
   }
 }

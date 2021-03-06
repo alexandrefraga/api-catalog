@@ -1,8 +1,9 @@
 import { JwtAdapter } from '@/infra/criptography/jwt-adapter'
 import jwt from 'jsonwebtoken'
+import MockDate from 'mockdate'
 
 jest.mock('jsonwebtoken', () => ({
-  async sign (): Promise<string> {
+  async sign (objParams: any, secret: string): Promise<string> {
     return Promise.resolve('valid_token')
   },
 
@@ -15,12 +16,27 @@ const makeSut = (): JwtAdapter => {
 }
 
 describe('Jwt Adapter', () => {
+  beforeAll(async () => {
+    MockDate.set(new Date())
+  })
+
+  afterAll(async () => {
+    MockDate.reset()
+  })
   test('Should call Sign with correct values', async () => {
     const sut = makeSut()
     const signSpy = jest.spyOn(jwt, 'sign')
-    const param = JSON.stringify({ id: 'any_value' })
-    await sut.encrypt(param)
-    expect(signSpy).toHaveBeenCalledWith(param, 'secret')
+    const jsonParams = JSON.stringify({ id: 'any_value' })
+    await sut.encrypt(jsonParams)
+    const objParams = Object.assign({}, JSON.parse(jsonParams), { created: Date.now() })
+    expect(signSpy).toHaveBeenCalledWith(objParams, 'secret')
+  })
+
+  test('Should return a token if sign success', async () => {
+    const sut = makeSut()
+    const jsonParams = JSON.stringify({ id: 'any_value' })
+    const token = await sut.encrypt(jsonParams)
+    expect(token).toBe('valid_token')
   })
 
   test('Should JwtAdapter throw if sign throws', async () => {
@@ -28,12 +44,6 @@ describe('Jwt Adapter', () => {
     jest.spyOn(jwt, 'sign').mockImplementationOnce(() => { throw new Error() })
     const promise = sut.encrypt('any_value')
     await expect(promise).rejects.toThrowError()
-  })
-
-  test('Should return a token if sign success', async () => {
-    const sut = makeSut()
-    const token = await sut.encrypt('any_value')
-    expect(token).toBe('valid_token')
   })
 
   test('Should call Verify with correct values', async () => {

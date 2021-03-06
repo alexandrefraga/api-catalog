@@ -3,6 +3,7 @@ import { ValidateAccount } from '@/domain/usecases/validate-account'
 import { Decrypter } from '@/data/protocols/criptography/decrypter'
 import { mockDecrypter, mockUpdateEmailRepository } from '../mocks'
 import { UpdateEmailRepository } from '../protocols/db/update-email-repository'
+import MockDate from 'mockdate'
 
 type SutTypes = {
   sut: ValidateAccount
@@ -20,6 +21,14 @@ const makeSut = (): SutTypes => {
   }
 }
 describe('DbValidateAccount', () => {
+  beforeAll(async () => {
+    MockDate.set(new Date())
+  })
+
+  afterAll(async () => {
+    MockDate.reset()
+  })
+
   test('Should call Decrypter with correct token', async () => {
     const { sut, jwtAdapterStub } = makeSut()
     const verifySpy = jest.spyOn(jwtAdapterStub, 'decrypt')
@@ -59,7 +68,7 @@ describe('DbValidateAccount', () => {
     const { sut, dbUpdateEmailRepositoryStub } = makeSut()
     const updateEmailSpy = jest.spyOn(dbUpdateEmailRepositoryStub, 'updateEmail')
     await sut.validate('any_token')
-    expect(updateEmailSpy).toHaveBeenCalledWith('any_id', 'any_email', true)
+    expect(updateEmailSpy).toHaveBeenCalledWith('any_id', 'any_email', new Date())
   })
 
   test('Should DbValidateAccount throw if DdUpdateEmailRepository throws', async () => {

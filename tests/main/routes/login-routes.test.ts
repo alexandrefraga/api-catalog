@@ -8,6 +8,7 @@ import { hash } from 'bcrypt'
 import { EmailInUseError, InvalidParamError, MissingParamError, UnauthorizedError } from '@/presentation/errors'
 import { sign } from 'jsonwebtoken'
 import env from '@/main/config/env'
+import MockDate from 'mockdate'
 
 const sendMailMock = jest.fn()
 jest.mock('nodemailer')
@@ -22,6 +23,7 @@ beforeEach(() => {
 let accountCollection: Collection
 describe('Login Routes', () => {
   beforeAll(async () => {
+    MockDate.set(new Date())
     await MongoHelper.connect(process.env.MONGO_URL)
   })
 
@@ -32,6 +34,7 @@ describe('Login Routes', () => {
 
   afterAll(async () => {
     await MongoHelper.disconnect()
+    MockDate.reset()
   })
 
   describe('/signup', () => {
@@ -140,7 +143,7 @@ describe('Login Routes', () => {
       await accountCollection.insertOne({
         name: 'any_name',
         email: 'any_email@mail.com',
-        emailConfirmation: true,
+        emailConfirmation: new Date(),
         password
       })
       await request(app)

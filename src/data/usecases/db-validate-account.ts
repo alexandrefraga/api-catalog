@@ -17,7 +17,7 @@ export class DbValidateAccount implements ValidateAccount {
       return null
     }
     const { id, email } = dataDecrypted
-    const updated = await this.updateEmailRepository.updateEmail(id, email, true)
+    const updated = await this.updateEmailRepository.updateEmail(id, email, new Date())
     return updated
   }
 }

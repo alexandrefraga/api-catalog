@@ -2,6 +2,7 @@ import { mockAddAccountParams } from '@/../tests/domain/mocks/mock-account'
 import { AccountMongoRepository } from '@/infra/db/mongodb/account-repository'
 import { MongoHelper } from '@/infra/db/mongodb/mongo-helper'
 import { Collection, ObjectId } from 'mongodb'
+import MockDate from 'mockdate'
 
 const makeSut = (): AccountMongoRepository => {
   return new AccountMongoRepository()
@@ -10,6 +11,7 @@ const makeSut = (): AccountMongoRepository => {
 let accountCollection: Collection
 describe('Account Mongo Repository', () => {
   beforeAll(async () => {
+    MockDate.set(new Date())
     await MongoHelper.connect(process.env.MONGO_URL)
   })
 
@@ -20,6 +22,7 @@ describe('Account Mongo Repository', () => {
 
   afterAll(async () => {
     await MongoHelper.disconnect()
+    MockDate.reset()
   })
   describe('add', () => {
     test('Should return an account if add on success', async () => {
@@ -36,14 +39,23 @@ describe('Account Mongo Repository', () => {
   describe('loadByEmail', () => {
     test('Should return null if loadByEmail fail', async () => {
       const sut = makeSut()
-      const account = await sut.loadByEmail(mockAddAccountParams().email, true)
+      const account = await sut.loadByEmail(mockAddAccountParams().email, new Date())
       expect(account).toBeFalsy()
     })
 
     test('Should return null if loadByEmail dont return an confirmated account', async () => {
       await accountCollection.insertOne(mockAddAccountParams())
       const sut = makeSut()
-      const account = await sut.loadByEmail(mockAddAccountParams().email, true)
+      const account = await sut.loadByEmail(mockAddAccountParams().email, new Date())
+      expect(account).toBeNull()
+    })
+
+    test('Should return null if the confirmation date is later than the seach date', async () => {
+      const accountConfirmated = Object.assign({}, mockAddAccountParams(), { emailConfirmation: new Date() })
+      const result = await accountCollection.insertOne(accountConfirmated)
+      const fakeAccount = result.ops[0]
+      const sut = makeSut()
+      const account = await sut.loadByEmail(fakeAccount.email, new Date(Date.now() - 1))
       expect(account).toBeNull()
     })
 
@@ -59,16 +71,16 @@ describe('Account Mongo Repository', () => {
     })
 
     test('Should return an account confirmated if loadByEmail on success', async () => {
-      const accountConfirmated = Object.assign({}, mockAddAccountParams(), { emailConfirmation: true })
+      const accountConfirmated = Object.assign({}, mockAddAccountParams(), { emailConfirmation: new Date() })
       await accountCollection.insertOne(accountConfirmated)
       const sut = makeSut()
-      const account = await sut.loadByEmail(mockAddAccountParams().email, true)
+      const account = await sut.loadByEmail(mockAddAccountParams().email, new Date())
       expect(account).toBeTruthy()
       expect(account.id).toBeTruthy()
       expect(account.name).toBe(mockAddAccountParams().name)
       expect(account.email).toBe(mockAddAccountParams().email)
       expect(account.password).toBe(mockAddAccountParams().password)
-      expect(account.emailConfirmation).toBe(true)
+      expect(account.emailConfirmation).toEqual(new Date())
     })
   })
 
@@ -98,17 +110,17 @@ describe('Account Mongo Repository', () => {
       const result = await accountCollection.insertOne(mockAddAccountParams())
       const fakeAccount = result.ops[0]
       expect(fakeAccount.emailConfirmation).toBeFalsy()
-      const response = await sut.updateEmail(fakeAccount._id, fakeAccount.email, true)
+      const response = await sut.updateEmail(fakeAccount._id, fakeAccount.email, new Date())
       expect(response).toBe(true)
       const account = await accountCollection.findOne({ _id: fakeAccount._id })
       expect(account).toBeTruthy()
-      expect(account.emailConfirmation).toBe(true)
+      expect(account.emailConfirmation).toEqual(new Date())
     })
 
     test('Should return false if updateEmail fail', async () => {
       const sut = makeSut()
       const invalidId = new ObjectId().toHexString()
-      const response = await sut.updateEmail(invalidId, 'any_email', true)
+      const response = await sut.updateEmail(invalidId, 'any_email', new Date())
       expect(response).toBeFalsy()
     })
   })

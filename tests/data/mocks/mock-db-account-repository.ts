@@ -17,7 +17,7 @@ export const mockAddAccountRepository = (): AddAccountRepository => {
 
 export const mockLoadAccountByEmailRepository = (): LoadAccountByEmailRepository => {
   class LoadAccountByEmailRepositoryStub implements LoadAccountByEmailRepository {
-    async loadByEmail (email: string, emailConfirmation?: boolean): Promise<AccountModel> {
+    async loadByEmail (email: string, emailConfirmation?: Date): Promise<AccountModel> {
       return Promise.resolve(mockAccountModel())
     }
   }
@@ -35,7 +35,7 @@ export const mockUpdateTokenRepository = (): UpdateTokenRepository => {
 
 export const mockUpdateEmailRepository = (): UpdateEmailRepository => {
   class UpdateEmailRepositoryStub implements UpdateEmailRepository {
-    async updateEmail (id: string, email: string, isValid: boolean): Promise<boolean> {
+    async updateEmail (id: string, email: string, confirmation: Date): Promise<boolean> {
       return Promise.resolve(true)
     }
   }

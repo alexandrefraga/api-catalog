@@ -6,6 +6,7 @@ import { mockAccountModel, mockAuthenticationParams } from '../../domain/mocks/m
 import { HasherComparer } from '../protocols/criptography/hasher-compare'
 import { Encrypter } from '../protocols/criptography/encrypter'
 import { UpdateTokenRepository } from '../protocols/db/update-token-repository'
+import MockDate from 'mockdate'
 
 const params: AuthenticationParameters = mockAuthenticationParams()
 
@@ -36,11 +37,19 @@ const makeSut = (): SutTypes => {
   }
 }
 describe('DbAuthentication UseCase', () => {
+  beforeAll(async () => {
+    MockDate.set(new Date())
+  })
+
+  afterAll(async () => {
+    MockDate.reset()
+  })
+
   test('Should call LoadAccountByEmailRepository with correct values', async () => {
     const { sut, loadAccountByEmailRepositoryStub } = makeSut()
     const loadByEmailSpy = jest.spyOn(loadAccountByEmailRepositoryStub, 'loadByEmail')
     await sut.auth(params)
-    expect(loadByEmailSpy).toHaveBeenCalledWith(params.email, true)
+    expect(loadByEmailSpy).toHaveBeenCalledWith(params.email, new Date())
   })
 
   test('Should throw if LoadAccountByEmailRepository throws', async () => {

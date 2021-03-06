@@ -2,6 +2,6 @@ export type AccountModel = {
   id: string
   name: string
   email: string
-  emailConfirmation?: boolean
+  emailConfirmation?: Date
   password: string
 }
