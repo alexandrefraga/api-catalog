@@ -11,4 +11,5 @@
 1. [x] **Return** error **400** if name, email, password or passwordConfirmation no are provided
 2. [x] **Return** error **400** if an email invalid is provided
 3. [x] **Return** error **403** if the email is already in use
+4. [x] **Return** error **500** if the Validator or AddAccount throws
 
