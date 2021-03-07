@@ -84,6 +84,26 @@ describe('Account Mongo Repository', () => {
     })
   })
 
+  describe('loadByToken', () => {
+    test('Should return null if loadByToken fail', async () => {
+      const sut = makeSut()
+      const account = await sut.loadByToken('any_token')
+      expect(account).toBeFalsy()
+    })
+
+    test('Should return an account if loadByToken on success', async () => {
+      const fakeAccount = Object.assign({}, mockAddAccountParams(), { token: 'any_token' })
+      await accountCollection.insertOne(fakeAccount)
+      const sut = makeSut()
+      const account = await sut.loadByToken('any_token')
+      expect(account).toBeTruthy()
+      expect(account.id).toBeTruthy()
+      expect(account.name).toBe(mockAddAccountParams().name)
+      expect(account.email).toBe(mockAddAccountParams().email)
+      expect(account.password).toBe(mockAddAccountParams().password)
+    })
+  })
+
   describe('updateToken', () => {
     test('Should return true and update the account with a token if updateToken success', async () => {
       const sut = makeSut()
