@@ -1,22 +1,27 @@
 import { DbValidateAccount } from '@/data/usecases/db-validate-account'
 import { ValidateAccount } from '@/domain/usecases/validate-account'
 import { Decrypter } from '@/data/protocols/criptography/decrypter'
-import { mockDecrypter, mockUpdateEmailRepository } from '../mocks'
+import { mockDecrypter, mockLoadAccountByTokenRepository, mockUpdateEmailRepository } from '../mocks'
 import { UpdateEmailRepository } from '../protocols/db/update-email-repository'
 import MockDate from 'mockdate'
+import { LoadAccountByTokenRepository } from '../protocols/db/load-account-repository'
+import { mockAccountModel } from '../../domain/mocks/mock-account'
 
 type SutTypes = {
   sut: ValidateAccount
   jwtAdapterStub: Decrypter
+  loadAccountByTokenRepositoryStub: LoadAccountByTokenRepository
   dbUpdateEmailRepositoryStub: UpdateEmailRepository
 }
 const makeSut = (): SutTypes => {
-  const jwtAdapterStub = mockDecrypter({ id: 'any_id', email: 'any_email' })
+  const jwtAdapterStub = mockDecrypter('any_data')
+  const loadAccountByTokenRepositoryStub = mockLoadAccountByTokenRepository()
   const dbUpdateEmailRepositoryStub = mockUpdateEmailRepository()
-  const sut = new DbValidateAccount(jwtAdapterStub, dbUpdateEmailRepositoryStub)
+  const sut = new DbValidateAccount(jwtAdapterStub, loadAccountByTokenRepositoryStub, dbUpdateEmailRepositoryStub)
   return {
     sut,
     jwtAdapterStub,
+    loadAccountByTokenRepositoryStub,
     dbUpdateEmailRepositoryStub
   }
 }
@@ -43,32 +48,19 @@ describe('DbValidateAccount', () => {
     expect(response).toBeNull()
   })
 
-  test('Should DbValidateAccount null if Decrypter null', async () => {
-    const { sut, jwtAdapterStub } = makeSut()
-    jest.spyOn(jwtAdapterStub, 'decrypt').mockReturnValueOnce(Promise.resolve(null))
-    const response = await sut.validate('any_token')
-    expect(response).toBeNull()
-  })
-
-  test('Should DbValidateAccount return null if token does not contain email', async () => {
-    const { sut, jwtAdapterStub } = makeSut()
-    jest.spyOn(jwtAdapterStub, 'decrypt').mockReturnValueOnce(Promise.resolve({ id: 'any_id' }))
-    const response = await sut.validate('any_token')
-    expect(response).toBeNull()
-  })
-
-  test('Should DbValidateAccount return null if token does not contain id', async () => {
-    const { sut, jwtAdapterStub } = makeSut()
-    jest.spyOn(jwtAdapterStub, 'decrypt').mockReturnValueOnce(Promise.resolve({ email: 'any_email' }))
-    const response = await sut.validate('any_token')
-    expect(response).toBeNull()
+  test('Should call LoadAccountByTokenRepository with correct values', async () => {
+    const { sut, loadAccountByTokenRepositoryStub } = makeSut()
+    const loadByTokenSpy = jest.spyOn(loadAccountByTokenRepositoryStub, 'loadByToken')
+    await sut.validate('any_token')
+    expect(loadByTokenSpy).toHaveBeenCalledWith('any_token')
   })
 
   test('Should call DdUpdateEmailRepository with correct values', async () => {
     const { sut, dbUpdateEmailRepositoryStub } = makeSut()
     const updateEmailSpy = jest.spyOn(dbUpdateEmailRepositoryStub, 'updateEmail')
     await sut.validate('any_token')
-    expect(updateEmailSpy).toHaveBeenCalledWith('any_id', 'any_email', new Date())
+    const account = mockAccountModel()
+    expect(updateEmailSpy).toHaveBeenCalledWith(account.id, account.email, new Date())
   })
 
   test('Should DbValidateAccount throw if DdUpdateEmailRepository throws', async () => {
