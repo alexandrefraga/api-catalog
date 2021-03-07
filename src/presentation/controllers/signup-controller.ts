@@ -1,6 +1,5 @@
-import { Controller, SignUpRequestParameters, HttpResponse } from '../protocolls'
+import { Controller, SignUpRequestParameters, HttpResponse, Validation } from '../protocolls'
 import { badRequest, created, forbidden, serverError } from '@/presentation/helpers/http-helper'
-import { Validation } from '../protocolls/validation'
 import { AddAccount } from '@/domain/usecases/add-account'
 import { EmailInUseError } from '../errors'
 

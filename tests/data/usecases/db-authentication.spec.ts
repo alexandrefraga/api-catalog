@@ -1,11 +1,9 @@
 import { DbAuthentication } from '@/data/usecases/db-athentication'
 import { AuthenticationParameters } from '@/domain/usecases/authentication'
-import { LoadAccountByEmailRepository } from '@/data/protocols/db/load-account-repository'
+import { LoadAccountByEmailRepository, UpdateTokenRepository } from '@/data/protocols/db'
+import { HasherComparer, Encrypter } from '@/data/protocols/criptography'
 import { mockLoadAccountByEmailRepository, mockHasherComparer, mockEncrypter, mockUpdateTokenRepository } from '../mocks'
 import { mockAccountModel, mockAuthenticationParams } from '../../domain/mocks/mock-account'
-import { HasherComparer } from '../protocols/criptography/hasher-compare'
-import { Encrypter } from '../protocols/criptography/encrypter'
-import { UpdateTokenRepository } from '../protocols/db/update-token-repository'
 import MockDate from 'mockdate'
 
 const params: AuthenticationParameters = mockAuthenticationParams()

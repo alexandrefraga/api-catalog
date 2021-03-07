@@ -1,8 +1,8 @@
+import { AddAccount } from '@/domain/usecases/add-account'
 import { SignUpController } from '@/presentation/controllers/signup-controller'
 import { EmailInUseError, ServerError } from '@/presentation/errors'
-import { Validation } from '../protocolls/validation'
+import { Validation } from '@/presentation/protocolls/validation'
 import { mockAddAccount, mockSignUpRequestParams, mockValidator } from '../mocks'
-import { AddAccount } from '@/domain/usecases/add-account'
 
 const request = mockSignUpRequestParams()
 

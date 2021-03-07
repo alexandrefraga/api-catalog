@@ -1,11 +1,8 @@
 import { AccountModel } from '@/domain/models/account-model'
 import { AddAccount, AddAccountParams } from '@/domain/usecases/add-account'
-import { Encrypter } from '../protocols/criptography'
-import { Hasher } from '../protocols/criptography/hasher'
-import { AddAccountRepository } from '../protocols/db/add-account-repository'
-import { LoadAccountByEmailRepository } from '../protocols/db/load-account-repository'
-import { UpdateTokenRepository } from '../protocols/db/update-token-repository'
-import { MailService } from '../protocols/service/mail-service'
+import { MailService } from '../protocols/service'
+import { Encrypter, Hasher } from '../protocols/criptography'
+import { AddAccountRepository, LoadAccountByEmailRepository, UpdateTokenRepository } from '../protocols/db'
 
 export class DbAddAccount implements AddAccount {
   constructor (

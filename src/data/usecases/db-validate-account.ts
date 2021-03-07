@@ -1,7 +1,6 @@
 import { ValidateAccount } from '@/domain/usecases/validate-account'
-import { Decrypter } from '../protocols/criptography/decrypter'
-import { LoadAccountByTokenRepository } from '../protocols/db/load-account-repository'
-import { UpdateEmailRepository } from '../protocols/db/update-email-repository'
+import { Decrypter } from '../protocols/criptography'
+import { LoadAccountByTokenRepository, UpdateEmailRepository } from '../protocols/db'
 
 export class DbValidateAccount implements ValidateAccount {
   constructor (

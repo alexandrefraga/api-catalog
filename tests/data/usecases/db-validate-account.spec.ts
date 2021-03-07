@@ -1,11 +1,10 @@
 import { DbValidateAccount } from '@/data/usecases/db-validate-account'
 import { ValidateAccount } from '@/domain/usecases/validate-account'
-import { Decrypter } from '@/data/protocols/criptography/decrypter'
+import { Decrypter } from '@/data/protocols/criptography'
+import { UpdateEmailRepository, LoadAccountByTokenRepository } from '@/data/protocols/db'
 import { mockDecrypter, mockLoadAccountByTokenRepository, mockUpdateEmailRepository } from '../mocks'
-import { UpdateEmailRepository } from '../protocols/db/update-email-repository'
-import MockDate from 'mockdate'
-import { LoadAccountByTokenRepository } from '../protocols/db/load-account-repository'
 import { mockAccountModel } from '../../domain/mocks/mock-account'
+import MockDate from 'mockdate'
 
 type SutTypes = {
   sut: ValidateAccount

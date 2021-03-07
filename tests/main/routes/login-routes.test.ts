@@ -1,13 +1,13 @@
 /* eslint @typescript-eslint/no-var-requires: "off" */
 import app from '@/main/config/app'
-import request from 'supertest'
+import env from '@/main/config/env'
 import { MongoHelper } from '@/infra/db/mongodb/mongo-helper'
+import { EmailInUseError, InvalidParamError, MissingParamError, UnauthorizedError } from '@/presentation/errors'
 import { fakeLoginRequestParams, fakeSignUpRequestParams } from '../mocks/mock-request'
+import request from 'supertest'
 import { Collection } from 'mongodb'
 import { hash } from 'bcrypt'
-import { EmailInUseError, InvalidParamError, MissingParamError, UnauthorizedError } from '@/presentation/errors'
 import { sign } from 'jsonwebtoken'
-import env from '@/main/config/env'
 import MockDate from 'mockdate'
 
 const sendMailMock = jest.fn()

@@ -1,9 +1,8 @@
-import { ValidateAccountController } from '@/presentation/controllers/validate-account-controller'
-import { ServerError, UnauthorizedError } from '@/presentation/errors'
-import { mockValidateAccountParams, mockValidator } from '../mocks'
-import { Validation } from '@/presentation/protocolls'
 import { ValidateAccount } from '@/domain/usecases/validate-account'
-import { mockValidateAccount } from '../mocks/mockValidateAccount'
+import { ValidateAccountController } from '@/presentation/controllers/validate-account-controller'
+import { Validation } from '@/presentation/protocolls'
+import { ServerError, UnauthorizedError } from '@/presentation/errors'
+import { mockValidateAccountParams, mockValidator, mockValidateAccount } from '../mocks'
 
 const validateParams = mockValidateAccountParams()
 

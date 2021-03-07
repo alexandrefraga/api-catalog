@@ -1,8 +1,8 @@
+import { Authentication } from '@/domain/usecases/authentication'
 import { Validation } from '@/presentation/protocolls'
 import { LoginController } from '@/presentation/controllers/login-controller'
-import { mockValidator, mockAuthenticator, mockLoginRequestParams, mockAuthenticationResponse } from '../mocks'
 import { ServerError, UnauthorizedError } from '@/presentation/errors'
-import { Authentication } from '@/domain/usecases/authentication'
+import { mockValidator, mockAuthenticator, mockLoginRequestParams, mockAuthenticationResponse } from '../mocks'
 
 type SutTypes = {
   sut: LoginController
