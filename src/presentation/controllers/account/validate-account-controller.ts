@@ -1,6 +1,6 @@
 import { ValidateAccount } from '@/domain/usecases/validate-account'
 import { Controller, HttpResponse, ValidateAccountParams, Validation } from '@/presentation/protocolls'
-import { badRequest, serverError, unauthorized, success } from '../helpers/http-helper'
+import { badRequest, serverError, unauthorized, success } from '../../helpers/http-helper'
 
 export class ValidateAccountController implements Controller<ValidateAccountParams> {
   constructor (

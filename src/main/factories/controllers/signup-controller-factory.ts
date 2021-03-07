@@ -1,5 +1,5 @@
 import { Controller } from '@/presentation/protocolls'
-import { SignUpController } from '@/presentation/controllers/signup-controller'
+import { SignUpController } from '@/presentation/controllers/account/signup-controller'
 import { DbAddAccount } from '@/data/usecases/db-add-account'
 import { BcryptAdapter, JwtAdapter } from '@/infra/criptography'
 import { AccountMongoRepository } from '@/infra/db/mongodb/account-repository'

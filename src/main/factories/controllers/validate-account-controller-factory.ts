@@ -1,5 +1,5 @@
 import { Controller } from '@/presentation/protocolls'
-import { ValidateAccountController } from '@/presentation/controllers/validate-account-controller'
+import { ValidateAccountController } from '@/presentation/controllers/account/validate-account-controller'
 import { DbValidateAccount } from '@/data/usecases/db-validate-account'
 import { JwtAdapter } from '@/infra/criptography/jwt-adapter'
 import { AccountMongoRepository } from '@/infra/db/mongodb/account-repository'

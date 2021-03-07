@@ -1,7 +1,7 @@
-import { Controller, SignUpRequestParameters, HttpResponse, Validation } from '../protocolls'
+import { Controller, SignUpRequestParameters, HttpResponse, Validation } from '../../protocolls'
 import { badRequest, created, forbidden, serverError } from '@/presentation/helpers/http-helper'
 import { AddAccount } from '@/domain/usecases/add-account'
-import { EmailInUseError } from '../errors'
+import { EmailInUseError } from '../../errors'
 
 export class SignUpController implements Controller<SignUpRequestParameters> {
   constructor (
