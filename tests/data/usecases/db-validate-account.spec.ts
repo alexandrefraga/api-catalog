@@ -11,21 +11,21 @@ type SutTypes = {
   sut: ValidateAccount
   jwtAdapterStub: Decrypter
   loadAccountByTokenRepositoryStub: LoadAccountByTokenRepository
-  dbUpdateEmailRepositoryStub: UpdateEmailRepository
+  updateEmailRepositoryStub: UpdateEmailRepository
 }
 const makeSut = (): SutTypes => {
   const jwtAdapterStub = mockDecrypter('any_data')
   const loadAccountByTokenRepositoryStub = mockLoadAccountByTokenRepository()
-  const dbUpdateEmailRepositoryStub = mockUpdateEmailRepository()
-  const sut = new DbValidateAccount(jwtAdapterStub, loadAccountByTokenRepositoryStub, dbUpdateEmailRepositoryStub)
+  const updateEmailRepositoryStub = mockUpdateEmailRepository()
+  const sut = new DbValidateAccount(jwtAdapterStub, loadAccountByTokenRepositoryStub, updateEmailRepositoryStub)
   return {
     sut,
     jwtAdapterStub,
     loadAccountByTokenRepositoryStub,
-    dbUpdateEmailRepositoryStub
+    updateEmailRepositoryStub
   }
 }
-describe('DbValidateAccount', () => {
+describe('DbValidateAccount Usecase', () => {
   beforeAll(async () => {
     MockDate.set(new Date())
   })
@@ -48,36 +48,43 @@ describe('DbValidateAccount', () => {
     expect(response).toBeNull()
   })
 
-  test('Should call LoadAccountByTokenRepository with correct values', async () => {
+  test('Should call LoadAccountByTokenRepository with correct token', async () => {
     const { sut, loadAccountByTokenRepositoryStub } = makeSut()
     const loadByTokenSpy = jest.spyOn(loadAccountByTokenRepositoryStub, 'loadByToken')
     await sut.validate('any_token')
     expect(loadByTokenSpy).toHaveBeenCalledWith('any_token')
   })
 
+  test('Should DbValidateAccount throw if LoadAccountByTokenRepository throws', async () => {
+    const { sut, loadAccountByTokenRepositoryStub } = makeSut()
+    jest.spyOn(loadAccountByTokenRepositoryStub, 'loadByToken').mockImplementationOnce(() => { throw new Error() })
+    const promise = sut.validate('any_token')
+    await expect(promise).rejects.toThrow()
+  })
+
   test('Should call DdUpdateEmailRepository with correct values', async () => {
-    const { sut, dbUpdateEmailRepositoryStub } = makeSut()
-    const updateEmailSpy = jest.spyOn(dbUpdateEmailRepositoryStub, 'updateEmail')
+    const { sut, updateEmailRepositoryStub } = makeSut()
+    const updateEmailSpy = jest.spyOn(updateEmailRepositoryStub, 'updateEmail')
     await sut.validate('any_token')
     const account = mockAccountModel()
     expect(updateEmailSpy).toHaveBeenCalledWith(account.id, account.email, new Date())
   })
 
   test('Should DbValidateAccount throw if DdUpdateEmailRepository throws', async () => {
-    const { sut, dbUpdateEmailRepositoryStub } = makeSut()
-    jest.spyOn(dbUpdateEmailRepositoryStub, 'updateEmail').mockImplementationOnce(() => { throw new Error() })
+    const { sut, updateEmailRepositoryStub } = makeSut()
+    jest.spyOn(updateEmailRepositoryStub, 'updateEmail').mockImplementationOnce(() => { throw new Error() })
     const promise = sut.validate('any_token')
     await expect(promise).rejects.toThrow()
   })
 
-  test('Should DbValidateAccount return false if DdUpdateEmailRepository return false', async () => {
-    const { sut, dbUpdateEmailRepositoryStub } = makeSut()
-    jest.spyOn(dbUpdateEmailRepositoryStub, 'updateEmail').mockReturnValueOnce(Promise.resolve(false))
+  test('Should DbValidateAccount return false if UpdateEmailRepository return false', async () => {
+    const { sut, updateEmailRepositoryStub } = makeSut()
+    jest.spyOn(updateEmailRepositoryStub, 'updateEmail').mockReturnValueOnce(Promise.resolve(false))
     const response = await sut.validate('any_token')
     expect(response).toBe(false)
   })
 
-  test('Should DbValidateAccount return true if DdUpdateEmailRepository on success', async () => {
+  test('Should DbValidateAccount return true if UpdateEmailRepository on success', async () => {
     const { sut } = makeSut()
     const response = await sut.validate('any_token')
     expect(response).toBe(true)
