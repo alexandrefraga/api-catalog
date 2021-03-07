@@ -237,7 +237,14 @@ describe('Login Routes', () => {
         password
       })
       const _id = result.ops[0]._id
-      const tokenValidation = await sign({ id: _id, email: 'any_email@mail.com' }, env.jwtSecret)
+      const tokenValidation = await sign({ id: _id }, env.jwtSecret)
+      await accountCollection.updateOne({
+        _id
+      }, {
+        $set: {
+          token: tokenValidation
+        }
+      })
       await request(app)
         .get(`/api/confirmation/${tokenValidation}`)
         .expect(200)
