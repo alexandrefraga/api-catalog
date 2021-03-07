@@ -117,6 +117,20 @@ describe('DbAddAccount Usecase', () => {
     expect(updateTokenSpy).toHaveBeenCalledWith(await mockEncrypter().encrypt(''), account.id)
   })
 
+  test('Should throw if UpdateTokenRepository throws', async () => {
+    const { sut, updateTokenRepositoryStub } = makeSut()
+    jest.spyOn(updateTokenRepositoryStub, 'updateToken').mockImplementationOnce(() => { throw new Error() })
+    const promise = sut.add(addAccountParams)
+    await expect(promise).rejects.toThrow()
+  })
+
+  test('Should throw if UpdateTokenRepository return false', async () => {
+    const { sut, updateTokenRepositoryStub } = makeSut()
+    jest.spyOn(updateTokenRepositoryStub, 'updateToken').mockReturnValueOnce(Promise.resolve(false))
+    const promise = sut.add(addAccountParams)
+    await expect(promise).rejects.toThrow()
+  })
+
   test('Should call MailService with correct values', async () => {
     const { sut, mailServiceStub } = makeSut()
     const sendSpy = jest.spyOn(mailServiceStub, 'send')

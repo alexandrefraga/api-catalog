@@ -24,7 +24,10 @@ export class DbAddAccount implements AddAccount {
       const passwordHashed = await this.hasher.hash(account.password)
       const accountData = await this.addAccountRepository.add(Object.assign(account, { password: passwordHashed }))
       const token = await this.encrypter.encrypt(JSON.stringify({ id: accountData.id }))
-      await this.updateTokenRepository.updateToken(token, accountData.id)
+      const inserted = await this.updateTokenRepository.updateToken(token, accountData.id)
+      if (!inserted) {
+        throw new Error()
+      }
       await this.mailService.send({
         mailTo: `${accountData.name}<${accountData.email}>`,
         subject: `Account confirmation to ${accountData.name}`,
