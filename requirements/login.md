@@ -5,7 +5,7 @@
 4. [x] **Search** the user with provided email
 5. [x] **Verify** password
 6. [x] **Generates** a *access token*  from user ID
-7. [x] **Update** user data with the access token
+7. [x] **Update** user account with the access token
 8. [x] **Return 200** with access token and user name
 ##Exceptions
 1. [x] **Return** error **400** if no provided email or password
