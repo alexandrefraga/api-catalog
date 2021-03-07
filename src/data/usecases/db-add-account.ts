@@ -4,6 +4,7 @@ import { Encrypter } from '../protocols/criptography'
 import { Hasher } from '../protocols/criptography/hasher'
 import { AddAccountRepository } from '../protocols/db/add-account-repository'
 import { LoadAccountByEmailRepository } from '../protocols/db/load-account-repository'
+import { UpdateTokenRepository } from '../protocols/db/update-token-repository'
 import { MailService } from '../protocols/service/mail-service'
 
 export class DbAddAccount implements AddAccount {
@@ -12,6 +13,7 @@ export class DbAddAccount implements AddAccount {
     private readonly addAccountRepository: AddAccountRepository,
     private readonly loadAccountByEmailRepository: LoadAccountByEmailRepository,
     private readonly encrypter: Encrypter,
+    private readonly updateTokenRepository: UpdateTokenRepository,
     private readonly mailService: MailService,
     private readonly mailTemplateName: string
   ) {}
@@ -21,7 +23,8 @@ export class DbAddAccount implements AddAccount {
     if (!emailInUse) {
       const passwordHashed = await this.hasher.hash(account.password)
       const accountData = await this.addAccountRepository.add(Object.assign(account, { password: passwordHashed }))
-      const token = await this.encrypter.encrypt(JSON.stringify({ id: accountData.id, email: accountData.email }))
+      const token = await this.encrypter.encrypt(JSON.stringify({ id: accountData.id }))
+      await this.updateTokenRepository.updateToken(token, accountData.id)
       await this.mailService.send({
         mailTo: `${accountData.name}<${accountData.email}>`,
         subject: `Account confirmation to ${accountData.name}`,
