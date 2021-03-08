@@ -19,7 +19,15 @@ describe('AddStore Controller', () => {
     const { sut, validatorStub } = makeSut()
     const validateSpy = jest.spyOn(validatorStub, 'validate')
     const request = mockAddStoreParams()
-    await sut.execute(mockAddStoreParams())
+    await sut.execute(request)
     expect(validateSpy).toHaveBeenCalledWith(request)
+  })
+
+  test('Should return 400 if Validator return an error', async () => {
+    const { sut, validatorStub } = makeSut()
+    jest.spyOn(validatorStub, 'validate').mockReturnValueOnce(Promise.resolve(new Error('specific error')))
+    const response = await sut.execute(mockAddStoreParams())
+    expect(response.statusCode).toBe(400)
+    expect(response.body).toEqual(new Error('specific error'))
   })
 })
