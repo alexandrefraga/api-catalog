@@ -1,4 +1,4 @@
-import { badRequest } from '@/presentation/helpers/http-helper'
+import { badRequest, serverError } from '@/presentation/helpers/http-helper'
 import { AddStoreParameters, Controller, HttpResponse, Validation } from '@/presentation/protocolls'
 
 export class AddStoreController implements Controller<AddStoreParameters> {
@@ -7,10 +7,14 @@ export class AddStoreController implements Controller<AddStoreParameters> {
   ) {}
 
   async execute (data: AddStoreParameters): Promise<HttpResponse> {
-    const error = await this.validator.validate(data)
-    if (error) {
-      return badRequest(error)
+    try {
+      const error = await this.validator.validate(data)
+      if (error) {
+        return badRequest(error)
+      }
+      return null
+    } catch (error) {
+      return serverError(error)
     }
-    return null
   }
 }
