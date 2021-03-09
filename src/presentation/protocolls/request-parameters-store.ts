@@ -12,4 +12,5 @@ export type AddStoreParameters = {
   email: string
   phoneNumber: string[]
   geoLocalization: { lat: number, lng: number }
+  userId: string
 }
