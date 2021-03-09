@@ -51,4 +51,12 @@ describe('AddStore Controller', () => {
     await sut.execute(request)
     expect(addSpy).toHaveBeenCalledWith(request)
   })
+
+  test('Should return 500 if AddStoreUseCase throws', async () => {
+    const { sut, addStoreUseCaseStub } = makeSut()
+    jest.spyOn(addStoreUseCaseStub, 'add').mockImplementationOnce(() => { throw new Error() })
+    const response = await sut.execute(mockAddStoreParams())
+    expect(response.statusCode).toBe(500)
+    expect(response.body).toEqual(new ServerError(''))
+  })
 })
