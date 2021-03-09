@@ -1,6 +1,7 @@
 import { AddStore } from '@/domain/usecases/add-store'
 import { AddStoreController } from '@/presentation/controllers/store/add-store-controller'
 import { ServerError } from '@/presentation/errors'
+import { DataInUseError } from '@/presentation/errors/data-in-use-error'
 import { Validation } from '@/presentation/protocolls'
 import { mockValidator, mockAddStoreParams, mockAddStoreUseCase, mockStoreModel } from '../../mocks'
 
@@ -58,6 +59,14 @@ describe('AddStore Controller', () => {
     const response = await sut.execute(mockAddStoreParams())
     expect(response.statusCode).toBe(500)
     expect(response.body).toEqual(new ServerError(''))
+  })
+
+  test('Should return 403 if AddStoreUseCase return null', async () => {
+    const { sut, addStoreUseCaseStub } = makeSut()
+    jest.spyOn(addStoreUseCaseStub, 'add').mockReturnValueOnce(Promise.resolve(null))
+    const response = await sut.execute(mockAddStoreParams())
+    expect(response.statusCode).toBe(403)
+    expect(response.body).toEqual(new DataInUseError(''))
   })
 
   test('Should return 200 if AddStoreUseCase return a store', async () => {
