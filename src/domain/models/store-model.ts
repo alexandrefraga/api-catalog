@@ -1,10 +1,11 @@
-type Address = {
+export type Address = {
   street: string
   number: string
   city: string
 }
 
-export type AddStoreParameters = {
+export type StoreModel = {
+  id: string
   company: string
   tradingName: string
   description: string

@@ -1,10 +1,6 @@
-type Address = {
-  street: string
-  number: string
-  city: string
-}
+import { Address, StoreModel } from '../models/store-model'
 
-export type AddStoreParameters = {
+export type AddStoreParams = {
   company: string
   tradingName: string
   description: string
@@ -12,4 +8,8 @@ export type AddStoreParameters = {
   email: string
   phoneNumber: string[]
   geoLocalization: { lat: number, lng: number }
+}
+
+export interface AddStore {
+  add(data: AddStoreParams): Promise<StoreModel>
 }
