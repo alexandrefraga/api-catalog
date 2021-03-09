@@ -1,18 +1,22 @@
+import { AddStore } from '@/domain/usecases/add-store'
 import { AddStoreController } from '@/presentation/controllers/store/add-store-controller'
 import { ServerError } from '@/presentation/errors'
 import { Validation } from '@/presentation/protocolls'
-import { mockValidator, mockAddStoreParams } from '../../mocks'
+import { mockValidator, mockAddStoreParams, mockAddStoreUseCase } from '../../mocks'
 
 type SutTypes = {
   sut: AddStoreController
   validatorStub: Validation
+  addStoreUseCaseStub: AddStore
 }
 const makeSut = (): SutTypes => {
   const validatorStub = mockValidator()
-  const sut = new AddStoreController(validatorStub)
+  const addStoreUseCaseStub = mockAddStoreUseCase()
+  const sut = new AddStoreController(validatorStub, addStoreUseCaseStub)
   return {
     sut,
-    validatorStub
+    validatorStub,
+    addStoreUseCaseStub
   }
 }
 describe('AddStore Controller', () => {
@@ -38,5 +42,13 @@ describe('AddStore Controller', () => {
     const response = await sut.execute(mockAddStoreParams())
     expect(response.statusCode).toBe(500)
     expect(response.body).toEqual(new ServerError(''))
+  })
+
+  test('Should call AddStoreUseCase with correct values', async () => {
+    const { sut, addStoreUseCaseStub } = makeSut()
+    const addSpy = jest.spyOn(addStoreUseCaseStub, 'add')
+    const request = mockAddStoreParams()
+    await sut.execute(request)
+    expect(addSpy).toHaveBeenCalledWith(request)
   })
 })
