@@ -2,7 +2,7 @@ import { AddStore } from '@/domain/usecases/add-store'
 import { AddStoreController } from '@/presentation/controllers/store/add-store-controller'
 import { ServerError } from '@/presentation/errors'
 import { Validation } from '@/presentation/protocolls'
-import { mockValidator, mockAddStoreParams, mockAddStoreUseCase } from '../../mocks'
+import { mockValidator, mockAddStoreParams, mockAddStoreUseCase, mockStoreModel } from '../../mocks'
 
 type SutTypes = {
   sut: AddStoreController
@@ -58,5 +58,12 @@ describe('AddStore Controller', () => {
     const response = await sut.execute(mockAddStoreParams())
     expect(response.statusCode).toBe(500)
     expect(response.body).toEqual(new ServerError(''))
+  })
+
+  test('Should return 200 if AddStoreUseCase return a store', async () => {
+    const { sut } = makeSut()
+    const response = await sut.execute(mockAddStoreParams())
+    expect(response.statusCode).toBe(200)
+    expect(response.body).toEqual(mockStoreModel())
   })
 })

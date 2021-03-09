@@ -11,5 +11,6 @@ export const mockAddStoreParams = (): AddStoreParameters => ({
   },
   email: 'any_email',
   phoneNumber: ['(99)999999999', '(88)888888888'],
-  geoLocalization: { lat: 0, lng: 0 }
+  geoLocalization: { lat: 0, lng: 0 },
+  userId: 'any_user_id'
 })
