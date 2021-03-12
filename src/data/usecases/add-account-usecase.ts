@@ -4,7 +4,7 @@ import { MailService } from '../protocols/service'
 import { Encrypter, Hasher } from '../protocols/criptography'
 import { AddAccountRepository, LoadAccountByEmailRepository, UpdateTokenRepository } from '../protocols/db'
 
-export class DbAddAccount implements AddAccount {
+export class AddAccountUseCase implements AddAccount {
   constructor (
     private readonly hasher: Hasher,
     private readonly addAccountRepository: AddAccountRepository,

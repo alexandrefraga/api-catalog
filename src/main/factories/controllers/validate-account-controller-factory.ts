@@ -1,6 +1,6 @@
 import { Controller } from '@/presentation/protocolls'
 import { ValidateAccountController } from '@/presentation/controllers/account/validate-account-controller'
-import { DbValidateAccount } from '@/data/usecases/db-validate-account'
+import { ValidateAccountUseCase } from '@/data/usecases/validate-account-usecase'
 import { JwtAdapter } from '@/infra/criptography/jwt-adapter'
 import { AccountMongoRepository } from '@/infra/db/mongodb/account-repository'
 import { ValidationComposite, RequiredFieldValidation } from '@/validation/validators'
@@ -15,7 +15,7 @@ export const makeValidateAccountController = (): Controller => {
   const decrypter = new JwtAdapter(env.jwtSecret)
   const loadAccountByTokenRepository = new AccountMongoRepository()
   const updateEmailRepository = new AccountMongoRepository()
-  const validateAccount = new DbValidateAccount(decrypter, loadAccountByTokenRepository, updateEmailRepository)
+  const validateAccount = new ValidateAccountUseCase(decrypter, loadAccountByTokenRepository, updateEmailRepository)
   const validateAccountController = new ValidateAccountController(validation, validateAccount)
   const logErrorRepository = new LogErrorMongoRepository()
   return new LogControllerDecorator(validateAccountController, logErrorRepository)

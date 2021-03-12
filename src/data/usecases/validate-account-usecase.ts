@@ -2,7 +2,7 @@ import { ValidateAccount } from '@/domain/usecases/validate-account'
 import { Decrypter } from '../protocols/criptography'
 import { LoadAccountByTokenRepository, UpdateEmailRepository } from '../protocols/db'
 
-export class DbValidateAccount implements ValidateAccount {
+export class ValidateAccountUseCase implements ValidateAccount {
   constructor (
     private readonly decrypter: Decrypter,
     private readonly loadAccountByToken: LoadAccountByTokenRepository,

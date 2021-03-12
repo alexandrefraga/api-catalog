@@ -1,4 +1,4 @@
-import { DbAddAccount } from '@/data/usecases/db-add-account'
+import { AddAccountUseCase } from '@/data/usecases/add-account-usecase'
 import { Encrypter, Hasher } from '@/data/protocols/criptography'
 import { AddAccountRepository, LoadAccountByEmailRepository, UpdateTokenRepository } from '@/data/protocols/db'
 import { MailService } from '@/data/protocols/service/mail-service'
@@ -7,7 +7,7 @@ import { mockHasher, mockAddAccountRepository, mockLoadAccountByEmailRepository,
 
 const addAccountParams = mockAddAccountParams()
 type SutTypes = {
-  sut: DbAddAccount
+  sut: AddAccountUseCase
   hasherStub: Hasher
   addAccountRepositoryStub: AddAccountRepository
   loadAccountByEmailStub: LoadAccountByEmailRepository
@@ -23,7 +23,7 @@ const makeSut = (): SutTypes => {
   const encrypterStub = mockEncrypter()
   const updateTokenRepositoryStub = mockUpdateTokenRepository()
   const mailServiceStub = mockMailService()
-  const sut = new DbAddAccount(
+  const sut = new AddAccountUseCase(
     hasherStub,
     addAccountRepositoryStub,
     loadAccountByEmailStub,
@@ -42,7 +42,7 @@ const makeSut = (): SutTypes => {
     mailServiceStub
   }
 }
-describe('DbAddAccount Usecase', () => {
+describe('AddAccount Usecase', () => {
   test('Should call LoadAccountByEmail only with the correct email', async () => {
     const { sut, loadAccountByEmailStub } = makeSut()
     const hashSpy = jest.spyOn(loadAccountByEmailStub, 'loadByEmail')
@@ -78,14 +78,14 @@ describe('DbAddAccount Usecase', () => {
     expect(addSpy).toBeCalledWith(Object.assign(addAccountParams, { password: 'hashed_value' }))
   })
 
-  test('Should DbAddAccount throw if AddAccountRepository throws', async () => {
+  test('Should AddAccountUseCase throw if AddAccountRepository throws', async () => {
     const { sut, addAccountRepositoryStub } = makeSut()
     jest.spyOn(addAccountRepositoryStub, 'add').mockImplementationOnce(() => { throw new Error() })
     const promise = sut.add(addAccountParams)
     await expect(promise).rejects.toThrow()
   })
 
-  test('Should DbAddAccount return an account on success', async () => {
+  test('Should AddAccountUseCase return an account on success', async () => {
     const { sut } = makeSut()
     const response = await sut.add(addAccountParams)
     expect(response).toEqual(mockAccountModel())

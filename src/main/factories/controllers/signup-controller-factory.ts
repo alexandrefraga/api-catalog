@@ -1,6 +1,6 @@
 import { Controller } from '@/presentation/protocolls'
 import { SignUpController } from '@/presentation/controllers/account/signup-controller'
-import { DbAddAccount } from '@/data/usecases/db-add-account'
+import { AddAccountUseCase } from '@/data/usecases/add-account-usecase'
 import { BcryptAdapter, JwtAdapter } from '@/infra/criptography'
 import { AccountMongoRepository } from '@/infra/db/mongodb/account-repository'
 import { LogErrorMongoRepository } from '@/infra/db/mongodb/log-error-repository'
@@ -23,7 +23,7 @@ export const makeSignUpControler = (): Controller => {
   const encrypter = new JwtAdapter(env.jwtSecret)
   const updateTokenRepository = new AccountMongoRepository()
   const mailService = new NodemailerAdapter(env.mailParams, env.mailFrom, env.baseUrl)
-  const addAccount = new DbAddAccount(hasher, addAccountRepository, loadAccountByEmailRepository, encrypter, updateTokenRepository, mailService, 'mail')
+  const addAccount = new AddAccountUseCase(hasher, addAccountRepository, loadAccountByEmailRepository, encrypter, updateTokenRepository, mailService, 'mail')
   const signUpController = new SignUpController(validation, addAccount)
   const logErrorMongoRepository = new LogErrorMongoRepository()
   return new LogControllerDecorator(signUpController, logErrorMongoRepository)

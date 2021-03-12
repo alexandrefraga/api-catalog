@@ -1,6 +1,6 @@
 import { Controller } from '@/presentation/protocolls'
 import { LoginController } from '@/presentation/controllers/account/login-controller'
-import { DbAuthentication } from '@/data/usecases/db-athentication'
+import { AuthenticationUseCase } from '@/data/usecases/athentication-usecase'
 import { BcryptAdapter, JwtAdapter } from '@/infra/criptography'
 import { AccountMongoRepository } from '@/infra/db/mongodb/account-repository'
 import { LogErrorMongoRepository } from '@/infra/db/mongodb/log-error-repository'
@@ -18,7 +18,7 @@ export const makeLoginControler = (): Controller => {
   const accountRepository = new AccountMongoRepository()
   const hasher = new BcryptAdapter(12)
   const encrypter = new JwtAdapter(env.jwtSecret)
-  const authenticator = new DbAuthentication(accountRepository, hasher, encrypter, accountRepository)
+  const authenticator = new AuthenticationUseCase(accountRepository, hasher, encrypter, accountRepository)
 
   const loginController = new LoginController(validator, authenticator)
   const logErrorRepository = new LogErrorMongoRepository()

@@ -1,4 +1,4 @@
-import { DbAuthentication } from '@/data/usecases/db-athentication'
+import { AuthenticationUseCase } from '@/data/usecases/athentication-usecase'
 import { AuthenticationParameters } from '@/domain/usecases/authentication'
 import { LoadAccountByEmailRepository, UpdateTokenRepository } from '@/data/protocols/db'
 import { HasherComparer, Encrypter } from '@/data/protocols/criptography'
@@ -9,7 +9,7 @@ import MockDate from 'mockdate'
 const params: AuthenticationParameters = mockAuthenticationParams()
 
 type SutTypes = {
-  sut: DbAuthentication
+  sut: AuthenticationUseCase
   loadAccountByEmailRepositoryStub: LoadAccountByEmailRepository
   hasherComparerStub: HasherComparer
   encrypterStub: Encrypter
@@ -20,7 +20,7 @@ const makeSut = (): SutTypes => {
   const hasherComparerStub = mockHasherComparer()
   const encrypterStub = mockEncrypter()
   const updateTokenRepositoryStub = mockUpdateTokenRepository()
-  const sut = new DbAuthentication(
+  const sut = new AuthenticationUseCase(
     loadAccountByEmailRepositoryStub,
     hasherComparerStub,
     encrypterStub,
@@ -34,7 +34,7 @@ const makeSut = (): SutTypes => {
     updateTokenRepositoryStub
   }
 }
-describe('DbAuthentication UseCase', () => {
+describe('Authentication UseCase', () => {
   beforeAll(async () => {
     MockDate.set(new Date())
   })
