@@ -1,21 +1,13 @@
 import { Validation } from '@/presentation/protocolls'
 import { ValidationComposite } from '@/validation/validators/validation-composite'
-
-const mockValidation = (): Validation => {
-  class ValidationStub implements Validation {
-    async validate (input: any): Promise<Error> {
-      return null
-    }
-  }
-  return new ValidationStub()
-}
+import { mockValidator } from '../../mocks'
 
 type SutTypes = {
   sut: ValidationComposite
   validationStub: Validation
 }
 const makeSut = (): SutTypes => {
-  const validationStub = mockValidation()
+  const validationStub = mockValidator()
   const sut = new ValidationComposite([validationStub])
   return {
     sut,

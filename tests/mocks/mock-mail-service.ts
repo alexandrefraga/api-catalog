@@ -1,5 +1,5 @@
 import { MailService, MailServiceParams } from '@/data/protocols/service/mail-service'
-import { mockAccountModel } from '../../domain/mocks/mock-account'
+import { mockAccountModel } from './mock-account'
 
 export const mockMailService = (): MailService => {
   class MailServiceStub implements MailService {

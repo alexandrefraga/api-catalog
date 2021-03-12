@@ -2,8 +2,8 @@ import { DbValidateAccount } from '@/data/usecases/db-validate-account'
 import { ValidateAccount } from '@/domain/usecases/validate-account'
 import { Decrypter } from '@/data/protocols/criptography'
 import { UpdateEmailRepository, LoadAccountByTokenRepository } from '@/data/protocols/db'
-import { mockDecrypter, mockLoadAccountByTokenRepository, mockUpdateEmailRepository } from '../mocks'
-import { mockAccountModel } from '../../domain/mocks/mock-account'
+import { mockDecrypter, mockLoadAccountByTokenRepository, mockUpdateEmailRepository } from '../../mocks'
+import { mockAccountModel } from '../../mocks/mock-account'
 import MockDate from 'mockdate'
 
 type SutTypes = {

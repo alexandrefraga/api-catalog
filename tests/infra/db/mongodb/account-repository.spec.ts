@@ -1,4 +1,4 @@
-import { mockAddAccountParams } from '@/../tests/domain/mocks/mock-account'
+import { mockAddAccountParams } from '@/../tests/mocks/mock-account'
 import { AccountMongoRepository } from '@/infra/db/mongodb/account-repository'
 import { MongoHelper } from '@/infra/db/mongodb/mongo-helper'
 import { Collection, ObjectId } from 'mongodb'

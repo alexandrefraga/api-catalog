@@ -2,7 +2,7 @@ import { ValidateAccount } from '@/domain/usecases/validate-account'
 import { ValidateAccountController } from '@/presentation/controllers/account/validate-account-controller'
 import { Validation } from '@/presentation/protocolls'
 import { ServerError, UnauthorizedError } from '@/presentation/errors'
-import { mockValidateAccountParams, mockValidator, mockValidateAccount } from '../../mocks'
+import { mockValidateAccountParams, mockValidator, mockValidateAccount } from '../../../mocks'
 
 const validateParams = mockValidateAccountParams()
 

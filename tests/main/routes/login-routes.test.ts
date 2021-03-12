@@ -3,7 +3,7 @@ import app from '@/main/config/app'
 import env from '@/main/config/env'
 import { MongoHelper } from '@/infra/db/mongodb/mongo-helper'
 import { EmailInUseError, InvalidParamError, MissingParamError, UnauthorizedError } from '@/presentation/errors'
-import { fakeLoginRequestParams, fakeSignUpRequestParams } from '../mocks/mock-request'
+import { mockLoginRequestParams, mockSignUpRequestParams } from '../../mocks'
 import request from 'supertest'
 import { Collection } from 'mongodb'
 import { hash } from 'bcrypt'
@@ -20,16 +20,15 @@ beforeEach(() => {
   nodemailer.createTransport.mockClear()
 })
 
+const fakeSignupParams = mockSignUpRequestParams()
+const fakeLoginParams = mockLoginRequestParams()
 let accountCollection: Collection
+let password: string
 describe('Login Routes', () => {
   beforeAll(async () => {
     MockDate.set(new Date())
     await MongoHelper.connect(process.env.MONGO_URL)
-  })
-
-  beforeEach(async () => {
-    accountCollection = await MongoHelper.getCollection('accounts')
-    await accountCollection.deleteMany({})
+    password = await hash('any_password', 12)
   })
 
   afterAll(async () => {
@@ -38,10 +37,14 @@ describe('Login Routes', () => {
   })
 
   describe('/signup', () => {
+    beforeEach(async () => {
+      accountCollection = await MongoHelper.getCollection('accounts')
+      await accountCollection.deleteMany({})
+    })
     test('Should return 201 on signup', async () => {
       await request(app)
         .post('/api/signup')
-        .send(fakeSignUpRequestParams())
+        .send(fakeSignupParams)
         .expect(201)
         .then(async () => {
           const account = await accountCollection.findOne({ email: 'any_email@mail.com' })
@@ -129,7 +132,7 @@ describe('Login Routes', () => {
       })
       await request(app)
         .post('/api/signup')
-        .send(fakeSignUpRequestParams())
+        .send(fakeSignupParams)
         .expect(403)
         .then(response => {
           expect(response.body).toEqual({ error: new EmailInUseError().message })
@@ -138,32 +141,32 @@ describe('Login Routes', () => {
   })
 
   describe('/login', () => {
-    test('Should return 200 on login', async () => {
-      const password = await hash('any_value', 12)
+    beforeAll(async () => {
+      accountCollection = await MongoHelper.getCollection('accounts')
       await accountCollection.insertOne({
         name: 'any_name',
         email: 'any_email@mail.com',
         emailConfirmation: new Date(),
         password
       })
+    })
+
+    afterAll(async () => {
+      await accountCollection.deleteMany({})
+    })
+    test('Should return 200 on login', async () => {
       await request(app)
         .post('/api/login')
-        .send(fakeLoginRequestParams())
+        .send(fakeLoginParams)
         .expect(200)
     })
 
     test('Should return 401 on login if an unregistered email is provided', async () => {
-      const password = await hash('any_value', 12)
-      await accountCollection.insertOne({
-        name: 'any_name',
-        email: 'any_email@mail.com',
-        password
-      })
       await request(app)
         .post('/api/login')
         .send({
-          email: 'invalid_email@mail.com',
-          password
+          email: 'unregistered_email@mail.com',
+          password: 'any_password'
         })
         .expect(401)
         .then(response => {
@@ -172,12 +175,6 @@ describe('Login Routes', () => {
     })
 
     test('Should return 401 on login if a incorrect password is provided', async () => {
-      const password = await hash('any_value', 12)
-      await accountCollection.insertOne({
-        name: 'any_name',
-        email: 'any_email@mail.com',
-        password
-      })
       await request(app)
         .post('/api/login')
         .send({
@@ -230,7 +227,6 @@ describe('Login Routes', () => {
 
   describe('/confirmation', () => {
     test('Should return 200 on confirmation', async () => {
-      const password = await hash('any_value', 12)
       const result = await accountCollection.insertOne({
         name: 'any_name',
         email: 'any_email@mail.com',

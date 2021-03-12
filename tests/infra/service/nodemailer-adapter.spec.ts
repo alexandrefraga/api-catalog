@@ -1,7 +1,7 @@
 import { MailService } from '@/data/protocols/service/mail-service'
 import { NodemailerAdapter } from '@/infra/service/nodemailer-adapter'
 import fs from 'fs'
-import { mockMailServiceParams } from '../../data/mocks'
+import { mockMailServiceParams } from '../../mocks'
 import env from '@/main/config/env'
 
 type SutTypes = {

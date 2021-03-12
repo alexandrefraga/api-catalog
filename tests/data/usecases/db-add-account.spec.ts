@@ -2,8 +2,8 @@ import { DbAddAccount } from '@/data/usecases/db-add-account'
 import { Encrypter, Hasher } from '@/data/protocols/criptography'
 import { AddAccountRepository, LoadAccountByEmailRepository, UpdateTokenRepository } from '@/data/protocols/db'
 import { MailService } from '@/data/protocols/service/mail-service'
-import { mockAccountModel, mockAddAccountParams } from '../../domain/mocks/mock-account'
-import { mockHasher, mockAddAccountRepository, mockLoadAccountByEmailRepository, mockMailService, mockEncrypter, mockMailServiceParams, mockUpdateTokenRepository } from '../mocks'
+import { mockAccountModel, mockAddAccountParams } from '../../mocks/mock-account'
+import { mockHasher, mockAddAccountRepository, mockLoadAccountByEmailRepository, mockMailService, mockEncrypter, mockMailServiceParams, mockUpdateTokenRepository } from '../../mocks'
 
 const addAccountParams = mockAddAccountParams()
 type SutTypes = {

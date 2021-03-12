@@ -3,7 +3,7 @@ import { AddStoreController } from '@/presentation/controllers/store/add-store-c
 import { ServerError } from '@/presentation/errors'
 import { DataInUseError } from '@/presentation/errors/data-in-use-error'
 import { Validation } from '@/presentation/protocolls'
-import { mockValidator, mockAddStoreParams, mockAddStoreUseCase, mockStoreModel } from '../../mocks'
+import { mockValidator, mockAddStoreParams, mockAddStoreUseCase, mockStoreModel } from '../../../mocks'
 
 type SutTypes = {
   sut: AddStoreController
