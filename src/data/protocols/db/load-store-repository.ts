@@ -7,5 +7,5 @@ export type LoadStoreByDataParams = {
 }
 
 export interface LoadStoreByDataRepository {
-  loadStoreByData (data: LoadStoreByDataParams): Promise<StoreModel>
+  loadByData (data: LoadStoreByDataParams): Promise<StoreModel>
 }

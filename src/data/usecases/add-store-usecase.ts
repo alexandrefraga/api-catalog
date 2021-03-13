@@ -9,7 +9,7 @@ export class AddStoreUseCase implements AddStore {
 
   async add (data: AddStoreParams): Promise<StoreModel> {
     const { company, tradingName, address } = data
-    await this.loadStoreByData.loadStoreByData({ company, tradingName, address })
+    await this.loadStoreByData.loadByData({ company, tradingName, address })
     return null
   }
 }

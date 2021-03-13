@@ -15,12 +15,13 @@ const makeSut = (): SutTypes => {
     loadStoreByDataRepositoryStub
   }
 }
+const addStoreParams = mockAddStoreParams()
 describe('AddStore UseCase', () => {
   test('Should call loadStoreByDataRepository with correct values', async () => {
     const { sut, loadStoreByDataRepositoryStub } = makeSut()
-    const loadStoreByDataSpy = jest.spyOn(loadStoreByDataRepositoryStub, 'loadStoreByData')
-    await sut.add(mockAddStoreParams())
-    expect(loadStoreByDataSpy).toHaveBeenCalledWith({
+    const loadByDataSpy = jest.spyOn(loadStoreByDataRepositoryStub, 'loadByData')
+    await sut.add(addStoreParams)
+    expect(loadByDataSpy).toHaveBeenCalledWith({
       company: 'any_company',
       tradingName: 'any_trading_name',
       address: {
@@ -33,8 +34,15 @@ describe('AddStore UseCase', () => {
 
   test('Should return null if loadStoreByDataRepository return a store', async () => {
     const { sut, loadStoreByDataRepositoryStub } = makeSut()
-    jest.spyOn(loadStoreByDataRepositoryStub, 'loadStoreByData').mockReturnValueOnce(Promise.resolve(mockStoreModel()))
-    const response = await sut.add(mockAddStoreParams())
+    jest.spyOn(loadStoreByDataRepositoryStub, 'loadByData').mockReturnValueOnce(Promise.resolve(mockStoreModel()))
+    const response = await sut.add(addStoreParams)
     expect(response).toBeNull()
+  })
+
+  test('Should AddStoreUseCase throw if loadStoreByDataRepository throws', async () => {
+    const { sut, loadStoreByDataRepositoryStub } = makeSut()
+    jest.spyOn(loadStoreByDataRepositoryStub, 'loadByData').mockImplementationOnce(() => { throw new Error() })
+    const promise = sut.add(addStoreParams)
+    await expect(promise).rejects.toThrow()
   })
 })

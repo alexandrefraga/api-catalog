@@ -3,7 +3,7 @@ import { StoreModel } from '@/domain/models/store-model'
 
 export const mockLoadStoreByDataRepository = (): LoadStoreByDataRepository => {
   class LoadStoreByDataRepositoryStub implements LoadStoreByDataRepository {
-    async loadStoreByData (data: LoadStoreByDataParams): Promise<StoreModel> {
+    async loadByData (data: LoadStoreByDataParams): Promise<StoreModel> {
       return null
     }
   }
