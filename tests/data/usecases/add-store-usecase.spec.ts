@@ -1,18 +1,21 @@
 import { AddStoreUseCase } from '@/data/usecases/add-store-usecase'
 import { AddStore } from '@/domain/usecases/add-store'
-import { mockAddStoreParams, mockLoadStoreByDataRepository, mockStoreModel } from '../../mocks'
-import { LoadStoreByDataRepository } from '../protocols/db/load-store-repository'
+import { mockAddStoreParams, mockAddStoreRepository, mockLoadStoreByDataRepository, mockStoreModel } from '../../mocks'
+import { AddStoreRepository, LoadStoreByDataRepository } from '@/data/protocols/db'
 
 type SutTypes = {
   sut: AddStore
   loadStoreByDataRepositoryStub: LoadStoreByDataRepository
+  addStoreRepositoryStub: AddStoreRepository
 }
 const makeSut = (): SutTypes => {
   const loadStoreByDataRepositoryStub = mockLoadStoreByDataRepository()
-  const sut = new AddStoreUseCase(loadStoreByDataRepositoryStub)
+  const addStoreRepositoryStub = mockAddStoreRepository()
+  const sut = new AddStoreUseCase(loadStoreByDataRepositoryStub, addStoreRepositoryStub)
   return {
     sut,
-    loadStoreByDataRepositoryStub
+    loadStoreByDataRepositoryStub,
+    addStoreRepositoryStub
   }
 }
 const addStoreParams = mockAddStoreParams()
@@ -39,10 +42,30 @@ describe('AddStore UseCase', () => {
     expect(response).toBeNull()
   })
 
-  test('Should AddStoreUseCase throw if loadStoreByDataRepository throws', async () => {
+  test('Should throw if loadStoreByDataRepository throws', async () => {
     const { sut, loadStoreByDataRepositoryStub } = makeSut()
     jest.spyOn(loadStoreByDataRepositoryStub, 'loadByData').mockImplementationOnce(() => { throw new Error() })
     const promise = sut.add(addStoreParams)
     await expect(promise).rejects.toThrow()
+  })
+
+  test('Should call addStoreRepository with correct values', async () => {
+    const { sut, addStoreRepositoryStub } = makeSut()
+    const addSpy = jest.spyOn(addStoreRepositoryStub, 'add')
+    await sut.add(addStoreParams)
+    expect(addSpy).toHaveBeenCalledWith(addStoreParams)
+  })
+
+  test('Should throw if AddStoreRepository throws', async () => {
+    const { sut, addStoreRepositoryStub } = makeSut()
+    jest.spyOn(addStoreRepositoryStub, 'add').mockImplementationOnce(() => { throw new Error() })
+    const promise = sut.add(addStoreParams)
+    await expect(promise).rejects.toThrow()
+  })
+
+  test('Should return a store on success', async () => {
+    const { sut } = makeSut()
+    const store = await sut.add(addStoreParams)
+    expect(store).toEqual(mockStoreModel())
   })
 })
