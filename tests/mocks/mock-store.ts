@@ -31,3 +31,9 @@ export const mockAddStoreParams = (): AddStoreParameters => ({
   geoLocalization: { lat: 0, lng: 0 },
   userId: 'any_user_id'
 })
+
+export const mockInsertStoreParams = (): any => {
+  const insertParams = Object.assign({}, mockAddStoreParams(), { usersAdmin: [mockAddStoreParams().userId] })
+  delete insertParams.userId
+  return insertParams
+}
