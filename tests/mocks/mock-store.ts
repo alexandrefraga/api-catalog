@@ -14,7 +14,7 @@ export const mockStoreModel = (): StoreModel => ({
   email: 'any_email',
   phoneNumber: ['(99)999999999', '(88)888888888'],
   geoLocalization: { lat: 0, lng: 0 },
-  usersAdmin: ['user_01', 'user_05']
+  usersAdmin: ['any_user_id']
 })
 
 export const mockAddStoreParams = (): AddStoreParameters => ({
