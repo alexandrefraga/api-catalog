@@ -4,7 +4,10 @@ import { Request, Response } from 'express'
 export const adaptRoute = (controller: Controller) => {
   return async (req: Request, res: Response) => {
     const request = {}
-    for (const field of ['name', 'email', 'password', 'passwordConfirmation']) {
+    for (const field of [
+      'name', 'email', 'password', 'passwordConfirmation',
+      'company', 'tradingName', 'description', 'address', 'email', 'phoneNumber', 'geoLocalization', 'userId'
+    ]) {
       if (req.body[field]) {
         Object.assign(request, { [`${field}`]: req.body[field] })
       }
