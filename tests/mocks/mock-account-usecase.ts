@@ -3,6 +3,7 @@ import { AddAccount, AddAccountParams } from '@/domain/usecases/add-account'
 import { ValidateAccount } from '@/domain/usecases/validate-account'
 import { Authentication, AuthenticationParameters, AuthenticationResponse } from '@/domain/usecases/authentication'
 import { mockAccountModel } from './mock-account'
+import { LoadAccountByToken } from '@/domain/usecases/load-account-by-Token'
 
 export const mockAddAccount = (): AddAccount => {
   class AddAccountStub implements AddAccount {
@@ -34,4 +35,13 @@ export const mockValidateAccount = (): ValidateAccount => {
     }
   }
   return new ValidateAccountStub()
+}
+
+export const mockLoadAccountByToken = (): LoadAccountByToken => {
+  class LoadAccountByTokenStub implements LoadAccountByToken {
+    async load (token: string, role?: string): Promise<AccountModel> {
+      return Promise.resolve(mockAccountModel())
+    }
+  }
+  return new LoadAccountByTokenStub()
 }
