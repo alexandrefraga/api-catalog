@@ -3,7 +3,7 @@ import { AddAccount, AddAccountParams } from '@/domain/usecases/add-account'
 import { ValidateAccount } from '@/domain/usecases/validate-account'
 import { Authentication, AuthenticationParameters, AuthenticationResponse } from '@/domain/usecases/authentication'
 import { mockAccountModel } from './mock-account'
-import { LoadAccountByToken } from '@/domain/usecases/load-account-by-Token'
+import { LoadAccountByToken } from '@/domain/usecases/load-account-by-token'
 
 export const mockAddAccount = (): AddAccount => {
   class AddAccountStub implements AddAccount {
