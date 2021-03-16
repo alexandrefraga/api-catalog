@@ -5,5 +5,5 @@ export interface LoadAccountByEmailRepository {
 }
 
 export interface LoadAccountByTokenRepository {
-  loadByToken (token: string): Promise<AccountModel>
+  loadByToken (token: string, role?: string): Promise<AccountModel>
 }
