@@ -12,7 +12,8 @@ export class LoadAccountByTokenUseCase implements LoadAccountByToken {
   async load (token: string, role?: string): Promise<AccountModel> {
     const decrypted = await this.decrypter.decrypt(token)
     if (decrypted) {
-      await this.loadAccountRepository.loadByToken(token, role)
+      const account = await this.loadAccountRepository.loadByToken(token, role)
+      return account
     }
     return null
   }
