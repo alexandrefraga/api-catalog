@@ -1,6 +1,6 @@
 import { LoadAccountByTokenUseCase } from '@/data/usecases/load-account-by-token-usecase'
 import { LoadAccountByToken } from '@/domain/usecases/load-account-by-Token'
-import { mockDecrypter, mockLoadAccountByTokenRepository } from '../../mocks'
+import { mockAccountModel, mockDecrypter, mockLoadAccountByTokenRepository } from '../../mocks'
 import { Decrypter } from '../protocols/criptography'
 import { LoadAccountByTokenRepository } from '../protocols/db'
 
@@ -39,5 +39,18 @@ describe('LoadAccountByToken UseCase', () => {
     const loadSpy = jest.spyOn(loadAccountByTokenRepositoryStub, 'loadByToken')
     await sut.load('any_token', 'any_role')
     expect(loadSpy).toHaveBeenCalledWith('any_token', 'any_role')
+  })
+
+  test('Should return null if LoadAccountByTokenRepository returns null', async () => {
+    const { sut, loadAccountByTokenRepositoryStub } = makeSut()
+    jest.spyOn(loadAccountByTokenRepositoryStub, 'loadByToken').mockReturnValueOnce(Promise.resolve(null))
+    const account = await sut.load('any_token', 'any_role')
+    expect(account).toBeNull()
+  })
+
+  test('Should return an account on success', async () => {
+    const { sut } = makeSut()
+    const account = await sut.load('any_token', 'any_role')
+    expect(account).toEqual(mockAccountModel())
   })
 })
