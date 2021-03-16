@@ -91,11 +91,35 @@ describe('Account Mongo Repository', () => {
       expect(account).toBeFalsy()
     })
 
-    test('Should return an account if loadByToken on success', async () => {
-      const fakeAccount = Object.assign({}, mockAddAccountParams(), { token: 'any_token' })
+    test('Should return null if invalid token is provided', async () => {
+      const fakeAccount = Object.assign({}, mockAddAccountParams(), { token: 'any_token', role: 'admin' })
+      await accountCollection.insertOne(fakeAccount)
+      const sut = makeSut()
+      const account = await sut.loadByToken('invalid_token', 'admin')
+      expect(account).toBeFalsy()
+    })
+
+    test('Should return null if no match in the required role ', async () => {
+      const fakeAccount = Object.assign({}, mockAddAccountParams(), { token: 'any_token', role: 'any_role' })
+      await accountCollection.insertOne(fakeAccount)
+      const sut = makeSut()
+      const account = await sut.loadByToken('any_token', 'admin')
+      expect(account).toBeFalsy()
+    })
+
+    test('Should return an account if no is required role', async () => {
+      const fakeAccount = Object.assign({}, mockAddAccountParams(), { token: 'any_token', role: 'admin' })
       await accountCollection.insertOne(fakeAccount)
       const sut = makeSut()
       const account = await sut.loadByToken('any_token')
+      expect(account).toBeTruthy()
+    })
+
+    test('Should return an account if loadByToken on success', async () => {
+      const fakeAccount = Object.assign({}, mockAddAccountParams(), { token: 'any_token', role: 'admin' })
+      await accountCollection.insertOne(fakeAccount)
+      const sut = makeSut()
+      const account = await sut.loadByToken('any_token', 'admin')
       expect(account).toBeTruthy()
       expect(account.id).toBeTruthy()
       expect(account.name).toBe(mockAddAccountParams().name)
