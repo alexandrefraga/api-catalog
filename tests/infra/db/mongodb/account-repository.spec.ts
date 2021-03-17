@@ -115,6 +115,14 @@ describe('Account Mongo Repository', () => {
       expect(account).toBeTruthy()
     })
 
+    test('Should return the admin account with any role', async () => {
+      const fakeAccount = Object.assign({}, mockAddAccountParams(), { token: 'any_token', role: 'admin' })
+      await accountCollection.insertOne(fakeAccount)
+      const sut = makeSut()
+      const account = await sut.loadByToken('any_token', 'any_role')
+      expect(account).toBeTruthy()
+    })
+
     test('Should return an account if loadByToken on success', async () => {
       const fakeAccount = Object.assign({}, mockAddAccountParams(), { token: 'any_token', role: 'admin' })
       await accountCollection.insertOne(fakeAccount)
