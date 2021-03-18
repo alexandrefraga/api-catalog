@@ -22,16 +22,11 @@ describe('Store Routes', () => {
       storeCollection = await MongoHelper.getCollection('stores')
       await storeCollection.deleteMany({})
     })
-    test('Should return 200 if created store', async () => {
+    test('Should return 403 on add store without accessToken', async () => {
       await request(app)
         .post('/api/addStore')
         .send(mockAddStoreParams())
-        .expect(200)
-        .then(async () => {
-          const store = await storeCollection.findOne({ company: 'any_company' })
-          expect(store).toBeTruthy()
-          expect(store.tradingName).toBe('any_trading_name')
-        })
+        .expect(403)
     })
   })
 })
