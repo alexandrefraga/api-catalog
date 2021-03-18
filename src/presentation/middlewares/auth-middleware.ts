@@ -1,3 +1,4 @@
+import { Role } from '@/domain/models/account-model'
 import { LoadAccountByToken } from '@/domain/usecases/load-account-by-token'
 import { AccessDeniedError } from '../errors'
 import { forbidden, serverError, success } from '../helpers/http-helper'
@@ -7,7 +8,7 @@ import { Middleware } from '../protocolls/middleware'
 export class AuthMiddleware implements Middleware {
   constructor (
     private readonly loadAccountByToken: LoadAccountByToken,
-    private readonly role?: string
+    private readonly role?: Role
   ) {}
 
   async execute (request: HttpRequest): Promise<HttpResponse> {

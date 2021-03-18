@@ -3,6 +3,7 @@ import { AccountMongoRepository } from '@/infra/db/mongodb/account-repository'
 import { MongoHelper } from '@/infra/db/mongodb/mongo-helper'
 import { Collection, ObjectId } from 'mongodb'
 import MockDate from 'mockdate'
+import { Role } from '@/domain/models/account-model'
 
 const makeSut = (): AccountMongoRepository => {
   return new AccountMongoRepository()
@@ -92,23 +93,23 @@ describe('Account Mongo Repository', () => {
     })
 
     test('Should return null if invalid token is provided', async () => {
-      const fakeAccount = Object.assign({}, mockAddAccountParams(), { token: 'any_token', role: 'admin' })
+      const fakeAccount = Object.assign({}, mockAddAccountParams(), { token: 'any_token', role: Role.systemAdmin })
       await accountCollection.insertOne(fakeAccount)
       const sut = makeSut()
-      const account = await sut.loadByToken('invalid_token', 'admin')
+      const account = await sut.loadByToken('invalid_token', Role.systemAdmin)
       expect(account).toBeFalsy()
     })
 
     test('Should return null if no match in the required role ', async () => {
-      const fakeAccount = Object.assign({}, mockAddAccountParams(), { token: 'any_token', role: 'any_role' })
+      const fakeAccount = Object.assign({}, mockAddAccountParams(), { token: 'any_token' })
       await accountCollection.insertOne(fakeAccount)
       const sut = makeSut()
-      const account = await sut.loadByToken('any_token', 'admin')
+      const account = await sut.loadByToken('any_token', Role.systemAdmin)
       expect(account).toBeFalsy()
     })
 
     test('Should return an account if no is required role', async () => {
-      const fakeAccount = Object.assign({}, mockAddAccountParams(), { token: 'any_token', role: 'admin' })
+      const fakeAccount = Object.assign({}, mockAddAccountParams(), { token: 'any_token' })
       await accountCollection.insertOne(fakeAccount)
       const sut = makeSut()
       const account = await sut.loadByToken('any_token')
@@ -116,18 +117,18 @@ describe('Account Mongo Repository', () => {
     })
 
     test('Should return the admin account with any role', async () => {
-      const fakeAccount = Object.assign({}, mockAddAccountParams(), { token: 'any_token', role: 'admin' })
+      const fakeAccount = Object.assign({}, mockAddAccountParams(), { token: 'any_token', role: Role.systemAdmin })
       await accountCollection.insertOne(fakeAccount)
       const sut = makeSut()
-      const account = await sut.loadByToken('any_token', 'any_role')
+      const account = await sut.loadByToken('any_token', Role.systemOperator)
       expect(account).toBeTruthy()
     })
 
     test('Should return an account if loadByToken on success', async () => {
-      const fakeAccount = Object.assign({}, mockAddAccountParams(), { token: 'any_token', role: 'admin' })
+      const fakeAccount = Object.assign({}, mockAddAccountParams(), { token: 'any_token', role: Role.systemAdmin })
       await accountCollection.insertOne(fakeAccount)
       const sut = makeSut()
-      const account = await sut.loadByToken('any_token', 'admin')
+      const account = await sut.loadByToken('any_token', Role.systemAdmin)
       expect(account).toBeTruthy()
       expect(account.id).toBeTruthy()
       expect(account.name).toBe(mockAddAccountParams().name)

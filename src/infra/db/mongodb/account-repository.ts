@@ -1,4 +1,4 @@
-import { AccountModel } from '@/domain/models/account-model'
+import { AccountModel, Role } from '@/domain/models/account-model'
 import { AddAccountParams } from '@/domain/usecases/add-account'
 import { AddAccountRepository, LoadAccountByEmailRepository, LoadAccountByTokenRepository, UpdateEmailRepository, UpdateTokenRepository } from '@/data/protocols/db'
 import { MongoHelper } from '@/infra/db/mongodb/mongo-helper'
@@ -18,8 +18,8 @@ export class AccountMongoRepository implements AddAccountRepository, LoadAccount
     return account && MongoHelper.map(account)
   }
 
-  async loadByToken (token: string, role?: string): Promise<AccountModel> {
-    const query = role ? { token, role: { $in: ['admin', role] } } : { token }
+  async loadByToken (token: string, role?: Role): Promise<AccountModel> {
+    const query = role ? { token, role: { $in: [Role.systemAdmin, role] } } : { token }
     const accountCollection = await MongoHelper.getCollection('accounts')
     const account = await accountCollection.findOne(query)
     return account && MongoHelper.map(account)

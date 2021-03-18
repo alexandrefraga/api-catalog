@@ -4,6 +4,7 @@ import { forbidden, serverError, success } from '@/presentation/helpers/http-hel
 import { AccessDeniedError } from '@/presentation/errors'
 import { LoadAccountByToken } from '@/domain/usecases/load-account-by-token'
 import { mockAccountModel, mockLoadAccountByToken } from '../../mocks'
+import { Role } from '@/domain/models/account-model'
 
 const fakeRequest = (): HttpRequest => ({
   headers: { 'x-access-token': 'any_token' }
@@ -13,7 +14,7 @@ type SutTypes = {
   sut: Middleware
   loadAccountByTokenStub: LoadAccountByToken
 }
-const makeSut = (role?: string): SutTypes => {
+const makeSut = (role?: Role): SutTypes => {
   const loadAccountByTokenStub = mockLoadAccountByToken()
   const sut = new AuthMiddleware(loadAccountByTokenStub, role)
   return {
@@ -36,7 +37,7 @@ describe('Auth Middleware', () => {
   })
 
   test('Should call LoadAccountByToken with correct values', async () => {
-    const role = 'any_role'
+    const role = Role.user
     const { sut, loadAccountByTokenStub } = makeSut(role)
     const loadByTokenSpy = jest.spyOn(loadAccountByTokenStub, 'load')
     await sut.execute(fakeRequest())
