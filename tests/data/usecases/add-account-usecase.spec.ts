@@ -1,9 +1,9 @@
 import { AddAccountUseCase } from '@/data/usecases/add-account-usecase'
-import { Encrypter, Hasher } from '@/data/protocols/criptography'
-import { AddAccountRepository, LoadAccountByEmailRepository, UpdateTokenRepository } from '@/data/protocols/db'
+import { Hasher } from '@/data/protocols/criptography'
+import { AddAccountRepository, LoadAccountByEmailRepository } from '@/data/protocols/db'
 import { MailService } from '@/data/protocols/service/mail-service'
 import { mockAccountModel, mockAddAccountParams } from '../../mocks/mock-account'
-import { mockHasher, mockAddAccountRepository, mockLoadAccountByEmailRepository, mockMailService, mockEncrypter, mockMailServiceParams, mockUpdateTokenRepository } from '../../mocks'
+import { mockHasher, mockAddAccountRepository, mockLoadAccountByEmailRepository, mockMailService, mockMailServiceParams } from '../../mocks'
 
 const addAccountParams = mockAddAccountParams()
 type SutTypes = {
@@ -11,8 +11,6 @@ type SutTypes = {
   hasherStub: Hasher
   addAccountRepositoryStub: AddAccountRepository
   loadAccountByEmailStub: LoadAccountByEmailRepository
-  encrypterStub: Encrypter
-  updateTokenRepositoryStub: UpdateTokenRepository
   mailServiceStub: MailService
 }
 const makeSut = (): SutTypes => {
@@ -20,15 +18,11 @@ const makeSut = (): SutTypes => {
   const addAccountRepositoryStub = mockAddAccountRepository()
   const loadAccountByEmailStub = mockLoadAccountByEmailRepository()
   jest.spyOn(loadAccountByEmailStub, 'loadByEmail').mockReturnValue(Promise.resolve(null))
-  const encrypterStub = mockEncrypter()
-  const updateTokenRepositoryStub = mockUpdateTokenRepository()
   const mailServiceStub = mockMailService()
   const sut = new AddAccountUseCase(
     hasherStub,
     addAccountRepositoryStub,
     loadAccountByEmailStub,
-    encrypterStub,
-    updateTokenRepositoryStub,
     mailServiceStub,
     'mail'
   )
@@ -37,8 +31,6 @@ const makeSut = (): SutTypes => {
     hasherStub,
     addAccountRepositoryStub,
     loadAccountByEmailStub,
-    encrypterStub,
-    updateTokenRepositoryStub,
     mailServiceStub
   }
 }
@@ -89,44 +81,6 @@ describe('AddAccount Usecase', () => {
     const { sut } = makeSut()
     const response = await sut.add(addAccountParams)
     expect(response).toEqual(mockAccountModel())
-  })
-
-  test('Should call Encrypter with correct value', async () => {
-    const { sut, encrypterStub } = makeSut()
-    const encryptSpy = jest.spyOn(encrypterStub, 'encrypt')
-    const account = await mockLoadAccountByEmailRepository().loadByEmail('')
-    await sut.add(addAccountParams)
-    const encryptParam = JSON.stringify({ id: account.id })
-    expect(encryptSpy).toHaveBeenCalledWith(encryptParam)
-  })
-
-  test('Should throw if Encrypter throws', async () => {
-    const { sut, encrypterStub } = makeSut()
-    jest.spyOn(encrypterStub, 'encrypt').mockImplementationOnce(() => { throw new Error() })
-    const promise = sut.add(addAccountParams)
-    await expect(promise).rejects.toThrow()
-  })
-
-  test('Should call UpdateTokenRepository with correct values ', async () => {
-    const { sut, updateTokenRepositoryStub } = makeSut()
-    const updateTokenSpy = jest.spyOn(updateTokenRepositoryStub, 'updateToken')
-    const account = await mockLoadAccountByEmailRepository().loadByEmail('')
-    await sut.add(addAccountParams)
-    expect(updateTokenSpy).toHaveBeenCalledWith(await mockEncrypter().encrypt(''), account.id)
-  })
-
-  test('Should throw if UpdateTokenRepository throws', async () => {
-    const { sut, updateTokenRepositoryStub } = makeSut()
-    jest.spyOn(updateTokenRepositoryStub, 'updateToken').mockImplementationOnce(() => { throw new Error() })
-    const promise = sut.add(addAccountParams)
-    await expect(promise).rejects.toThrow()
-  })
-
-  test('Should throw if UpdateTokenRepository return false', async () => {
-    const { sut, updateTokenRepositoryStub } = makeSut()
-    jest.spyOn(updateTokenRepositoryStub, 'updateToken').mockReturnValueOnce(Promise.resolve(false))
-    const promise = sut.add(addAccountParams)
-    await expect(promise).rejects.toThrow()
   })
 
   test('Should call MailService with correct values', async () => {

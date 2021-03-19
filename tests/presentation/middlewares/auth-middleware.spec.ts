@@ -37,7 +37,7 @@ describe('Auth Middleware', () => {
   })
 
   test('Should call LoadAccountByToken with correct values', async () => {
-    const role = Role.user
+    const role = Role.systemOperator
     const { sut, loadAccountByTokenStub } = makeSut(role)
     const loadByTokenSpy = jest.spyOn(loadAccountByTokenStub, 'load')
     await sut.execute(fakeRequest())

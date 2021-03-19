@@ -1,12 +1,14 @@
 import { Controller, SignUpRequestParameters, HttpResponse, Validation } from '../../protocolls'
 import { badRequest, created, forbidden, serverError } from '@/presentation/helpers/http-helper'
 import { AddAccount } from '@/domain/usecases/add-account'
+import { AddSignatureToken } from '@/domain/usecases/add-signature-token'
 import { EmailInUseError } from '../../errors'
 
 export class SignUpController implements Controller<SignUpRequestParameters> {
   constructor (
     private readonly validator: Validation,
-    private readonly addAccount: AddAccount
+    private readonly addAccount: AddAccount,
+    private readonly addSignatureToken: AddSignatureToken
   ) {}
 
   async execute (request: SignUpRequestParameters): Promise<HttpResponse> {
@@ -20,6 +22,7 @@ export class SignUpController implements Controller<SignUpRequestParameters> {
       if (!account) {
         return forbidden(new EmailInUseError())
       }
+      await this.addSignatureToken.add(account.id)
       return created('Sent confirmation email!')
     } catch (error) {
       return serverError(error)

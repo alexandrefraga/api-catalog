@@ -1,8 +1,9 @@
 import { AddAccount } from '@/domain/usecases/add-account'
+import { AddSignatureToken } from '@/domain/usecases/add-signature-token'
 import { SignUpController } from '@/presentation/controllers/account/signup-controller'
 import { EmailInUseError, ServerError } from '@/presentation/errors'
 import { Validation } from '@/presentation/protocolls/validation'
-import { mockAddAccount, mockSignUpRequestParams, mockValidator } from '../../../mocks'
+import { mockAddAccount, mockAddSignatureToken, mockSignUpRequestParams, mockValidator } from '../../../mocks'
 
 const request = mockSignUpRequestParams()
 
@@ -10,16 +11,19 @@ type SutTypes = {
   sut: SignUpController
   validatorStub: Validation
   addAccountStub: AddAccount
+  addSignatureTokenStub: AddSignatureToken
 }
 
 const makeSut = (): SutTypes => {
   const validatorStub = mockValidator()
   const addAccountStub = mockAddAccount()
-  const sut = new SignUpController(validatorStub, addAccountStub)
+  const addSignatureTokenStub = mockAddSignatureToken()
+  const sut = new SignUpController(validatorStub, addAccountStub, addSignatureTokenStub)
   return {
     sut,
     validatorStub,
-    addAccountStub
+    addAccountStub,
+    addSignatureTokenStub
   }
 }
 describe('SignUpController', () => {
@@ -72,6 +76,22 @@ describe('SignUpController', () => {
     expect(httpResponse.statusCode).toBe(403)
     expect(httpResponse.body).toEqual(new EmailInUseError())
   })
+
+  test('Should call AddSignatureToken with correct values', async () => {
+    const { sut, addSignatureTokenStub } = makeSut()
+    const addSpy = jest.spyOn(addSignatureTokenStub, 'add')
+    await sut.execute(request)
+    expect(addSpy).toHaveBeenCalledWith('valid_id')
+  })
+
+  test('Should return 500 if AddSignatureToken throws', async () => {
+    const { sut, addSignatureTokenStub } = makeSut()
+    jest.spyOn(addSignatureTokenStub, 'add').mockImplementationOnce(() => { throw new Error() })
+    const httpResponse = await sut.execute(request)
+    expect(httpResponse.statusCode).toBe(500)
+    expect(httpResponse.body).toEqual(new ServerError(''))
+  })
+
   test('Should return 201 if valid data is provided', async () => {
     const { sut } = makeSut()
     const httpResponse = await sut.execute(request)

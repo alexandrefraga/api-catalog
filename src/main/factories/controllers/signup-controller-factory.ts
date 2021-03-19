@@ -9,6 +9,8 @@ import { NodemailerAdapter } from '@/infra/service/nodemailer-adapter'
 import { ValidationComposite, RequiredAndCompareFieldsValidation, RequiredFieldValidation, EmailValidation } from '@/validation/validators'
 import { LogControllerDecorator } from '@/main/decorator/log-controller-decorator'
 import env from '@/main/config/env'
+import { AddSignatureTokenUseCase } from '@/data/usecases/add-signature-token-usecase'
+import { SignatureTokenMongoRepository } from '@/infra/db/mongodb/signature-token-repository'
 
 export const makeSignUpControler = (): Controller => {
   const validation = new ValidationComposite([
@@ -21,10 +23,11 @@ export const makeSignUpControler = (): Controller => {
   const hasher = new BcryptAdapter(salt)
   const addAccountRepository = new AccountMongoRepository()
   const encrypter = new JwtAdapter(env.jwtSecret)
-  const updateTokenRepository = new AccountMongoRepository()
   const mailService = new NodemailerAdapter(env.mailParams, env.mailFrom, env.baseUrl)
-  const addAccount = new AddAccountUseCase(hasher, addAccountRepository, loadAccountByEmailRepository, encrypter, updateTokenRepository, mailService, 'mail')
-  const signUpController = new SignUpController(validation, addAccount)
+  const addAccount = new AddAccountUseCase(hasher, addAccountRepository, loadAccountByEmailRepository, mailService, 'mail')
+  const addSignaturetokenRepository = new SignatureTokenMongoRepository()
+  const addSignature = new AddSignatureTokenUseCase(encrypter, addSignaturetokenRepository)
+  const signUpController = new SignUpController(validation, addAccount, addSignature)
   const logErrorMongoRepository = new LogErrorMongoRepository()
   return new LogControllerDecorator(signUpController, logErrorMongoRepository)
 }
