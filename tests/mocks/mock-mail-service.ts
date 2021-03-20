@@ -16,7 +16,7 @@ export const mockMailServiceParams = (): MailServiceParams => ({
   template: {
     name: 'mail',
     props: {
-      account: mockAccountModel(),
+      name: mockAccountModel().name,
       token: 'encrypted_value'
     }
   }

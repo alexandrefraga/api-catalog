@@ -1,9 +1,10 @@
 import { AddAccount } from '@/domain/usecases/add-account'
 import { AddSignatureToken } from '@/domain/usecases/add-signature-token'
+import { SendMail } from '@/domain/usecases/send-mail-usecase'
 import { SignUpController } from '@/presentation/controllers/account/signup-controller'
 import { EmailInUseError, ServerError } from '@/presentation/errors'
 import { Validation } from '@/presentation/protocolls/validation'
-import { mockAddAccount, mockAddSignatureToken, mockSignUpRequestParams, mockValidator } from '../../../mocks'
+import { mockAccountModel, mockAddAccount, mockAddSignatureToken, mockSendMailUsecase, mockSignatureTokenModel, mockSignUpRequestParams, mockValidator } from '../../../mocks'
 
 const request = mockSignUpRequestParams()
 
@@ -12,18 +13,21 @@ type SutTypes = {
   validatorStub: Validation
   addAccountStub: AddAccount
   addSignatureTokenStub: AddSignatureToken
+  sendMailUsecaseStub: SendMail
 }
 
 const makeSut = (): SutTypes => {
   const validatorStub = mockValidator()
   const addAccountStub = mockAddAccount()
   const addSignatureTokenStub = mockAddSignatureToken()
-  const sut = new SignUpController(validatorStub, addAccountStub, addSignatureTokenStub)
+  const sendMailUsecaseStub = mockSendMailUsecase()
+  const sut = new SignUpController(validatorStub, addAccountStub, addSignatureTokenStub, sendMailUsecaseStub)
   return {
     sut,
     validatorStub,
     addAccountStub,
-    addSignatureTokenStub
+    addSignatureTokenStub,
+    sendMailUsecaseStub
   }
 }
 describe('SignUpController', () => {
@@ -87,6 +91,28 @@ describe('SignUpController', () => {
   test('Should return 500 if AddSignatureToken throws', async () => {
     const { sut, addSignatureTokenStub } = makeSut()
     jest.spyOn(addSignatureTokenStub, 'add').mockImplementationOnce(() => { throw new Error() })
+    const httpResponse = await sut.execute(request)
+    expect(httpResponse.statusCode).toBe(500)
+    expect(httpResponse.body).toEqual(new ServerError(''))
+  })
+
+  test('Should call SendMailUseCase with correct values', async () => {
+    const { sut, sendMailUsecaseStub } = makeSut()
+    const sendSpy = jest.spyOn(sendMailUsecaseStub, 'send')
+    await sut.execute(request)
+    const { name, email } = mockAccountModel()
+    const data = {
+      subject: `Account confirmation to ${name}`,
+      name,
+      email,
+      token: mockSignatureTokenModel().token
+    }
+    expect(sendSpy).toHaveBeenCalledWith(data)
+  })
+
+  test('Should return 500 if SendMailUseCase throws', async () => {
+    const { sut, sendMailUsecaseStub } = makeSut()
+    jest.spyOn(sendMailUsecaseStub, 'send').mockImplementationOnce(() => { throw new Error() })
     const httpResponse = await sut.execute(request)
     expect(httpResponse.statusCode).toBe(500)
     expect(httpResponse.body).toEqual(new ServerError(''))

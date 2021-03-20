@@ -1,9 +1,7 @@
-import { AccountModel } from '@/domain/models/account-model'
-
 type Template = {
   name: string
   props: {
-    account?: AccountModel
+    name?: string
     token?: string
   }
 }

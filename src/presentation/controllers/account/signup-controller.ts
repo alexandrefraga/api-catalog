@@ -3,12 +3,14 @@ import { badRequest, created, forbidden, serverError } from '@/presentation/help
 import { AddAccount } from '@/domain/usecases/add-account'
 import { AddSignatureToken } from '@/domain/usecases/add-signature-token'
 import { EmailInUseError } from '../../errors'
+import { SendMail } from '@/domain/usecases/send-mail-usecase'
 
 export class SignUpController implements Controller<SignUpRequestParameters> {
   constructor (
     private readonly validator: Validation,
     private readonly addAccount: AddAccount,
-    private readonly addSignatureToken: AddSignatureToken
+    private readonly addSignatureToken: AddSignatureToken,
+    private readonly sendMail: SendMail
   ) {}
 
   async execute (request: SignUpRequestParameters): Promise<HttpResponse> {
@@ -22,7 +24,13 @@ export class SignUpController implements Controller<SignUpRequestParameters> {
       if (!account) {
         return forbidden(new EmailInUseError())
       }
-      await this.addSignatureToken.add(account.id)
+      const { token } = await this.addSignatureToken.add(account.id)
+      await this.sendMail.send({
+        name: account.name,
+        email: account.email,
+        token,
+        subject: `Account confirmation to ${account.name}`
+      })
       return created('Sent confirmation email!')
     } catch (error) {
       return serverError(error)

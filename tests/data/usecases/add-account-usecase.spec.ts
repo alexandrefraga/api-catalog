@@ -1,9 +1,8 @@
 import { AddAccountUseCase } from '@/data/usecases/add-account-usecase'
 import { Hasher } from '@/data/protocols/criptography'
 import { AddAccountRepository, LoadAccountByEmailRepository } from '@/data/protocols/db'
-import { MailService } from '@/data/protocols/service/mail-service'
 import { mockAccountModel, mockAddAccountParams } from '../../mocks/mock-account'
-import { mockHasher, mockAddAccountRepository, mockLoadAccountByEmailRepository, mockMailService, mockMailServiceParams } from '../../mocks'
+import { mockHasher, mockAddAccountRepository, mockLoadAccountByEmailRepository } from '../../mocks'
 
 const addAccountParams = mockAddAccountParams()
 type SutTypes = {
@@ -11,27 +10,22 @@ type SutTypes = {
   hasherStub: Hasher
   addAccountRepositoryStub: AddAccountRepository
   loadAccountByEmailStub: LoadAccountByEmailRepository
-  mailServiceStub: MailService
 }
 const makeSut = (): SutTypes => {
   const hasherStub = mockHasher()
   const addAccountRepositoryStub = mockAddAccountRepository()
   const loadAccountByEmailStub = mockLoadAccountByEmailRepository()
   jest.spyOn(loadAccountByEmailStub, 'loadByEmail').mockReturnValue(Promise.resolve(null))
-  const mailServiceStub = mockMailService()
   const sut = new AddAccountUseCase(
     hasherStub,
     addAccountRepositoryStub,
-    loadAccountByEmailStub,
-    mailServiceStub,
-    'mail'
+    loadAccountByEmailStub
   )
   return {
     sut,
     hasherStub,
     addAccountRepositoryStub,
-    loadAccountByEmailStub,
-    mailServiceStub
+    loadAccountByEmailStub
   }
 }
 describe('AddAccount Usecase', () => {
@@ -81,19 +75,5 @@ describe('AddAccount Usecase', () => {
     const { sut } = makeSut()
     const response = await sut.add(addAccountParams)
     expect(response).toEqual(mockAccountModel())
-  })
-
-  test('Should call MailService with correct values', async () => {
-    const { sut, mailServiceStub } = makeSut()
-    const sendSpy = jest.spyOn(mailServiceStub, 'send')
-    await sut.add(addAccountParams)
-    expect(sendSpy).toBeCalledWith(mockMailServiceParams())
-  })
-
-  test('Should DbAddAccount throw if MailService throws', async () => {
-    const { sut, mailServiceStub } = makeSut()
-    jest.spyOn(mailServiceStub, 'send').mockImplementationOnce(() => { throw new Error() })
-    const promise = sut.add(addAccountParams)
-    await expect(promise).rejects.toThrow()
   })
 })

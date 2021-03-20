@@ -11,10 +11,10 @@ export class AddSignatureTokenUseCase implements AddSignatureToken {
 
   async add (id: string): Promise<SignatureTokenModel> {
     const token = await this.encrypter.encrypt(JSON.stringify({ id }))
-    const inserted = await this.AddSignatureTokenRepository.add(token)
-    if (!inserted) {
+    const signature = await this.AddSignatureTokenRepository.add(token)
+    if (!signature) {
       throw new Error()
     }
-    return inserted
+    return signature
   }
 }
