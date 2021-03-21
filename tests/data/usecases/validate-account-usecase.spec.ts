@@ -2,24 +2,28 @@ import { ValidateAccountUseCase } from '@/data/usecases/validate-account-usecase
 import { ValidateAccount } from '@/domain/usecases/validate-account'
 import { Decrypter } from '@/data/protocols/criptography'
 import { UpdateEmailRepository, LoadAccountByTokenRepository } from '@/data/protocols/db'
-import { mockDecrypter, mockLoadAccountByTokenRepository, mockUpdateEmailRepository } from '../../mocks'
+import { mockDecrypter, mockUpdateUsedSignatureByTokenRepository, mockLoadAccountByTokenRepository, mockUpdateEmailRepository } from '../../mocks'
 import { mockAccountModel } from '../../mocks/mock-account'
 import MockDate from 'mockdate'
+import { UpdateUsedSignatureByTokenRepository } from '@/data/protocols/db/update-used-signature-by-token-repository'
 
 type SutTypes = {
   sut: ValidateAccount
   jwtAdapterStub: Decrypter
+  updateUsedSignatureByTokenRepositoryStub: UpdateUsedSignatureByTokenRepository
   loadAccountByTokenRepositoryStub: LoadAccountByTokenRepository
   updateEmailRepositoryStub: UpdateEmailRepository
 }
 const makeSut = (): SutTypes => {
-  const jwtAdapterStub = mockDecrypter('any_data')
+  const jwtAdapterStub = mockDecrypter({ token: 'any_data', id: 'valid_id' })
+  const updateUsedSignatureByTokenRepositoryStub = mockUpdateUsedSignatureByTokenRepository()
   const loadAccountByTokenRepositoryStub = mockLoadAccountByTokenRepository()
   const updateEmailRepositoryStub = mockUpdateEmailRepository()
-  const sut = new ValidateAccountUseCase(jwtAdapterStub, loadAccountByTokenRepositoryStub, updateEmailRepositoryStub)
+  const sut = new ValidateAccountUseCase(jwtAdapterStub, updateUsedSignatureByTokenRepositoryStub, updateEmailRepositoryStub)
   return {
     sut,
     jwtAdapterStub,
+    updateUsedSignatureByTokenRepositoryStub,
     loadAccountByTokenRepositoryStub,
     updateEmailRepositoryStub
   }
@@ -47,29 +51,36 @@ describe('ValidateAccount Usecase', () => {
     expect(response).toBeNull()
   })
 
-  test('Should call LoadAccountByTokenRepository with correct token', async () => {
-    const { sut, loadAccountByTokenRepositoryStub } = makeSut()
-    const loadByTokenSpy = jest.spyOn(loadAccountByTokenRepositoryStub, 'loadByToken')
+  test('Should call UpdateUsedSignatureByTokenRepository with correct token', async () => {
+    const { sut, updateUsedSignatureByTokenRepositoryStub } = makeSut()
+    const findUpdateSpy = jest.spyOn(updateUsedSignatureByTokenRepositoryStub, 'updateUsed')
     await sut.validate('any_token')
-    expect(loadByTokenSpy).toHaveBeenCalledWith('any_token')
+    expect(findUpdateSpy).toHaveBeenCalledWith('any_token')
   })
 
-  test('Should ValidateAccountUseCase throw if LoadAccountByTokenRepository throws', async () => {
-    const { sut, loadAccountByTokenRepositoryStub } = makeSut()
-    jest.spyOn(loadAccountByTokenRepositoryStub, 'loadByToken').mockImplementationOnce(() => { throw new Error() })
+  test('Should ValidateAccountUseCase returns null if UpdateUsedSignatureByTokenRepository false', async () => {
+    const { sut, updateUsedSignatureByTokenRepositoryStub } = makeSut()
+    jest.spyOn(updateUsedSignatureByTokenRepositoryStub, 'updateUsed').mockReturnValueOnce(Promise.resolve(false))
+    const response = await sut.validate('any_token')
+    expect(response).toBeNull()
+  })
+
+  test('Should ValidateAccountUseCase throw if UpdateUsedSignatureByTokenRepository throws', async () => {
+    const { sut, updateUsedSignatureByTokenRepositoryStub } = makeSut()
+    jest.spyOn(updateUsedSignatureByTokenRepositoryStub, 'updateUsed').mockImplementationOnce(() => { throw new Error() })
     const promise = sut.validate('any_token')
     await expect(promise).rejects.toThrow()
   })
 
-  test('Should call DdUpdateEmailRepository with correct values', async () => {
+  test('Should call UpdateEmailRepository with correct values', async () => {
     const { sut, updateEmailRepositoryStub } = makeSut()
     const updateEmailSpy = jest.spyOn(updateEmailRepositoryStub, 'updateEmail')
     await sut.validate('any_token')
     const account = mockAccountModel()
-    expect(updateEmailSpy).toHaveBeenCalledWith(account.id, account.email, new Date())
+    expect(updateEmailSpy).toHaveBeenCalledWith(account.id, new Date())
   })
 
-  test('Should ValidateAccountUseCase throw if DdUpdateEmailRepository throws', async () => {
+  test('Should ValidateAccountUseCase throw if UpdateEmailRepository throws', async () => {
     const { sut, updateEmailRepositoryStub } = makeSut()
     jest.spyOn(updateEmailRepositoryStub, 'updateEmail').mockImplementationOnce(() => { throw new Error() })
     const promise = sut.validate('any_token')

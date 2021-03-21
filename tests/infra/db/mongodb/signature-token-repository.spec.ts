@@ -32,4 +32,15 @@ describe('Signature Token Mongo Repository', () => {
       expect(signature.token).toBe('any_token')
     })
   })
+
+  describe('updateUsed', () => {
+    test('Should return true if update on success', async () => {
+      await signatureCollection.insertOne({ token: 'any_token' })
+      const sut = makeSut()
+      const updated = await sut.updateUsed('any_token')
+      expect(updated).toBe(true)
+      const signature = await signatureCollection.findOne({ token: 'any_token' })
+      expect(signature.useDate).toEqual(new Date())
+    })
+  })
 })

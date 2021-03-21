@@ -31,15 +31,13 @@ export class AccountMongoRepository implements AddAccountRepository, LoadAccount
     return !!response.modifiedCount
   }
 
-  async updateEmail (id: string, email: string, confirmation: Date): Promise<boolean> {
+  async updateEmail (id: string, confirmation: Date, email?: string): Promise<boolean> {
+    const setQuery = email ? { email: email, emailConfirmation: confirmation } : { email: email }
     const accountCollection = await MongoHelper.getCollection('accounts')
     const response = await accountCollection.updateOne({
       _id: new ObjectId(id)
     }, {
-      $set: {
-        email: email,
-        emailConfirmation: confirmation
-      }
+      $set: setQuery
     })
     return !!response.modifiedCount
   }

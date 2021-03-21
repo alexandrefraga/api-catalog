@@ -23,6 +23,7 @@ beforeEach(() => {
 const fakeSignupParams = mockSignUpRequestParams()
 const fakeLoginParams = mockLoginRequestParams()
 let accountCollection: Collection
+let signatureCollection: Collection
 let password: string
 describe('Login Routes', () => {
   beforeAll(async () => {
@@ -226,6 +227,12 @@ describe('Login Routes', () => {
   })
 
   describe('/confirmation', () => {
+    beforeEach(async () => {
+      accountCollection = await MongoHelper.getCollection('accounts')
+      signatureCollection = await MongoHelper.getCollection('signatures')
+      await accountCollection.deleteMany({})
+      await signatureCollection.deleteMany({})
+    })
     test('Should return 200 on confirmation', async () => {
       const result = await accountCollection.insertOne({
         name: 'any_name',
@@ -234,13 +241,7 @@ describe('Login Routes', () => {
       })
       const _id = result.ops[0]._id
       const tokenValidation = await sign({ id: _id }, env.jwtSecret)
-      await accountCollection.updateOne({
-        _id
-      }, {
-        $set: {
-          token: tokenValidation
-        }
-      })
+      await signatureCollection.insertOne({ token: tokenValidation })
       await request(app)
         .get(`/api/confirmation/${tokenValidation}`)
         .expect(200)

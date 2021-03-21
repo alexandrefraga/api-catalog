@@ -44,7 +44,7 @@ export const mockUpdateTokenRepository = (): UpdateTokenRepository => {
 
 export const mockUpdateEmailRepository = (): UpdateEmailRepository => {
   class UpdateEmailRepositoryStub implements UpdateEmailRepository {
-    async updateEmail (id: string, email: string, confirmation: Date): Promise<boolean> {
+    async updateEmail (id: string, confirmation: Date, emai?: string): Promise<boolean> {
       return Promise.resolve(true)
     }
   }
