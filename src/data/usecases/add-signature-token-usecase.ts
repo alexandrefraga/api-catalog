@@ -1,4 +1,4 @@
-import { SignatureTokenModel } from '@/domain/models/signature-token-model'
+import { SignatureTokenModel, SignatureTypes } from '@/domain/models/signature-token-model'
 import { AddSignatureToken } from '@/domain/usecases/add-signature-token'
 import { Encrypter } from '../protocols/criptography'
 import { AddSignatureTokenRepository } from '../protocols/db/add-signature-token-repository'
@@ -9,9 +9,9 @@ export class AddSignatureTokenUseCase implements AddSignatureToken {
     private readonly AddSignatureTokenRepository: AddSignatureTokenRepository
   ) {}
 
-  async add (id: string): Promise<SignatureTokenModel> {
+  async add (id: string, type: SignatureTypes, subject?: string): Promise<SignatureTokenModel> {
     const token = await this.encrypter.encrypt(JSON.stringify({ id }))
-    const signature = await this.AddSignatureTokenRepository.add(token)
+    const signature = await this.AddSignatureTokenRepository.add(token, type, subject)
     if (!signature) {
       throw new Error()
     }

@@ -1,3 +1,4 @@
+import { SignatureTypes } from '@/domain/models/signature-token-model'
 import { ValidateAccount } from '@/domain/usecases/validate-account'
 import { Controller, HttpResponse, ValidateAccountParams, Validation } from '@/presentation/protocolls'
 import { badRequest, serverError, unauthorized, success } from '../../helpers/http-helper'
@@ -14,7 +15,7 @@ export class ValidateAccountController implements Controller<ValidateAccountPara
       if (error) {
         return badRequest(error)
       }
-      const validated = await this.validateAccount.validate(data.tokenValidation)
+      const validated = await this.validateAccount.validate(data.tokenValidation, SignatureTypes.account)
       if (!validated) {
         return unauthorized()
       }

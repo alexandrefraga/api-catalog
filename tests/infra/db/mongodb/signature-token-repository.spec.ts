@@ -2,6 +2,7 @@ import { Collection } from 'mongodb'
 import { MongoHelper } from '@/infra/db/mongodb/mongo-helper'
 import { SignatureTokenMongoRepository } from '@/infra/db/mongodb/signature-token-repository'
 import MockDate from 'mockdate'
+import { SignatureTypes } from '@/domain/models/signature-token-model'
 
 const makeSut = (): SignatureTokenMongoRepository => {
   return new SignatureTokenMongoRepository()
@@ -26,18 +27,20 @@ describe('Signature Token Mongo Repository', () => {
   describe('add', () => {
     test('Should return an signature if add on success', async () => {
       const sut = makeSut()
-      const signature = await sut.add('any_token')
+      const signature = await sut.add('any_token', SignatureTypes.account, 'any_subject')
       expect(signature).toBeTruthy()
       expect(signature.id).toBeTruthy()
       expect(signature.token).toBe('any_token')
+      expect(signature.type).toBe('account')
+      expect(signature.subject).toBe('any_subject')
     })
   })
 
   describe('updateUsed', () => {
     test('Should return true if update on success', async () => {
-      await signatureCollection.insertOne({ token: 'any_token' })
+      await signatureCollection.insertOne({ token: 'any_token', type: SignatureTypes.account })
       const sut = makeSut()
-      const updated = await sut.updateUsed('any_token')
+      const updated = await sut.updateUsed('any_token', SignatureTypes.account)
       expect(updated).toBe(true)
       const signature = await signatureCollection.findOne({ token: 'any_token' })
       expect(signature.useDate).toEqual(new Date())

@@ -1,5 +1,5 @@
-import { SignatureTokenModel } from '@/domain/models/signature-token-model'
+import { SignatureTokenModel, SignatureTypes } from '@/domain/models/signature-token-model'
 
 export interface AddSignatureTokenRepository {
-  add (token: string): Promise<SignatureTokenModel>
+  add (token: string, type: SignatureTypes, subject?: string): Promise<SignatureTokenModel>
 }

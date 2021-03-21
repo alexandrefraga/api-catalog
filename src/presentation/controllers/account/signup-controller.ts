@@ -4,6 +4,7 @@ import { AddAccount } from '@/domain/usecases/add-account'
 import { AddSignatureToken } from '@/domain/usecases/add-signature-token'
 import { EmailInUseError } from '../../errors'
 import { SendMail } from '@/domain/usecases/send-mail-usecase'
+import { SignatureTypes } from '@/domain/models/signature-token-model'
 
 export class SignUpController implements Controller<SignUpRequestParameters> {
   constructor (
@@ -24,7 +25,7 @@ export class SignUpController implements Controller<SignUpRequestParameters> {
       if (!account) {
         return forbidden(new EmailInUseError())
       }
-      const { token } = await this.addSignatureToken.add(account.id)
+      const { token } = await this.addSignatureToken.add(account.id, SignatureTypes.account, 'email validation')
       await this.sendMail.send({
         name: account.name,
         email: account.email,

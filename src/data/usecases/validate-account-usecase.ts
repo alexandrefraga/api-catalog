@@ -1,3 +1,4 @@
+import { SignatureTypes } from '@/domain/models/signature-token-model'
 import { ValidateAccount } from '@/domain/usecases/validate-account'
 import { Decrypter } from '../protocols/criptography'
 import { UpdateEmailRepository } from '../protocols/db'
@@ -10,7 +11,7 @@ export class ValidateAccountUseCase implements ValidateAccount {
     private readonly emailRepository: UpdateEmailRepository
   ) {}
 
-  async validate (token: string): Promise<boolean> {
+  async validate (token: string, type: SignatureTypes): Promise<boolean> {
     let accountId: string
     try {
       const decryptedToken = await this.decrypter.decrypt(token)
@@ -18,7 +19,7 @@ export class ValidateAccountUseCase implements ValidateAccount {
     } catch (error) {
       return null
     }
-    const updatedSignature = await this.signatureByTokenRepository.updateUsed(token)
+    const updatedSignature = await this.signatureByTokenRepository.updateUsed(token, type)
     if (updatedSignature) {
       const updatedEmail = await this.emailRepository.updateEmail(accountId, new Date())
       return updatedEmail

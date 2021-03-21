@@ -1,3 +1,4 @@
+import { SignatureTypes } from '@/domain/models/signature-token-model'
 import { AddAccount } from '@/domain/usecases/add-account'
 import { AddSignatureToken } from '@/domain/usecases/add-signature-token'
 import { SendMail } from '@/domain/usecases/send-mail-usecase'
@@ -19,7 +20,7 @@ type SutTypes = {
 const makeSut = (): SutTypes => {
   const validatorStub = mockValidator()
   const addAccountStub = mockAddAccount()
-  const addSignatureTokenStub = mockAddSignatureToken()
+  const addSignatureTokenStub = mockAddSignatureToken(SignatureTypes.account)
   const sendMailUsecaseStub = mockSendMailUsecase()
   const sut = new SignUpController(validatorStub, addAccountStub, addSignatureTokenStub, sendMailUsecaseStub)
   return {
@@ -85,7 +86,7 @@ describe('SignUpController', () => {
     const { sut, addSignatureTokenStub } = makeSut()
     const addSpy = jest.spyOn(addSignatureTokenStub, 'add')
     await sut.execute(request)
-    expect(addSpy).toHaveBeenCalledWith('valid_id')
+    expect(addSpy).toHaveBeenCalledWith('valid_id', SignatureTypes.account, 'email validation')
   })
 
   test('Should return 500 if AddSignatureToken throws', async () => {
@@ -105,7 +106,7 @@ describe('SignUpController', () => {
       subject: `Account confirmation to ${name}`,
       name,
       email,
-      token: mockSignatureTokenModel().token
+      token: mockSignatureTokenModel(SignatureTypes.account).token
     }
     expect(sendSpy).toHaveBeenCalledWith(data)
   })

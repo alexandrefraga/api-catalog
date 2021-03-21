@@ -3,6 +3,7 @@ import { ValidateAccountController } from '@/presentation/controllers/account/va
 import { Validation } from '@/presentation/protocolls'
 import { ServerError, UnauthorizedError } from '@/presentation/errors'
 import { mockValidateAccountParams, mockValidator, mockValidateAccount } from '../../../mocks'
+import { SignatureTypes } from '@/domain/models/signature-token-model'
 
 const validateParams = mockValidateAccountParams()
 
@@ -45,11 +46,11 @@ describe('ValidateAccount Controller', () => {
     expect(httpResponse.body).toEqual(new ServerError(''))
   })
 
-  test('Should call DbValidateAccount with correct tokenValidation', async () => {
+  test('Should call ValidateAccount with correct tokenValidation', async () => {
     const { sut, dbValidateAccountStub } = makeSut()
     const validateSpy = jest.spyOn(dbValidateAccountStub, 'validate')
     await sut.execute(validateParams)
-    expect(validateSpy).toHaveBeenCalledWith(validateParams.tokenValidation)
+    expect(validateSpy).toHaveBeenCalledWith(validateParams.tokenValidation, SignatureTypes.account)
   })
 
   test('Should return 500 if DbValidateAccount throws', async () => {

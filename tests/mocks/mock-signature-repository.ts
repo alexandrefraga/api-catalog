@@ -1,12 +1,12 @@
 import { AddSignatureTokenRepository } from '@/data/protocols/db/add-signature-token-repository'
 import { UpdateUsedSignatureByTokenRepository } from '@/data/protocols/db/update-used-signature-by-token-repository'
-import { SignatureTokenModel } from '@/domain/models/signature-token-model'
+import { SignatureTokenModel, SignatureTypes } from '@/domain/models/signature-token-model'
 import { mockSignatureTokenModel } from './mock-signature-token'
 
 export const mockAddSignatureTokenRepository = (): AddSignatureTokenRepository => {
   class AddSignatureTokenRepositoryStub implements AddSignatureTokenRepository {
-    async add (token: string): Promise<SignatureTokenModel> {
-      return Promise.resolve(mockSignatureTokenModel())
+    async add (token: string, type: SignatureTypes, subject?: string): Promise<SignatureTokenModel> {
+      return Promise.resolve(mockSignatureTokenModel(type))
     }
   }
   return new AddSignatureTokenRepositoryStub()

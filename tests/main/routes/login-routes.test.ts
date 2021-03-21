@@ -9,6 +9,7 @@ import { Collection } from 'mongodb'
 import { hash } from 'bcrypt'
 import { sign } from 'jsonwebtoken'
 import MockDate from 'mockdate'
+import { SignatureTypes } from '@/domain/models/signature-token-model'
 
 const sendMailMock = jest.fn()
 jest.mock('nodemailer')
@@ -241,7 +242,11 @@ describe('Login Routes', () => {
       })
       const _id = result.ops[0]._id
       const tokenValidation = await sign({ id: _id }, env.jwtSecret)
-      await signatureCollection.insertOne({ token: tokenValidation })
+      await signatureCollection.insertOne({
+        token: tokenValidation,
+        type: SignatureTypes.account,
+        subject: 'any_subject'
+      })
       await request(app)
         .get(`/api/confirmation/${tokenValidation}`)
         .expect(200)
