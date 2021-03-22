@@ -34,6 +34,16 @@ describe('Signature Token Mongo Repository', () => {
       expect(signature.type).toBe('account')
       expect(signature.subject).toBe('any_subject')
     })
+
+    test('Should return an signature without subject if add on success', async () => {
+      const sut = makeSut()
+      const signature = await sut.add('any_token', SignatureTypes.account)
+      expect(signature).toBeTruthy()
+      expect(signature.id).toBeTruthy()
+      expect(signature.token).toBe('any_token')
+      expect(signature.type).toBe('account')
+      expect(signature.subject).toBeFalsy()
+    })
   })
 
   describe('updateUsed', () => {
