@@ -1,12 +1,22 @@
 export enum Role {
   systemAdmin = 'system administrator',
-  systemOperator = 'system operator'
+  systemOperator = 'system operator',
+  storeAdmin = 'store administrator',
+  storeOperator = 'store operator'
 }
 
 export type Key = {
   typeKey: string
-  storeId: string
+  role: Role
+  storeId: string[]
   attributes: string[]
+}
+
+export type KeyRoute = {
+  typeKey: string
+  role: Role
+  attribute: string
+  storeId?: string
 }
 
 export type AccountModel = {
@@ -15,6 +25,7 @@ export type AccountModel = {
   email: string
   emailConfirmation?: Date
   password: string
+  token?: string
   role?: Role
   keys?: Key[]
 }
