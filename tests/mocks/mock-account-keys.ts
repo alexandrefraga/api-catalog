@@ -53,3 +53,9 @@ export const makeKeyRouteOperatorStore = (): KeyRoute => ({
   storeId: 'store_id',
   attribute: 'any'
 })
+
+export const makeKeyRouteStoreError = (): KeyRoute => ({
+  typeKey: 'store',
+  role: Role.storeOperator,
+  attribute: 'any'
+})

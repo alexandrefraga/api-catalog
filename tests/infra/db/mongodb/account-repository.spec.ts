@@ -1,6 +1,6 @@
 import {
   mockAddAccountParams, makeKeyAdmin, makeKeyRouteAdmin, makeKeyOperator, makeKeyRouteOperator,
-  makeKeyAdminStore, makeKeyRouteAdminStore, makeKeyRouteOperatorStore, makeKeyOperatorStore
+  makeKeyAdminStore, makeKeyRouteAdminStore, makeKeyRouteOperatorStore, makeKeyOperatorStore, makeKeyRouteStoreError
 } from '@/../tests/mocks'
 import { AccountMongoRepository } from '@/infra/db/mongodb/account-repository'
 import { MongoHelper } from '@/infra/db/mongodb/mongo-helper'
@@ -225,6 +225,14 @@ describe('Account Mongo Repository', () => {
       await accountCollection.insertOne(fakeAccount)
       const sut = makeSut()
       const account = await sut.loadByKey('invalid_token', makeKeyRouteAdmin())
+      expect(account).toBeNull()
+    })
+
+    test('Should return null if no set storeId in required key type store', async () => {
+      const fakeAccount = Object.assign({}, mockAddAccountParams(), { token: 'any_token', keys: [makeKeyAdmin()] })
+      await accountCollection.insertOne(fakeAccount)
+      const sut = makeSut()
+      const account = await sut.loadByKey('any_token', makeKeyRouteStoreError())
       expect(account).toBeNull()
     })
 

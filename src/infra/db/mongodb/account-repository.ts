@@ -117,6 +117,8 @@ export class AccountMongoRepository implements AddAccountRepository, LoadAccount
           }
         }
       })
+    } else {
+      query.push({ $match: { token } }, { $skip: 1 })
     }
     const account = await accountCollection.aggregate(query).toArray()
     return account.length ? MongoHelper.map(account[0]) : null
