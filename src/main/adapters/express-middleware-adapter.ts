@@ -3,16 +3,24 @@ import { NextFunction, Request, Response } from 'express'
 
 export const adaptMiddleware = (middleware: Middleware) => {
   return async (req: Request, res: Response, next: NextFunction) => {
-    const httpRequest: HttpRequest = {
-      headers: req.headers
+    const request: HttpRequest = {
+      headers: req.headers,
+      params: {}
     }
-    const httpResponse = await middleware.execute(httpRequest)
-    if (httpResponse.statusCode === 200) {
-      Object.assign(req, httpResponse.body)
+
+    for (const field of ['storeId']) {
+      if (req.params[field]) {
+        Object.assign(request.params, { [`${field}`]: req.params[field] })
+      }
+    }
+
+    const response = await middleware.execute(request)
+    if (response.statusCode === 200) {
+      Object.assign(req, response.body)
       next()
     } else {
-      res.status(httpResponse.statusCode).json({
-        error: httpResponse.body.message
+      res.status(response.statusCode).json({
+        error: response.body.message
       })
     }
   }

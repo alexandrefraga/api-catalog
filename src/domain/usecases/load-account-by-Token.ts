@@ -1,5 +1,5 @@
-import { AccountModel, Role } from '@/domain/models/account-model'
+import { AccountModel, KeyParams } from '@/domain/models/account-model'
 
 export interface LoadAccountByToken {
-  load (token: string, role?: Role): Promise<AccountModel>
+  load (token: string, key?: KeyParams): Promise<AccountModel>
 }

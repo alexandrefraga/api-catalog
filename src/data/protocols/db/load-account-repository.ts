@@ -1,4 +1,4 @@
-import { AccountModel, KeyRoute, Role } from '@/domain/models/account-model'
+import { AccountModel, KeyParams, Role } from '@/domain/models/account-model'
 
 export interface LoadAccountByEmailRepository {
   loadByEmail (email: string, emailConfirmation?: Date): Promise<AccountModel>
@@ -9,5 +9,5 @@ export interface LoadAccountByTokenRepository {
 }
 
 export interface LoadAccountByKeyRepository {
-  loadByKey (token: string, key: KeyRoute): Promise<AccountModel>
+  loadByKey (token: string, key: KeyParams): Promise<AccountModel>
 }

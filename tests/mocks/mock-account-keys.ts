@@ -1,4 +1,4 @@
-import { Key, KeyRoute, Role } from '@/domain/models/account-model'
+import { Key, KeyParams, KeyRoute, Role } from '@/domain/models/account-model'
 
 export const makeKeyAdmin = (): Key => ({
   typeKey: 'app',
@@ -10,7 +10,15 @@ export const makeKeyAdmin = (): Key => ({
 export const makeKeyRouteAdmin = (): KeyRoute => ({
   typeKey: 'app',
   role: Role.systemAdmin,
-  attribute: ''
+  requiredStoreId: false,
+  attribute: null
+})
+
+export const makeKeyParamsAdmin = (): KeyParams => ({
+  typeKey: 'app',
+  role: Role.systemAdmin,
+  storeId: null,
+  attribute: null
 })
 
 export const makeKeyOperator = (): Key => ({
@@ -20,9 +28,10 @@ export const makeKeyOperator = (): Key => ({
   attributes: ['any']
 })
 
-export const makeKeyRouteOperator = (): KeyRoute => ({
+export const makeKeyParamsOperator = (): KeyParams => ({
   typeKey: 'app',
   role: Role.systemOperator,
+  storeId: null,
   attribute: 'any'
 })
 
@@ -33,10 +42,17 @@ export const makeKeyAdminStore = (): Key => ({
   attributes: []
 })
 
-export const makeKeyRouteAdminStore = (): KeyRoute => ({
+export const makeKeyParamsAdminStore = (): KeyParams => ({
   typeKey: 'store',
   role: Role.storeAdmin,
   storeId: 'store_id',
+  attribute: 'any'
+})
+
+export const makeKeyRouteAdminStore = (): KeyRoute => ({
+  typeKey: 'store',
+  role: Role.storeAdmin,
+  requiredStoreId: true,
   attribute: 'any'
 })
 
@@ -47,14 +63,14 @@ export const makeKeyOperatorStore = (): Key => ({
   attributes: ['any']
 })
 
-export const makeKeyRouteOperatorStore = (): KeyRoute => ({
+export const makeKeyParamsOperatorStore = (): KeyParams => ({
   typeKey: 'store',
   role: Role.storeOperator,
   storeId: 'store_id',
   attribute: 'any'
 })
 
-export const makeKeyRouteStoreError = (): KeyRoute => ({
+export const makeKeyParamsStoreError = (): KeyParams => ({
   typeKey: 'store',
   role: Role.storeOperator,
   attribute: 'any'

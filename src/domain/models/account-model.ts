@@ -16,6 +16,13 @@ export type KeyRoute = {
   typeKey: string
   role: Role
   attribute: string
+  requiredStoreId: boolean
+}
+
+export type KeyParams = {
+  typeKey: string
+  role: Role
+  attribute: string
   storeId?: string
 }
 
@@ -26,6 +33,5 @@ export type AccountModel = {
   emailConfirmation?: Date
   password: string
   token?: string
-  role?: Role
   keys?: Key[]
 }

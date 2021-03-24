@@ -1,4 +1,4 @@
-import { AccountModel, KeyRoute, Role } from '@/domain/models/account-model'
+import { AccountModel, KeyParams, Role } from '@/domain/models/account-model'
 import { AddAccountParams } from '@/domain/usecases/add-account'
 import { AddAccountRepository, LoadAccountByEmailRepository, LoadAccountByKeyRepository, LoadAccountByTokenRepository, UpdateEmailRepository, UpdateTokenRepository } from '@/data/protocols/db'
 import { MongoHelper } from '@/infra/db/mongodb/mongo-helper'
@@ -25,7 +25,7 @@ export class AccountMongoRepository implements AddAccountRepository, LoadAccount
     return account && MongoHelper.map(account)
   }
 
-  async loadByKey (token: string, key?: KeyRoute): Promise<AccountModel> {
+  async loadByKey (token: string, key?: KeyParams): Promise<AccountModel> {
     const accountCollection = await MongoHelper.getCollection('accounts')
     const query: Object[] = []
     if (!key) {

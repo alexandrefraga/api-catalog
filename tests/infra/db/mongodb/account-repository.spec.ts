@@ -1,6 +1,6 @@
 import {
-  mockAddAccountParams, makeKeyAdmin, makeKeyRouteAdmin, makeKeyOperator, makeKeyRouteOperator,
-  makeKeyAdminStore, makeKeyRouteAdminStore, makeKeyRouteOperatorStore, makeKeyOperatorStore, makeKeyRouteStoreError
+  mockAddAccountParams, makeKeyAdmin, makeKeyParamsAdmin, makeKeyOperator, makeKeyParamsOperator,
+  makeKeyAdminStore, makeKeyParamsAdminStore, makeKeyParamsOperatorStore, makeKeyOperatorStore, makeKeyParamsStoreError
 } from '@/../tests/mocks'
 import { AccountMongoRepository } from '@/infra/db/mongodb/account-repository'
 import { MongoHelper } from '@/infra/db/mongodb/mongo-helper'
@@ -208,7 +208,7 @@ describe('Account Mongo Repository', () => {
       const fakeAccount = Object.assign({}, mockAddAccountParams(), { token: 'any_token', keys: [makeKeyAdmin()] })
       await accountCollection.insertOne(fakeAccount)
       const sut = makeSut()
-      const account = await sut.loadByKey('invalid_token', makeKeyRouteAdmin())
+      const account = await sut.loadByKey('invalid_token', makeKeyParamsAdmin())
       expect(account).toBeNull()
     })
 
@@ -216,7 +216,7 @@ describe('Account Mongo Repository', () => {
       const fakeAccount = Object.assign({}, mockAddAccountParams(), { token: 'any_token' })
       await accountCollection.insertOne(fakeAccount)
       const sut = makeSut()
-      const account = await sut.loadByKey('any_token', makeKeyRouteAdmin())
+      const account = await sut.loadByKey('any_token', makeKeyParamsAdmin())
       expect(account).toBeNull()
     })
 
@@ -224,7 +224,7 @@ describe('Account Mongo Repository', () => {
       const fakeAccount = Object.assign({}, mockAddAccountParams(), { token: 'any_token', keys: [makeKeyAdmin()] })
       await accountCollection.insertOne(fakeAccount)
       const sut = makeSut()
-      const account = await sut.loadByKey('invalid_token', makeKeyRouteAdmin())
+      const account = await sut.loadByKey('invalid_token', makeKeyParamsAdmin())
       expect(account).toBeNull()
     })
 
@@ -232,7 +232,7 @@ describe('Account Mongo Repository', () => {
       const fakeAccount = Object.assign({}, mockAddAccountParams(), { token: 'any_token', keys: [makeKeyAdmin()] })
       await accountCollection.insertOne(fakeAccount)
       const sut = makeSut()
-      const account = await sut.loadByKey('any_token', makeKeyRouteStoreError())
+      const account = await sut.loadByKey('any_token', makeKeyParamsStoreError())
       expect(account).toBeNull()
     })
 
@@ -240,12 +240,12 @@ describe('Account Mongo Repository', () => {
       const fakeAccount = Object.assign({}, mockAddAccountParams(), { token: 'any_token', keys: [makeKeyAdmin()] })
       await accountCollection.insertOne(fakeAccount)
       const sut = makeSut()
-      const account1 = await sut.loadByKey('any_token', makeKeyRouteOperator())
+      const account1 = await sut.loadByKey('any_token', makeKeyParamsOperator())
       expect(account1).toBeTruthy()
       expect(account1.name).toBe(mockAddAccountParams().name)
-      const account2 = await sut.loadByKey('any_token', makeKeyRouteAdminStore())
+      const account2 = await sut.loadByKey('any_token', makeKeyParamsAdminStore())
       expect(account2).toBeTruthy()
-      const account3 = await sut.loadByKey('any_token', makeKeyRouteOperatorStore())
+      const account3 = await sut.loadByKey('any_token', makeKeyParamsOperatorStore())
       expect(account3).toBeTruthy()
     })
 
@@ -253,11 +253,11 @@ describe('Account Mongo Repository', () => {
       const fakeAccount = Object.assign({}, mockAddAccountParams(), { token: 'any_token', keys: [makeKeyOperator()] })
       await accountCollection.insertOne(fakeAccount)
       const sut = makeSut()
-      const account1 = await sut.loadByKey('any_token', makeKeyRouteOperator())
+      const account1 = await sut.loadByKey('any_token', makeKeyParamsOperator())
       expect(account1).toBeTruthy()
-      const account2 = await sut.loadByKey('any_token', makeKeyRouteAdminStore())
+      const account2 = await sut.loadByKey('any_token', makeKeyParamsAdminStore())
       expect(account2).toBeTruthy()
-      const account3 = await sut.loadByKey('any_token', makeKeyRouteOperatorStore())
+      const account3 = await sut.loadByKey('any_token', makeKeyParamsOperatorStore())
       expect(account3).toBeTruthy()
     })
 
@@ -265,9 +265,9 @@ describe('Account Mongo Repository', () => {
       const fakeAccount = Object.assign({}, mockAddAccountParams(), { token: 'any_token', keys: [makeKeyAdminStore()] })
       await accountCollection.insertOne(fakeAccount)
       const sut = makeSut()
-      const account1 = await sut.loadByKey('any_token', makeKeyRouteAdminStore())
+      const account1 = await sut.loadByKey('any_token', makeKeyParamsAdminStore())
       expect(account1).toBeTruthy()
-      const account2 = await sut.loadByKey('any_token', makeKeyRouteOperatorStore())
+      const account2 = await sut.loadByKey('any_token', makeKeyParamsOperatorStore())
       expect(account2).toBeTruthy()
     })
 
@@ -275,7 +275,7 @@ describe('Account Mongo Repository', () => {
       const fakeAccount = Object.assign({}, mockAddAccountParams(), { token: 'any_token', keys: [makeKeyOperatorStore()] })
       await accountCollection.insertOne(fakeAccount)
       const sut = makeSut()
-      const account = await sut.loadByKey('any_token', makeKeyRouteOperatorStore())
+      const account = await sut.loadByKey('any_token', makeKeyParamsOperatorStore())
       expect(account).toBeTruthy()
       expect(account.id).toBeTruthy()
       expect(account.name).toBe(mockAddAccountParams().name)
