@@ -5,22 +5,27 @@ export enum Role {
   storeOperator = 'store operator'
 }
 
+export enum TypeKey {
+  app = 'app',
+  store = 'store'
+}
+
 export type Key = {
-  typeKey: string
+  typeKey: TypeKey
   role: Role
   storeId: string[]
   attributes: string[]
 }
 
 export type KeyRoute = {
-  typeKey: string
+  typeKey: TypeKey
   role: Role
   attribute: string
   requiredStoreId: boolean
 }
 
 export type KeyParams = {
-  typeKey: string
+  typeKey: TypeKey
   role: Role
   attribute: string
   storeId?: string

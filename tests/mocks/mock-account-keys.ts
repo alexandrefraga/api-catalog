@@ -1,77 +1,91 @@
-import { Key, KeyParams, KeyRoute, Role } from '@/domain/models/account-model'
+import { Key, KeyParams, KeyRoute, Role, TypeKey } from '@/domain/models/account-model'
 
 export const makeKeyAdmin = (): Key => ({
-  typeKey: 'app',
+  typeKey: TypeKey.app,
   role: Role.systemAdmin,
   storeId: [],
   attributes: []
 })
 
 export const makeKeyRouteAdmin = (): KeyRoute => ({
-  typeKey: 'app',
+  typeKey: TypeKey.app,
   role: Role.systemAdmin,
   requiredStoreId: false,
   attribute: null
 })
 
 export const makeKeyParamsAdmin = (): KeyParams => ({
-  typeKey: 'app',
+  typeKey: TypeKey.app,
   role: Role.systemAdmin,
   storeId: null,
   attribute: null
 })
 
 export const makeKeyOperator = (): Key => ({
-  typeKey: 'app',
+  typeKey: TypeKey.app,
   role: Role.systemOperator,
   storeId: [],
   attributes: ['any']
 })
 
 export const makeKeyParamsOperator = (): KeyParams => ({
-  typeKey: 'app',
+  typeKey: TypeKey.app,
   role: Role.systemOperator,
   storeId: null,
   attribute: 'any'
 })
 
+export const makeKeyRouteOperator = (): KeyRoute => ({
+  typeKey: TypeKey.app,
+  role: Role.systemOperator,
+  requiredStoreId: false,
+  attribute: 'any'
+})
+
 export const makeKeyAdminStore = (): Key => ({
-  typeKey: 'store',
+  typeKey: TypeKey.store,
   role: Role.storeAdmin,
   storeId: ['store_id'],
   attributes: []
 })
 
 export const makeKeyParamsAdminStore = (): KeyParams => ({
-  typeKey: 'store',
+  typeKey: TypeKey.store,
   role: Role.storeAdmin,
   storeId: 'store_id',
   attribute: 'any'
 })
 
 export const makeKeyRouteAdminStore = (): KeyRoute => ({
-  typeKey: 'store',
+  typeKey: TypeKey.store,
   role: Role.storeAdmin,
   requiredStoreId: true,
   attribute: 'any'
 })
 
-export const makeKeyOperatorStore = (): Key => ({
-  typeKey: 'store',
+export const makeKeyOperatorStore = (storeId: string = 'store_id'): Key => ({
+  typeKey: TypeKey.store,
   role: Role.storeOperator,
-  storeId: ['store_id'],
+  storeId: [storeId],
   attributes: ['any']
 })
 
 export const makeKeyParamsOperatorStore = (): KeyParams => ({
-  typeKey: 'store',
+  typeKey: TypeKey.store,
   role: Role.storeOperator,
   storeId: 'store_id',
   attribute: 'any'
 })
 
+export const makeKeyRouteOperatorStore = (): KeyRoute => ({
+  typeKey: TypeKey.store,
+  role: Role.storeOperator,
+  requiredStoreId: true,
+  attribute: 'any'
+})
+
 export const makeKeyParamsStoreError = (): KeyParams => ({
-  typeKey: 'store',
+  typeKey: TypeKey.store,
   role: Role.storeOperator,
   attribute: 'any'
 })

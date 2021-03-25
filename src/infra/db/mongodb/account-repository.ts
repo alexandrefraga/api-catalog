@@ -1,4 +1,4 @@
-import { AccountModel, KeyParams, Role } from '@/domain/models/account-model'
+import { AccountModel, KeyParams, Role, TypeKey } from '@/domain/models/account-model'
 import { AddAccountParams } from '@/domain/usecases/add-account'
 import { AddAccountRepository, LoadAccountByEmailRepository, LoadAccountByKeyRepository, LoadAccountByTokenRepository, UpdateEmailRepository, UpdateTokenRepository } from '@/data/protocols/db'
 import { MongoHelper } from '@/infra/db/mongodb/mongo-helper'
@@ -30,14 +30,14 @@ export class AccountMongoRepository implements AddAccountRepository, LoadAccount
     const query: Object[] = []
     if (!key) {
       query.push({ $match: { token } })
-    } else if (key.typeKey === 'app') {
+    } else if (key.typeKey === TypeKey.app) {
       query.push({
         $match: {
           token,
           keys: {
             $elemMatch: {
-              typeKey: { $in: ['app'] },
-              role: { $in: ['system administrator', key.role] }
+              typeKey: { $in: [TypeKey.app] },
+              role: { $in: [Role.systemAdmin, key.role] }
             }
           }
         }
@@ -50,13 +50,13 @@ export class AccountMongoRepository implements AddAccountRepository, LoadAccount
               $or: [
                 {
                   $and: [
-                    { $eq: ['$keys.typeKey', 'app'] },
-                    { $eq: ['$keys.role', 'system administrator'] }
+                    { $eq: ['$keys.typeKey', TypeKey.app] },
+                    { $eq: ['$keys.role', Role.systemAdmin] }
                   ]
                 }, {
                   $and: [
-                    { $eq: ['$keys.typeKey', 'app'] },
-                    { $eq: ['$keys.role', 'system operator'] },
+                    { $eq: ['$keys.typeKey', TypeKey.app] },
+                    { $eq: ['$keys.role', Role.systemOperator] },
                     { $in: [key.attribute, '$keys.attributes'] }
                   ]
                 }
@@ -67,14 +67,14 @@ export class AccountMongoRepository implements AddAccountRepository, LoadAccount
           }
         }
       })
-    } else if (key.typeKey === 'store' && key.storeId) {
+    } else if (key.typeKey === TypeKey.store && key.storeId) {
       query.push({
         $match: {
           token,
           keys: {
             $elemMatch: {
-              typeKey: { $in: ['app', 'store'] },
-              role: { $in: ['system administrator', 'system operator', 'store administrator', key.role] }
+              typeKey: { $in: [TypeKey.app, TypeKey.store] },
+              role: { $in: [Role.systemAdmin, Role.systemOperator, Role.storeAdmin, key.role] }
             }
           }
         }
@@ -87,25 +87,25 @@ export class AccountMongoRepository implements AddAccountRepository, LoadAccount
               $or: [
                 {
                   $and: [
-                    { $eq: ['$keys.typeKey', 'app'] },
-                    { $eq: ['$keys.role', 'system administrator'] }
+                    { $eq: ['$keys.typeKey', TypeKey.app] },
+                    { $eq: ['$keys.role', Role.systemAdmin] }
                   ]
                 }, {
                   $and: [
-                    { $eq: ['$keys.typeKey', 'app'] },
-                    { $eq: ['$keys.role', 'system operator'] },
+                    { $eq: ['$keys.typeKey', TypeKey.app] },
+                    { $eq: ['$keys.role', Role.systemOperator] },
                     { $in: [key.attribute, '$keys.attributes'] }
                   ]
                 }, {
                   $and: [
-                    { $eq: ['$keys.typeKey', 'store'] },
-                    { $eq: ['$keys.role', 'store administrator'] },
+                    { $eq: ['$keys.typeKey', TypeKey.store] },
+                    { $eq: ['$keys.role', Role.storeAdmin] },
                     { $in: [key.storeId, '$keys.storeId'] }
                   ]
                 }, {
                   $and: [
-                    { $eq: ['$keys.typeKey', 'store'] },
-                    { $eq: ['$keys.role', 'store operator'] },
+                    { $eq: ['$keys.typeKey', TypeKey.store] },
+                    { $eq: ['$keys.role', Role.storeOperator] },
                     { $in: [key.storeId, '$keys.storeId'] },
                     { $in: [key.attribute, '$keys.attributes'] }
                   ]
