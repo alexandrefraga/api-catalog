@@ -13,7 +13,7 @@ export enum TypeKey {
 export type Key = {
   typeKey: TypeKey
   role: Role
-  storeId: string[]
+  storeId: string
   attributes: string[]
 }
 

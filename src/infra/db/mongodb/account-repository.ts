@@ -1,10 +1,12 @@
-import { AccountModel, KeyParams, Role, TypeKey } from '@/domain/models/account-model'
+import { AccountModel, Key, KeyParams, Role, TypeKey } from '@/domain/models/account-model'
 import { AddAccountParams } from '@/domain/usecases/add-account'
 import { AddAccountRepository, LoadAccountByEmailRepository, LoadAccountByKeyRepository, LoadAccountByTokenRepository, UpdateEmailRepository, UpdateTokenRepository } from '@/data/protocols/db'
 import { MongoHelper } from '@/infra/db/mongodb/mongo-helper'
 import { ObjectId } from 'mongodb'
+import { SaveKeyAccountRepository } from '@/data/protocols/db/save-key-account-repository'
 
-export class AccountMongoRepository implements AddAccountRepository, LoadAccountByEmailRepository, LoadAccountByTokenRepository, UpdateTokenRepository, UpdateEmailRepository, LoadAccountByKeyRepository {
+export class AccountMongoRepository implements AddAccountRepository, LoadAccountByEmailRepository, LoadAccountByTokenRepository,
+  UpdateTokenRepository, UpdateEmailRepository, LoadAccountByKeyRepository, SaveKeyAccountRepository {
   async add (account: AddAccountParams): Promise<AccountModel> {
     const accountCollection = await MongoHelper.getCollection('accounts')
     const result = await accountCollection.insertOne(account)
@@ -100,13 +102,13 @@ export class AccountMongoRepository implements AddAccountRepository, LoadAccount
                   $and: [
                     { $eq: ['$keys.typeKey', TypeKey.store] },
                     { $eq: ['$keys.role', Role.storeAdmin] },
-                    { $in: [key.storeId, '$keys.storeId'] }
+                    { $eq: ['$keys.storeId', key.storeId] }
                   ]
                 }, {
                   $and: [
                     { $eq: ['$keys.typeKey', TypeKey.store] },
                     { $eq: ['$keys.role', Role.storeOperator] },
-                    { $in: [key.storeId, '$keys.storeId'] },
+                    { $eq: ['$keys.storeId', key.storeId] },
                     { $in: [key.attribute, '$keys.attributes'] }
                   ]
                 }
@@ -131,12 +133,23 @@ export class AccountMongoRepository implements AddAccountRepository, LoadAccount
   }
 
   async updateEmail (id: string, confirmation: Date, email?: string): Promise<boolean> {
-    const setQuery = email ? { email: email, emailConfirmation: confirmation } : { email: email }
+    const setQuery = email ? { email: email, emailConfirmation: confirmation } : { emailConfirmation: confirmation }
     const accountCollection = await MongoHelper.getCollection('accounts')
     const response = await accountCollection.updateOne({
       _id: new ObjectId(id)
     }, {
       $set: setQuery
+    })
+    return !!response.modifiedCount
+  }
+
+  async saveKey (id: string, key: Key): Promise<boolean> {
+    const setQuery = key
+    const accountCollection = await MongoHelper.getCollection('accounts')
+    const response = await accountCollection.updateOne({
+      _id: new ObjectId(id)
+    }, {
+      $push: { keys: { $each: [setQuery] } }
     })
     return !!response.modifiedCount
   }

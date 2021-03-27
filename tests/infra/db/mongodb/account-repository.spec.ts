@@ -283,4 +283,18 @@ describe('Account Mongo Repository', () => {
       expect(account.password).toBe(mockAddAccountParams().password)
     })
   })
+
+  describe('saveKey', () => {
+    test('Should return true if save key in account', async () => {
+      const fakeAccount = Object.assign({}, mockAddAccountParams(), { token: 'any_token' })
+      const res = await accountCollection.insertOne(fakeAccount)
+      const idAccount = res.ops[0]._id
+      const sut = makeSut()
+      const response = await sut.saveKey(idAccount, makeKeyAdminStore())
+      expect(response).toBe(true)
+      const account = await accountCollection.findOne({ _id: idAccount })
+      expect(account).toEqual(Object.assign(fakeAccount, { keys: [makeKeyAdminStore()] })
+      )
+    })
+  })
 })
