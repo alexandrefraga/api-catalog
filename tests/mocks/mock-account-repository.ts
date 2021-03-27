@@ -1,10 +1,11 @@
-import { AccountModel, KeyParams, Role } from '@/domain/models/account-model'
+import { AccountModel, Key, KeyParams, Role } from '@/domain/models/account-model'
 import { AddAccountParams } from '@/domain/usecases/add-account'
 import { AddAccountRepository } from '@/data/protocols/db/add-account-repository'
 import { mockAccountModel } from './mock-account'
 import { LoadAccountByEmailRepository, LoadAccountByKeyRepository, LoadAccountByTokenRepository } from '@/data/protocols/db/load-account-repository'
 import { UpdateTokenRepository } from '../data/protocols/db/update-token-repository'
 import { UpdateEmailRepository } from '../data/protocols/db/update-email-repository'
+import { SaveKeyInAccountRepository } from '@/data/protocols/db/save-key-in-account-repository'
 
 export const mockAddAccountRepository = (): AddAccountRepository => {
   class AddAccountRepositoryStub implements AddAccountRepository {
@@ -58,4 +59,13 @@ export const mockUpdateEmailRepository = (): UpdateEmailRepository => {
     }
   }
   return new UpdateEmailRepositoryStub()
+}
+
+export const mockSaveKeyInAccountRepository = (): SaveKeyInAccountRepository => {
+  class SaveKeyInAccountRepositoryStub implements SaveKeyInAccountRepository {
+    async saveKey (id: string, key: Key): Promise<boolean> {
+      return Promise.resolve(true)
+    }
+  }
+  return new SaveKeyInAccountRepositoryStub()
 }

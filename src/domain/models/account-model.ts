@@ -11,6 +11,7 @@ export enum TypeKey {
 }
 
 export type Key = {
+  id: number
   typeKey: TypeKey
   role: Role
   storeId: string

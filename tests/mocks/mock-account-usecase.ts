@@ -1,9 +1,10 @@
-import { AccountModel, Role } from '@/domain/models/account-model'
+import { AccountModel, Key, KeyParams } from '@/domain/models/account-model'
 import { AddAccount, AddAccountParams } from '@/domain/usecases/add-account'
 import { ValidateAccount } from '@/domain/usecases/validate-account'
 import { Authentication, AuthenticationParameters, AuthenticationResponse } from '@/domain/usecases/authentication'
 import { mockAccountModel } from './mock-account'
 import { LoadAccountByToken } from '@/domain/usecases/load-account-by-token'
+import { SaveKeyInAccount } from '@/domain/usecases/save-key'
 
 export const mockAddAccount = (): AddAccount => {
   class AddAccountStub implements AddAccount {
@@ -39,9 +40,18 @@ export const mockValidateAccount = (): ValidateAccount => {
 
 export const mockLoadAccountByToken = (): LoadAccountByToken => {
   class LoadAccountByTokenStub implements LoadAccountByToken {
-    async load (token: string, role?: Role): Promise<AccountModel> {
+    async load (token: string, key?: KeyParams): Promise<AccountModel> {
       return Promise.resolve(mockAccountModel())
     }
   }
   return new LoadAccountByTokenStub()
+}
+
+export const mockSaveKeyInAccountUseCase = (): SaveKeyInAccount => {
+  class SaveKeyInAccountUseCaseStub implements SaveKeyInAccount {
+    async save (accountId: string, key: Key): Promise<void> {
+      return Promise.resolve()
+    }
+  }
+  return new SaveKeyInAccountUseCaseStub()
 }

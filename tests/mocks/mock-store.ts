@@ -2,7 +2,7 @@ import { StoreModel } from '@/domain/models/store-model'
 import { AddStoreParameters } from '../presentation/protocolls'
 
 export const mockStoreModel = (): StoreModel => ({
-  id: 'any_id',
+  id: 'store_id',
   company: 'any_company',
   tradingName: 'any_trading_name',
   description: 'any_description',

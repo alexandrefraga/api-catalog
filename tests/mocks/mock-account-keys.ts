@@ -1,6 +1,7 @@
 import { Key, KeyParams, KeyRoute, Role, TypeKey } from '@/domain/models/account-model'
 
 export const makeKeyAdmin = (): Key => ({
+  id: Date.now(),
   typeKey: TypeKey.app,
   role: Role.systemAdmin,
   storeId: null,
@@ -22,6 +23,7 @@ export const makeKeyParamsAdmin = (): KeyParams => ({
 })
 
 export const makeKeyOperator = (): Key => ({
+  id: Date.now(),
   typeKey: TypeKey.app,
   role: Role.systemOperator,
   storeId: null,
@@ -43,6 +45,7 @@ export const makeKeyRouteOperator = (): KeyRoute => ({
 })
 
 export const makeKeyAdminStore = (): Key => ({
+  id: Date.now(),
   typeKey: TypeKey.store,
   role: Role.storeAdmin,
   storeId: 'store_id',
@@ -64,6 +67,7 @@ export const makeKeyRouteAdminStore = (): KeyRoute => ({
 })
 
 export const makeKeyOperatorStore = (storeId: string = 'store_id'): Key => ({
+  id: Date.now(),
   typeKey: TypeKey.store,
   role: Role.storeOperator,
   storeId,

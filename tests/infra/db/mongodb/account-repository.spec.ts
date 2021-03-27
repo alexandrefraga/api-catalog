@@ -296,5 +296,12 @@ describe('Account Mongo Repository', () => {
       expect(account).toEqual(Object.assign(fakeAccount, { keys: [makeKeyAdminStore()] })
       )
     })
+
+    test('Should return false if save key fail', async () => {
+      const sut = makeSut()
+      const invalidId = new ObjectId().toHexString()
+      const response = await sut.saveKey(invalidId, makeKeyAdminStore())
+      expect(response).toBeFalsy()
+    })
   })
 })

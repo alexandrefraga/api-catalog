@@ -3,10 +3,10 @@ import { AddAccountParams } from '@/domain/usecases/add-account'
 import { AddAccountRepository, LoadAccountByEmailRepository, LoadAccountByKeyRepository, LoadAccountByTokenRepository, UpdateEmailRepository, UpdateTokenRepository } from '@/data/protocols/db'
 import { MongoHelper } from '@/infra/db/mongodb/mongo-helper'
 import { ObjectId } from 'mongodb'
-import { SaveKeyAccountRepository } from '@/data/protocols/db/save-key-account-repository'
+import { SaveKeyInAccountRepository } from '@/data/protocols/db/save-key-in-account-repository'
 
 export class AccountMongoRepository implements AddAccountRepository, LoadAccountByEmailRepository, LoadAccountByTokenRepository,
-  UpdateTokenRepository, UpdateEmailRepository, LoadAccountByKeyRepository, SaveKeyAccountRepository {
+  UpdateTokenRepository, UpdateEmailRepository, LoadAccountByKeyRepository, SaveKeyInAccountRepository {
   async add (account: AddAccountParams): Promise<AccountModel> {
     const accountCollection = await MongoHelper.getCollection('accounts')
     const result = await accountCollection.insertOne(account)
@@ -151,6 +151,6 @@ export class AccountMongoRepository implements AddAccountRepository, LoadAccount
     }, {
       $push: { keys: { $each: [setQuery] } }
     })
-    return !!response.modifiedCount
+    return !!response.matchedCount
   }
 }
