@@ -50,12 +50,15 @@ describe('Auth Middleware', () => {
   test('Should return OK if a loged user is required', async () => {
     const token = await createUserInRepository()
     const logedAuth = adaptMiddleware(makeAuthMiddleware())
-    app.post('/test_auth_loged', logedAuth, (req, res) => { res.status(200).send() })
+    app.post('/test_auth_loged', logedAuth, (req, res) => { res.status(200).send(req.body) })
     await request(app)
       .post('/test_auth_loged')
       .set('x-access-token', token)
       .send({})
       .expect(200)
+      .then((res) => {
+        expect(res.body.userId).toBeTruthy()
+      })
   })
 
   test('Should return OK if an system administrator user accesses the route and a correct key is required', async () => {

@@ -8,6 +8,7 @@
     "test": "jest --passWithNoTests --noStackTrace --runInBand",
     "test:serie": "jest --passWithNoTests --silent --noStackTrace --runInBand",
     "test:verbose": "jest --passWithNoTests --runInBand",
+    "test:integrationVerbose": "jest --passWithNoTests --runInBand --watch -c jest-integration-config.js",
     "test:unit": "npm test -- --watch -c jest-unit-config.js",
     "test:integration": "npm test -- --watch -c jest-integration-config.js",
     "test:staged": "npm test -- --findRelatedTests",
