@@ -153,4 +153,32 @@ export class AccountMongoRepository implements AddAccountRepository, LoadAccount
     })
     return !!response.matchedCount
   }
+
+  async updateKey (id: string, key: Key): Promise<boolean> {
+    const accountCollection = await MongoHelper.getCollection('accounts')
+    const response = await accountCollection.updateOne({
+      _id: new ObjectId(id)
+    }, [{
+      $project: {
+        _id: 1,
+        name: '$name',
+        email: '$email',
+        token: '$token',
+        keys: {
+          $map: {
+            input: '$keys',
+            as: 'item',
+            in: {
+              $cond: {
+                if: { $eq: ['$$item.id', key.id] },
+                then: key,
+                else: '$$item'
+              }
+            }
+          }
+        }
+      }
+    }])
+    return !!response.modifiedCount
+  }
 }

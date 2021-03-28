@@ -304,4 +304,21 @@ describe('Account Mongo Repository', () => {
       expect(response).toBeFalsy()
     })
   })
+
+  describe('updateKey', () => {
+    test('Should return true if update key in account', async () => {
+      const key = makeKeyOperator()
+      const otherKey = Object.assign(makeKeyOperatorStore(), { id: 9999 })
+      const fakeAccount = Object.assign({}, mockAddAccountParams(), { token: 'any_token', keys: [key, otherKey] })
+      const res = await accountCollection.insertOne(fakeAccount)
+      const idAccount = res.ops[0]._id
+      const sut = makeSut()
+      const changedKey = Object.assign(key, { role: Role.systemAdmin, attributes: [] })
+      const response = await sut.updateKey(idAccount, changedKey)
+      expect(response).toBe(true)
+      const account = await accountCollection.findOne({ _id: idAccount })
+      expect(account.keys[0]).toEqual(makeKeyAdmin())
+      expect(account.keys[1]).toEqual(otherKey)
+    })
+  })
 })
