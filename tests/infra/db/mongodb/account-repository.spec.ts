@@ -284,23 +284,23 @@ describe('Account Mongo Repository', () => {
     })
   })
 
-  describe('saveKey', () => {
-    test('Should return true if save key in account', async () => {
+  describe('addKey', () => {
+    test('Should return true if add key in account', async () => {
       const fakeAccount = Object.assign({}, mockAddAccountParams(), { token: 'any_token' })
       const res = await accountCollection.insertOne(fakeAccount)
       const idAccount = res.ops[0]._id
       const sut = makeSut()
-      const response = await sut.saveKey(idAccount, makeKeyAdminStore())
+      const response = await sut.addKey(idAccount, makeKeyAdminStore())
       expect(response).toBe(true)
       const account = await accountCollection.findOne({ _id: idAccount })
       expect(account).toEqual(Object.assign(fakeAccount, { keys: [makeKeyAdminStore()] })
       )
     })
 
-    test('Should return false if save key fail', async () => {
+    test('Should return false if add key fail', async () => {
       const sut = makeSut()
       const invalidId = new ObjectId().toHexString()
-      const response = await sut.saveKey(invalidId, makeKeyAdminStore())
+      const response = await sut.addKey(invalidId, makeKeyAdminStore())
       expect(response).toBeFalsy()
     })
   })

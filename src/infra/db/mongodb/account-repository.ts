@@ -1,12 +1,16 @@
 import { AccountModel, Key, KeyParams, Role, TypeKey } from '@/domain/models/account-model'
 import { AddAccountParams } from '@/domain/usecases/add-account'
-import { AddAccountRepository, LoadAccountByEmailRepository, LoadAccountByKeyRepository, LoadAccountByTokenRepository, UpdateEmailRepository, UpdateTokenRepository } from '@/data/protocols/db'
+import {
+  AddAccountRepository, LoadAccountByEmailRepository, LoadAccountByKeyRepository, LoadAccountByTokenRepository,
+  UpdateEmailRepository, UpdateTokenRepository, UpdateKeyInAccountRepository
+} from '@/data/protocols/db'
 import { MongoHelper } from '@/infra/db/mongodb/mongo-helper'
 import { ObjectId } from 'mongodb'
-import { SaveKeyInAccountRepository } from '@/data/protocols/db/save-key-in-account-repository'
+import { AddKeyInAccountRepository } from '@/data/protocols/db/add-key-in-account-repository'
 
-export class AccountMongoRepository implements AddAccountRepository, LoadAccountByEmailRepository, LoadAccountByTokenRepository,
-  UpdateTokenRepository, UpdateEmailRepository, LoadAccountByKeyRepository, SaveKeyInAccountRepository {
+export class AccountMongoRepository implements AddAccountRepository, LoadAccountByEmailRepository,
+  LoadAccountByTokenRepository, UpdateTokenRepository, UpdateEmailRepository, LoadAccountByKeyRepository,
+  AddKeyInAccountRepository, UpdateKeyInAccountRepository {
   async add (account: AddAccountParams): Promise<AccountModel> {
     const accountCollection = await MongoHelper.getCollection('accounts')
     const result = await accountCollection.insertOne(account)
@@ -143,7 +147,7 @@ export class AccountMongoRepository implements AddAccountRepository, LoadAccount
     return !!response.modifiedCount
   }
 
-  async saveKey (id: string, key: Key): Promise<boolean> {
+  async addKey (id: string, key: Key): Promise<boolean> {
     const setQuery = key
     const accountCollection = await MongoHelper.getCollection('accounts')
     const response = await accountCollection.updateOne({

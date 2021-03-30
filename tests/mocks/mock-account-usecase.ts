@@ -4,7 +4,7 @@ import { ValidateAccount } from '@/domain/usecases/validate-account'
 import { Authentication, AuthenticationParameters, AuthenticationResponse } from '@/domain/usecases/authentication'
 import { mockAccountModel } from './mock-account'
 import { LoadAccountByToken } from '@/domain/usecases/load-account-by-token'
-import { SaveKeyInAccount } from '@/domain/usecases/save-key'
+import { AddKeyInAccount } from '@/domain/usecases/add-key-in-account'
 
 export const mockAddAccount = (): AddAccount => {
   class AddAccountStub implements AddAccount {
@@ -47,11 +47,11 @@ export const mockLoadAccountByToken = (): LoadAccountByToken => {
   return new LoadAccountByTokenStub()
 }
 
-export const mockSaveKeyInAccountUseCase = (): SaveKeyInAccount => {
-  class SaveKeyInAccountUseCaseStub implements SaveKeyInAccount {
-    async save (accountId: string, key: Key): Promise<void> {
+export const mockAddKeyInAccountUseCase = (): AddKeyInAccount => {
+  class AddKeyInAccountUseCaseStub implements AddKeyInAccount {
+    async add (accountId: string, key: Key): Promise<void> {
       return Promise.resolve()
     }
   }
-  return new SaveKeyInAccountUseCaseStub()
+  return new AddKeyInAccountUseCaseStub()
 }
