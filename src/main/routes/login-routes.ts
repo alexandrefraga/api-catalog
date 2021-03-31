@@ -7,5 +7,5 @@ import { makeValidateAccountController } from '../factories/controllers/validate
 export default (router: Router): void => {
   router.post('/signup', adaptRoute(makeSignUpControler()))
   router.post('/login', adaptRoute(makeLoginControler()))
-  router.get('/confirmation/:tokenValidation', adaptRoute(makeValidateAccountController()))
+  router.get('/confirmation/:signature', adaptRoute(makeValidateAccountController()))
 }

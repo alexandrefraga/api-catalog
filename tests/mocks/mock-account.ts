@@ -1,6 +1,6 @@
 import { AccountModel } from '@/domain/models/account-model'
-import { AddAccountParams } from '../domain/usecases/add-account'
-import { AuthenticationParameters } from '../domain/usecases/authentication'
+import { AddAccountParams } from '../domain/usecases/account/add-account'
+import { AuthenticationParameters } from '../domain/usecases/account/authentication'
 import { LoginRequestParameters, SignUpRequestParameters, ValidateAccountParams } from '@/presentation/protocolls'
 
 export const mockAccountModel = (): AccountModel => ({
@@ -24,7 +24,7 @@ export const mockAddAccountParams = (): AddAccountParams => ({
 })
 
 export const mockValidateAccountParams = (): ValidateAccountParams => ({
-  tokenValidation: 'any_token'
+  signature: 'any_token'
 })
 
 export const mockLoginRequestParams = (): LoginRequestParameters => ({

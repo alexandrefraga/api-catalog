@@ -1,6 +1,6 @@
-import { Authentication, AuthenticationParameters, AuthenticationResponse } from '@/domain/usecases/authentication'
-import { Encrypter, HasherComparer } from '../protocols/criptography'
-import { LoadAccountByEmailRepository, UpdateTokenRepository } from '../protocols/db'
+import { Authentication, AuthenticationParameters, AuthenticationResponse } from '@/domain/usecases/account/authentication'
+import { Encrypter, HasherComparer } from '../../protocols/criptography'
+import { LoadAccountByEmailRepository, UpdateTokenRepository } from '../../protocols/db'
 
 export class AuthenticationUseCase implements Authentication {
   constructor (

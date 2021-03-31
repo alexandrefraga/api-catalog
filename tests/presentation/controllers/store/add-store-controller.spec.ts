@@ -1,5 +1,5 @@
-import { AddStore } from '@/domain/usecases/add-store'
-import { AddKeyInAccount } from '@/domain/usecases/add-key-in-account'
+import { AddStore } from '@/domain/usecases/store/add-store'
+import { AddKeyInAccount } from '@/domain/usecases/account/add-key-in-account'
 import { AddStoreController } from '@/presentation/controllers/store/add-store-controller'
 import { ServerError } from '@/presentation/errors'
 import { DataInUseError } from '@/presentation/errors/data-in-use-error'

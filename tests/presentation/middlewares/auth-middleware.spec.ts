@@ -2,7 +2,7 @@ import { HttpRequest, Middleware } from '@/presentation/protocolls'
 import { AuthMiddleware } from '@/presentation/middlewares/auth-middleware'
 import { forbidden, serverError, success } from '@/presentation/helpers/http-helper'
 import { AccessDeniedError } from '@/presentation/errors'
-import { LoadAccountByToken } from '@/domain/usecases/load-account-by-token'
+import { LoadAccountByToken } from '@/domain/usecases/account/load-account-by-Token'
 import { makeKeyParamsAdmin, makeKeyParamsAdminStore, makeKeyRouteAdmin, makeKeyRouteAdminStore, mockAccountModel, mockLoadAccountByToken } from '../../mocks'
 import { KeyRoute } from '@/domain/models/account-model'
 

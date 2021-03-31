@@ -12,7 +12,7 @@ export const adaptRoute = (controller: Controller) => {
         Object.assign(request, { [`${field}`]: req.body[field] })
       }
     }
-    for (const field of ['tokenValidation']) {
+    for (const field of ['signature']) {
       if (req.params[field]) {
         Object.assign(request, { [`${field}`]: req.params[field] })
       }

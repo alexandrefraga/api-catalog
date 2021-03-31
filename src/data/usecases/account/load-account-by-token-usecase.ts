@@ -1,7 +1,7 @@
 import { AccountModel, KeyParams } from '@/domain/models/account-model'
-import { LoadAccountByToken } from '@/domain/usecases/load-account-by-token'
-import { Decrypter } from '../protocols/criptography'
-import { LoadAccountByKeyRepository } from '../protocols/db'
+import { LoadAccountByToken } from '@/domain/usecases/account/load-account-by-Token'
+import { Decrypter } from '../../protocols/criptography'
+import { LoadAccountByKeyRepository } from '../../protocols/db'
 
 export class LoadAccountByTokenUseCase implements LoadAccountByToken {
   constructor (

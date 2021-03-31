@@ -1,5 +1,5 @@
 import { KeyParams, KeyRoute } from '@/domain/models/account-model'
-import { LoadAccountByToken } from '@/domain/usecases/load-account-by-token'
+import { LoadAccountByToken } from '@/domain/usecases/account/load-account-by-Token'
 import { AccessDeniedError } from '../errors'
 import { forbidden, serverError, success } from '../helpers/http-helper'
 import { HttpRequest, HttpResponse } from '../protocolls'

@@ -1,10 +1,10 @@
 import { AccountModel, Key, KeyParams } from '@/domain/models/account-model'
-import { AddAccount, AddAccountParams } from '@/domain/usecases/add-account'
-import { ValidateAccount } from '@/domain/usecases/validate-account'
-import { Authentication, AuthenticationParameters, AuthenticationResponse } from '@/domain/usecases/authentication'
+import { AddAccount, AddAccountParams } from '@/domain/usecases/account/add-account'
+import { ValidateAccount } from '@/domain/usecases/account/validate-account'
+import { Authentication, AuthenticationParameters, AuthenticationResponse } from '@/domain/usecases/account/authentication'
 import { mockAccountModel } from './mock-account'
-import { LoadAccountByToken } from '@/domain/usecases/load-account-by-token'
-import { AddKeyInAccount } from '@/domain/usecases/add-key-in-account'
+import { LoadAccountByToken } from '@/domain/usecases/account/load-account-by-Token'
+import { AddKeyInAccount } from '@/domain/usecases/account/add-key-in-account'
 
 export const mockAddAccount = (): AddAccount => {
   class AddAccountStub implements AddAccount {

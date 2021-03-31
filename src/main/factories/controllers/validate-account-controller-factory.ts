@@ -1,6 +1,6 @@
 import { Controller } from '@/presentation/protocolls'
 import { ValidateAccountController } from '@/presentation/controllers/account/validate-account-controller'
-import { ValidateAccountUseCase } from '@/data/usecases/validate-account-usecase'
+import { ValidateAccountUseCase } from '@/data/usecases/account/validate-account-usecase'
 import { JwtAdapter } from '@/infra/criptography/jwt-adapter'
 import { AccountMongoRepository } from '@/infra/db/mongodb/account-repository'
 import { ValidationComposite, RequiredFieldValidation } from '@/validation/validators'
@@ -11,7 +11,7 @@ import { SignatureTokenMongoRepository } from '@/infra/db/mongodb/signature-toke
 
 export const makeValidateAccountController = (): Controller => {
   const validation = new ValidationComposite([
-    new RequiredFieldValidation('tokenValidation')
+    new RequiredFieldValidation('signature')
   ])
   const decrypter = new JwtAdapter(env.jwtSecret)
   const signatureByTokenRepository = new SignatureTokenMongoRepository()

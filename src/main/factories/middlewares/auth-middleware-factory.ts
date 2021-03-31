@@ -1,4 +1,4 @@
-import { LoadAccountByTokenUseCase } from '@/data/usecases/load-account-by-token-usecase'
+import { LoadAccountByTokenUseCase } from '@/data/usecases/account/load-account-by-token-usecase'
 import { KeyRoute } from '@/domain/models/account-model'
 import { JwtAdapter } from '@/infra/criptography'
 import { AccountMongoRepository } from '@/infra/db/mongodb/account-repository'

@@ -1,6 +1,6 @@
 import { Controller, SignUpRequestParameters, HttpResponse, Validation } from '../../protocolls'
 import { badRequest, created, forbidden, serverError } from '@/presentation/helpers/http-helper'
-import { AddAccount } from '@/domain/usecases/add-account'
+import { AddAccount } from '@/domain/usecases/account/add-account'
 import { AddSignatureToken } from '@/domain/usecases/add-signature-token'
 import { EmailInUseError } from '../../errors'
 import { SendMail } from '@/domain/usecases/send-mail-usecase'

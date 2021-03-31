@@ -1,11 +1,11 @@
 import { AccountModel, Key, KeyParams, Role } from '@/domain/models/account-model'
-import { AddAccountParams } from '@/domain/usecases/add-account'
-import { AddAccountRepository } from '@/data/protocols/db/add-account-repository'
+import { AddAccountParams } from '@/domain/usecases/account/add-account'
+import { AddAccountRepository } from '@/data/protocols/db/account/add-account-repository'
 import { mockAccountModel } from './mock-account'
-import { LoadAccountByEmailRepository, LoadAccountByKeyRepository, LoadAccountByTokenRepository } from '@/data/protocols/db/load-account-repository'
-import { UpdateTokenRepository } from '../data/protocols/db/update-token-repository'
-import { UpdateEmailRepository } from '../data/protocols/db/update-email-repository'
-import { AddKeyInAccountRepository } from '@/data/protocols/db/add-key-in-account-repository'
+import { LoadAccountByEmailRepository, LoadAccountByKeyRepository, LoadAccountByTokenRepository } from '@/data/protocols/db/account/load-account-repository'
+import { UpdateTokenRepository } from '../data/protocols/db/account/update-token-repository'
+import { UpdateEmailRepository } from '../data/protocols/db/account/update-email-repository'
+import { AddKeyInAccountRepository } from '@/data/protocols/db/account/add-key-in-account-repository'
 
 export const mockAddAccountRepository = (): AddAccountRepository => {
   class AddAccountRepositoryStub implements AddAccountRepository {

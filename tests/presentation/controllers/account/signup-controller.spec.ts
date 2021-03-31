@@ -1,5 +1,5 @@
 import { SignatureTypes } from '@/domain/models/signature-token-model'
-import { AddAccount } from '@/domain/usecases/add-account'
+import { AddAccount } from '@/domain/usecases/account/add-account'
 import { AddSignatureToken } from '@/domain/usecases/add-signature-token'
 import { SendMail } from '@/domain/usecases/send-mail-usecase'
 import { SignUpController } from '@/presentation/controllers/account/signup-controller'

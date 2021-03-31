@@ -1,5 +1,5 @@
-import { AddStoreUseCase } from '@/data/usecases/add-store-usecase'
-import { AddKeyInAccountUseCase } from '@/data/usecases/add-key-in-account-usecase'
+import { AddStoreUseCase } from '@/data/usecases/store/add-store-usecase'
+import { AddKeyInAccountUseCase } from '@/data/usecases/account/add-key-in-account-usecase'
 import { AccountMongoRepository } from '@/infra/db/mongodb/account-repository'
 import { LogErrorMongoRepository } from '@/infra/db/mongodb/log-error-repository'
 import { StoreMongoRepository } from '@/infra/db/mongodb/store-repository'

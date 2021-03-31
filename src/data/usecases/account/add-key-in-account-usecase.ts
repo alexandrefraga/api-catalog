@@ -1,6 +1,6 @@
 import { Key } from '@/domain/models/account-model'
-import { AddKeyInAccount } from '@/domain/usecases/add-key-in-account'
-import { AddKeyInAccountRepository } from '../protocols/db/add-key-in-account-repository'
+import { AddKeyInAccount } from '@/domain/usecases/account/add-key-in-account'
+import { AddKeyInAccountRepository } from '../../protocols/db/account/add-key-in-account-repository'
 
 export class AddKeyInAccountUseCase implements AddKeyInAccount {
   constructor (

@@ -1,5 +1,5 @@
-import { AuthenticationUseCase } from '@/data/usecases/athentication-usecase'
-import { AuthenticationParameters } from '@/domain/usecases/authentication'
+import { AuthenticationUseCase } from '@/data/usecases/account/athentication-usecase'
+import { AuthenticationParameters } from '@/domain/usecases/account/authentication'
 import { LoadAccountByEmailRepository, UpdateTokenRepository } from '@/data/protocols/db'
 import { HasherComparer, Encrypter } from '@/data/protocols/criptography'
 import { mockLoadAccountByEmailRepository, mockHasherComparer, mockEncrypter, mockUpdateTokenRepository } from '../../mocks'

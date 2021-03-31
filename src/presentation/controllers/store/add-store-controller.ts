@@ -1,6 +1,6 @@
 import { Role } from '@/domain/models/account-model'
-import { AddStore } from '@/domain/usecases/add-store'
-import { AddKeyInAccount } from '@/domain/usecases/add-key-in-account'
+import { AddStore } from '@/domain/usecases/store/add-store'
+import { AddKeyInAccount } from '@/domain/usecases/account/add-key-in-account'
 import { DataInUseError } from '@/presentation/errors/data-in-use-error'
 import { badRequest, forbidden, serverError, success } from '@/presentation/helpers/http-helper'
 import { storeKey } from '@/presentation/helpers/key-helper'

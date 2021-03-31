@@ -11,5 +11,5 @@ export type LoginRequestParameters = {
 }
 
 export type ValidateAccountParams = {
-  tokenValidation: string
+  signature: string
 }

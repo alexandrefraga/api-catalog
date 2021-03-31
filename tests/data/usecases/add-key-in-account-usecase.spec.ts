@@ -1,7 +1,7 @@
-import { AddKeyInAccount } from '@/domain/usecases/add-key-in-account'
-import { AddKeyInAccountUseCase } from '@/data/usecases/add-key-in-account-usecase'
+import { AddKeyInAccount } from '@/domain/usecases/account/add-key-in-account'
+import { AddKeyInAccountUseCase } from '@/data/usecases/account/add-key-in-account-usecase'
 import { makeKeyAdminStore, mockAddKeyInAccountRepository } from '../../mocks'
-import { AddKeyInAccountRepository } from '@/data/protocols/db/add-key-in-account-repository'
+import { AddKeyInAccountRepository } from '@/data/protocols/db/account/add-key-in-account-repository'
 import MockDate from 'mockdate'
 
 type SutTypes = {

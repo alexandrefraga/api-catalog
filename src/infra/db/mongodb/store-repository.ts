@@ -1,6 +1,6 @@
 import { AddStoreRepository, LoadStoreByDataParams, LoadStoreByDataRepository } from '@/data/protocols/db'
 import { StoreModel } from '@/domain/models/store-model'
-import { AddStoreParams } from '@/domain/usecases/add-store'
+import { AddStoreParams } from '@/domain/usecases/store/add-store'
 import { MongoHelper } from './mongo-helper'
 
 export class StoreMongoRepository implements LoadStoreByDataRepository, AddStoreRepository {

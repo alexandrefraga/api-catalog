@@ -1,4 +1,4 @@
-import { ValidateAccount } from '@/domain/usecases/validate-account'
+import { ValidateAccount } from '@/domain/usecases/account/validate-account'
 import { ValidateAccountController } from '@/presentation/controllers/account/validate-account-controller'
 import { Validation } from '@/presentation/protocolls'
 import { ServerError, UnauthorizedError } from '@/presentation/errors'
@@ -23,7 +23,7 @@ const makeSut = (): SutTypes => {
   }
 }
 describe('ValidateAccount Controller', () => {
-  test('Should call Validator with correct tokenValidation', async () => {
+  test('Should call Validator with correct signature', async () => {
     const { sut, validatorStub } = makeSut()
     const validateSpy = jest.spyOn(validatorStub, 'validate')
     await sut.execute(validateParams)
@@ -46,11 +46,11 @@ describe('ValidateAccount Controller', () => {
     expect(httpResponse.body).toEqual(new ServerError(''))
   })
 
-  test('Should call ValidateAccount with correct tokenValidation', async () => {
+  test('Should call ValidateAccount with correct signature', async () => {
     const { sut, dbValidateAccountStub } = makeSut()
     const validateSpy = jest.spyOn(dbValidateAccountStub, 'validate')
     await sut.execute(validateParams)
-    expect(validateSpy).toHaveBeenCalledWith(validateParams.tokenValidation, SignatureTypes.account)
+    expect(validateSpy).toHaveBeenCalledWith(validateParams.signature, SignatureTypes.account)
   })
 
   test('Should return 500 if DbValidateAccount throws', async () => {

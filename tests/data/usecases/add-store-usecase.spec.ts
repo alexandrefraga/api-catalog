@@ -1,5 +1,5 @@
-import { AddStoreUseCase } from '@/data/usecases/add-store-usecase'
-import { AddStore } from '@/domain/usecases/add-store'
+import { AddStoreUseCase } from '@/data/usecases/store/add-store-usecase'
+import { AddStore } from '@/domain/usecases/store/add-store'
 import { mockAddStoreParams, mockAddStoreRepository, mockLoadStoreByDataRepository, mockStoreModel } from '../../mocks'
 import { AddStoreRepository, LoadStoreByDataRepository } from '@/data/protocols/db'
 

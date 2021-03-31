@@ -1,4 +1,4 @@
-import { AddAccountUseCase } from '@/data/usecases/add-account-usecase'
+import { AddAccountUseCase } from '@/data/usecases/account/add-account-usecase'
 import { Hasher } from '@/data/protocols/criptography'
 import { AddAccountRepository, LoadAccountByEmailRepository } from '@/data/protocols/db'
 import { mockAccountModel, mockAddAccountParams } from '../../mocks/mock-account'

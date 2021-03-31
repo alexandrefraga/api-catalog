@@ -1,6 +1,6 @@
 import { Controller } from '@/presentation/protocolls'
 import { SignUpController } from '@/presentation/controllers/account/signup-controller'
-import { AddAccountUseCase } from '@/data/usecases/add-account-usecase'
+import { AddAccountUseCase } from '@/data/usecases/account/add-account-usecase'
 import { BcryptAdapter, JwtAdapter } from '@/infra/criptography'
 import { AccountMongoRepository } from '@/infra/db/mongodb/account-repository'
 import { LogErrorMongoRepository } from '@/infra/db/mongodb/log-error-repository'

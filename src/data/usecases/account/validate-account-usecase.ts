@@ -1,8 +1,8 @@
 import { SignatureTypes } from '@/domain/models/signature-token-model'
-import { ValidateAccount } from '@/domain/usecases/validate-account'
-import { Decrypter } from '../protocols/criptography'
-import { UpdateEmailRepository } from '../protocols/db'
-import { UpdateUsedSignatureByTokenRepository } from '../protocols/db/update-used-signature-by-token-repository'
+import { ValidateAccount } from '@/domain/usecases/account/validate-account'
+import { Decrypter } from '../../protocols/criptography'
+import { UpdateEmailRepository } from '../../protocols/db'
+import { UpdateUsedSignatureByTokenRepository } from '../../protocols/db/update-used-signature-by-token-repository'
 
 export class ValidateAccountUseCase implements ValidateAccount {
   constructor (

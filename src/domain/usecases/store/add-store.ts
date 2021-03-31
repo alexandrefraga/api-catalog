@@ -1,4 +1,4 @@
-import { Address, StoreModel } from '../models/store-model'
+import { Address, StoreModel } from '../../models/store-model'
 
 export type AddStoreParams = {
   company: string

@@ -1,12 +1,12 @@
 import { AccountModel, Key, KeyParams, Role, TypeKey } from '@/domain/models/account-model'
-import { AddAccountParams } from '@/domain/usecases/add-account'
+import { AddAccountParams } from '@/domain/usecases/account/add-account'
 import {
   AddAccountRepository, LoadAccountByEmailRepository, LoadAccountByKeyRepository, LoadAccountByTokenRepository,
   UpdateEmailRepository, UpdateTokenRepository, UpdateKeyInAccountRepository
 } from '@/data/protocols/db'
 import { MongoHelper } from '@/infra/db/mongodb/mongo-helper'
 import { ObjectId } from 'mongodb'
-import { AddKeyInAccountRepository } from '@/data/protocols/db/add-key-in-account-repository'
+import { AddKeyInAccountRepository } from '@/data/protocols/db/account/add-key-in-account-repository'
 
 export class AccountMongoRepository implements AddAccountRepository, LoadAccountByEmailRepository,
   LoadAccountByTokenRepository, UpdateTokenRepository, UpdateEmailRepository, LoadAccountByKeyRepository,

@@ -1,5 +1,5 @@
-import { ValidateAccountUseCase } from '@/data/usecases/validate-account-usecase'
-import { ValidateAccount } from '@/domain/usecases/validate-account'
+import { ValidateAccountUseCase } from '@/data/usecases/account/validate-account-usecase'
+import { ValidateAccount } from '@/domain/usecases/account/validate-account'
 import { Decrypter } from '@/data/protocols/criptography'
 import { UpdateEmailRepository, LoadAccountByTokenRepository } from '@/data/protocols/db'
 import { mockDecrypter, mockUpdateUsedSignatureByTokenRepository, mockLoadAccountByTokenRepository, mockUpdateEmailRepository } from '../../mocks'

@@ -1,5 +1,5 @@
-import { LoadAccountByTokenUseCase } from '@/data/usecases/load-account-by-token-usecase'
-import { LoadAccountByToken } from '@/domain/usecases/load-account-by-Token'
+import { LoadAccountByTokenUseCase } from '@/data/usecases/account/load-account-by-token-usecase'
+import { LoadAccountByToken } from '@/domain/usecases/account/load-account-by-Token'
 import { makeKeyParamsOperatorStore, mockAccountModel, mockDecrypter, mockLoadAccountByKeyRepository } from '../../mocks'
 import { Decrypter } from '../protocols/criptography'
 import { LoadAccountByKeyRepository } from '../protocols/db'

@@ -1,5 +1,5 @@
 import { StoreModel } from '@/domain/models/store-model'
-import { AddStore, AddStoreParams } from '@/domain/usecases/add-store'
+import { AddStore, AddStoreParams } from '@/domain/usecases/store/add-store'
 import { mockStoreModel } from './mock-store'
 
 export const mockAddStoreUseCase = (): AddStore => {
