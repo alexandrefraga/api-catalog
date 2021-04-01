@@ -16,6 +16,7 @@ export const makeAddStoreController = (): Controller => {
     new RequiredFieldValidation('description'),
     new RequiredFieldValidation('address'),
     new RequiredFieldValidation('geoLocalization'),
+    new RequiredFieldValidation('userId'),
     new RequiredArrayFieldValidation('phoneNumber', 1),
     new EmailValidation(new EmailValidatorAdapter(), 'email')
   ])

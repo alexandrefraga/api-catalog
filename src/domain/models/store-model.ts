@@ -13,5 +13,4 @@ export type StoreModel = {
   email: string
   phoneNumber: string[]
   geoLocalization: { lat: number, lng: number }
-  usersAdmin: string[]
 }

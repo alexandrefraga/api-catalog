@@ -8,7 +8,6 @@ export type AddStoreParams = {
   email: string
   phoneNumber: string[]
   geoLocalization: { lat: number, lng: number }
-  userId: string
 }
 
 export interface AddStore {

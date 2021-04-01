@@ -2,7 +2,7 @@ import { StoreMongoRepository } from '@/infra/db/mongodb/store-repository'
 import { MongoHelper } from '@/infra/db/mongodb/mongo-helper'
 import { Collection } from 'mongodb'
 import MockDate from 'mockdate'
-import { mockAddStoreParams, mockInsertStoreParams } from '@/../tests/mocks'
+import { mockAddStoreParams } from '@/../tests/mocks'
 
 const addStoreParams = mockAddStoreParams()
 
@@ -39,7 +39,7 @@ describe('Store Mongo Repository', () => {
     })
 
     test('Should return a store if loadByData on success', async () => {
-      await storeCollection.insertOne(mockInsertStoreParams())
+      await storeCollection.insertOne(mockAddStoreParams())
       const sut = makeSut()
       const store = await sut.loadByData({
         company: addStoreParams.company,
@@ -59,7 +59,6 @@ describe('Store Mongo Repository', () => {
       expect(store).toBeTruthy()
       expect(store.company).toBe(addStoreParams.company)
       expect(store.address).toEqual(addStoreParams.address)
-      expect(store.usersAdmin).toContain(addStoreParams.userId)
     })
   })
 })

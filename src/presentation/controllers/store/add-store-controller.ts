@@ -19,7 +19,9 @@ export class AddStoreController implements Controller<AddStoreParameters> {
       if (error) {
         return badRequest(error)
       }
-      const store = await this.addStore.add(data)
+      const addStoreParams = Object.assign({}, data)
+      delete addStoreParams.userId
+      const store = await this.addStore.add(addStoreParams)
       if (!store) {
         return forbidden(new DataInUseError(''))
       }
