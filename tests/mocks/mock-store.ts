@@ -1,5 +1,6 @@
 import { StoreModel } from '@/domain/models/store-model'
 import { AddStoreParams } from '@/domain/usecases/store/add-store'
+import { AddStoreParameters } from '@/presentation/protocolls'
 
 export const mockStoreModel = (): StoreModel => ({
   id: 'store_id',
@@ -29,3 +30,7 @@ export const mockAddStoreParams = (): AddStoreParams => ({
   phoneNumber: ['(99)999999999', '(88)888888888'],
   geoLocalization: { lat: 0, lng: 0 }
 })
+
+export const mockAddStoreParameters = (): AddStoreParameters => {
+  return Object.assign(mockAddStoreParams(), { userId: 'any_id' })
+}

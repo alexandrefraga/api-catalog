@@ -4,7 +4,7 @@ import { AddStoreController } from '@/presentation/controllers/store/add-store-c
 import { ServerError } from '@/presentation/errors'
 import { DataInUseError } from '@/presentation/errors/data-in-use-error'
 import { Validation } from '@/presentation/protocolls'
-import { mockValidator, mockAddStoreParams, mockAddStoreUseCase, mockStoreModel, makeKeyAdminStore, mockAddKeyInAccountUseCase } from '../../../mocks'
+import { mockValidator, mockAddStoreUseCase, mockStoreModel, makeKeyAdminStore, mockAddKeyInAccountUseCase, mockAddStoreParameters, mockAddStoreParams } from '../../../mocks'
 import MockDate from 'mockdate'
 
 type SutTypes = {
@@ -33,7 +33,7 @@ describe('AddStore Controller', () => {
   test('Should call Validator with correct values', async () => {
     const { sut, validatorStub } = makeSut()
     const validateSpy = jest.spyOn(validatorStub, 'validate')
-    const request = mockAddStoreParams()
+    const request = mockAddStoreParameters()
     await sut.execute(request)
     expect(validateSpy).toHaveBeenCalledWith(request)
   })
@@ -41,7 +41,7 @@ describe('AddStore Controller', () => {
   test('Should return 400 if Validator return an error', async () => {
     const { sut, validatorStub } = makeSut()
     jest.spyOn(validatorStub, 'validate').mockReturnValueOnce(Promise.resolve(new Error('specific error')))
-    const response = await sut.execute(mockAddStoreParams())
+    const response = await sut.execute(mockAddStoreParameters())
     expect(response.statusCode).toBe(400)
     expect(response.body).toEqual(new Error('specific error'))
   })
@@ -49,7 +49,7 @@ describe('AddStore Controller', () => {
   test('Should return 500 if Validator throws', async () => {
     const { sut, validatorStub } = makeSut()
     jest.spyOn(validatorStub, 'validate').mockImplementationOnce(() => { throw new Error() })
-    const response = await sut.execute(mockAddStoreParams())
+    const response = await sut.execute(mockAddStoreParameters())
     expect(response.statusCode).toBe(500)
     expect(response.body).toEqual(new ServerError(''))
   })
@@ -57,15 +57,15 @@ describe('AddStore Controller', () => {
   test('Should call AddStoreUseCase with correct values', async () => {
     const { sut, addStoreUseCaseStub } = makeSut()
     const addSpy = jest.spyOn(addStoreUseCaseStub, 'add')
-    const request = mockAddStoreParams()
+    const request = mockAddStoreParameters()
     await sut.execute(request)
-    expect(addSpy).toHaveBeenCalledWith(request)
+    expect(addSpy).toHaveBeenCalledWith(mockAddStoreParams())
   })
 
   test('Should return 500 if AddStoreUseCase throws', async () => {
     const { sut, addStoreUseCaseStub } = makeSut()
     jest.spyOn(addStoreUseCaseStub, 'add').mockImplementationOnce(() => { throw new Error() })
-    const response = await sut.execute(mockAddStoreParams())
+    const response = await sut.execute(mockAddStoreParameters())
     expect(response.statusCode).toBe(500)
     expect(response.body).toEqual(new ServerError(''))
   })
@@ -73,7 +73,7 @@ describe('AddStore Controller', () => {
   test('Should return 403 if AddStoreUseCase return null', async () => {
     const { sut, addStoreUseCaseStub } = makeSut()
     jest.spyOn(addStoreUseCaseStub, 'add').mockReturnValueOnce(Promise.resolve(null))
-    const response = await sut.execute(mockAddStoreParams())
+    const response = await sut.execute(mockAddStoreParameters())
     expect(response.statusCode).toBe(403)
     expect(response.body).toEqual(new DataInUseError(''))
   })
@@ -81,21 +81,21 @@ describe('AddStore Controller', () => {
   test('Should call AddKeyInAccount with correct values', async () => {
     const { sut, addKeyInAccountUseCaseStub } = makeSut()
     const addKeySpy = jest.spyOn(addKeyInAccountUseCaseStub, 'add')
-    await sut.execute(mockAddStoreParams())
-    expect(addKeySpy).toHaveBeenCalledWith(mockAddStoreParams().userId, makeKeyAdminStore())
+    await sut.execute(mockAddStoreParameters())
+    expect(addKeySpy).toHaveBeenCalledWith(mockAddStoreParameters().userId, makeKeyAdminStore())
   })
 
   test('Should return 500 if AddKeyInAccount throws', async () => {
     const { sut, addKeyInAccountUseCaseStub } = makeSut()
     jest.spyOn(addKeyInAccountUseCaseStub, 'add').mockImplementationOnce(() => { throw new Error() })
-    const response = await sut.execute(mockAddStoreParams())
+    const response = await sut.execute(mockAddStoreParameters())
     expect(response.statusCode).toBe(500)
     expect(response.body).toEqual(new ServerError(''))
   })
 
   test('Should return 200 if AddStoreUseCase return a store', async () => {
     const { sut } = makeSut()
-    const response = await sut.execute(mockAddStoreParams())
+    const response = await sut.execute(mockAddStoreParameters())
     expect(response.statusCode).toBe(200)
     expect(response.body).toEqual(mockStoreModel())
   })
