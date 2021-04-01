@@ -6,11 +6,18 @@ import { StoreMongoRepository } from '@/infra/db/mongodb/store-repository'
 import { LogControllerDecorator } from '@/main/decorator/log-controller-decorator'
 import { AddStoreController } from '@/presentation/controllers/store/add-store-controller'
 import { Controller } from '@/presentation/protocolls'
-import { RequiredFieldValidation, ValidationComposite } from '@/validation/validators'
+import { EmailValidation, RequiredFieldValidation, RequiredArrayFieldValidation, ValidationComposite } from '@/validation/validators'
+import { EmailValidatorAdapter } from '@/infra/validators/email-validator-adapter'
 
 export const makeAddStoreController = (): Controller => {
   const validator = new ValidationComposite([
-    new RequiredFieldValidation('company')
+    new RequiredFieldValidation('company'),
+    new RequiredFieldValidation('tradingName'),
+    new RequiredFieldValidation('description'),
+    new RequiredFieldValidation('address'),
+    new RequiredFieldValidation('geoLocalization'),
+    new RequiredArrayFieldValidation('phoneNumber', 1),
+    new EmailValidation(new EmailValidatorAdapter(), 'email')
   ])
   const loadStoreRepository = new StoreMongoRepository()
   const addStoreRepository = new StoreMongoRepository()
