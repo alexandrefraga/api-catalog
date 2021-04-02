@@ -1,3 +1,4 @@
+import { AddProductRepository } from '@/data/protocols/db/product/add-product-repository'
 import { LoadProductByDataParams, LoadProductByDataRepository } from '@/data/protocols/db/product/load-product-repository'
 import { ProductModel } from '@/domain/models/product-model'
 import { mockProductModel } from './mock-product'
@@ -12,4 +13,13 @@ export const mockLoadProductByDataRepository = (response: boolean): LoadProductB
     }
   }
   return new LoadProductByDataRepositoryStub()
+}
+
+export const mockAddProductRepository = (): AddProductRepository => {
+  class AddProductRepositoryStub implements AddProductRepository {
+    async add (data: LoadProductByDataParams): Promise<ProductModel> {
+      return Promise.resolve(mockProductModel())
+    }
+  }
+  return new AddProductRepositoryStub()
 }
