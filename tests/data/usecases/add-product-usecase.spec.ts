@@ -62,4 +62,11 @@ describe('AddProduct Usecase', () => {
     const response = await sut.add(params)
     expect(response).toEqual(new DataInUseError('trademark and reference'))
   })
+
+  test('Should AddProductUseCase throw if LoadProductByDataRepository throws', async () => {
+    const { sut, loadProductByDataRepositoryStub } = makeSut()
+    jest.spyOn(loadProductByDataRepositoryStub, 'loadByData').mockImplementationOnce(() => { throw new Error() })
+    const promise = sut.add(params)
+    await expect(promise).rejects.toThrow()
+  })
 })
