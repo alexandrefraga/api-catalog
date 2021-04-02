@@ -1,5 +1,5 @@
 import { AddStoreRepository } from '@/data/protocols/db'
-import { LoadStoreByDataParams, LoadStoreByDataRepository } from '@/data/protocols/db/store/load-store-repository'
+import { LoadStoreByDataParams, LoadStoreByDataRepository, LoadStoreByIdRepository } from '@/data/protocols/db/store/load-store-repository'
 import { StoreModel } from '@/domain/models/store-model'
 import { AddStoreParams } from '@/domain/usecases/store/add-store'
 import { mockStoreModel } from './mock-store'
@@ -20,4 +20,16 @@ export const mockAddStoreRepository = (): AddStoreRepository => {
     }
   }
   return new AddStoreRepositoryStub()
+}
+
+export const mockLoadStoreByIdRepository = (response: boolean): LoadStoreByIdRepository => {
+  class LoadStoreByIdRepositoryStub implements LoadStoreByIdRepository {
+    async loadById (id: string): Promise<StoreModel> {
+      if (response) {
+        return Promise.resolve(mockStoreModel())
+      }
+      return null
+    }
+  }
+  return new LoadStoreByIdRepositoryStub()
 }

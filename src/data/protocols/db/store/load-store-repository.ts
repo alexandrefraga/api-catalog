@@ -9,3 +9,7 @@ export type LoadStoreByDataParams = {
 export interface LoadStoreByDataRepository {
   loadByData (data: LoadStoreByDataParams): Promise<StoreModel>
 }
+
+export interface LoadStoreByIdRepository {
+  loadById (id: string): Promise<StoreModel>
+}
