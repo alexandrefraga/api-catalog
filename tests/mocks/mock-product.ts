@@ -2,7 +2,7 @@ import { ProductModel } from '@/domain/models/product-model'
 import { AddProductUseCaseParams } from '@/domain/usecases/product/add-product'
 import { AddProductControllerParams } from '@/presentation/protocolls/request-parameters-product'
 
-export const mockAddProductParameters = (): AddProductControllerParams => ({
+export const mockAddProductControllerParams = (): AddProductControllerParams => ({
   description: 'any_description',
   details: 'any_details',
   trademark: 'any_trademark',
@@ -11,7 +11,7 @@ export const mockAddProductParameters = (): AddProductControllerParams => ({
   storeId: 'valid_storeId'
 })
 
-export const mockAddProductParams = (): AddProductUseCaseParams => ({
+export const mockAddProductUseCaseParams = (): AddProductUseCaseParams => ({
   description: 'any_description',
   details: 'any_details',
   trademark: 'any_trademark',
@@ -21,5 +21,5 @@ export const mockAddProductParams = (): AddProductUseCaseParams => ({
 })
 
 export const mockProductModel = (): ProductModel => {
-  return Object.assign(mockAddProductParams(), { id: 'valid_is' })
+  return Object.assign(mockAddProductUseCaseParams(), { id: 'valid_is' })
 }
