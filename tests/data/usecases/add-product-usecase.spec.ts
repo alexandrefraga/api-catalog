@@ -1,8 +1,8 @@
-import { mockAddProductUseCaseParams } from '../../mocks/mock-product'
+import { mockAddProductUseCaseParams, mockProductModel } from '../../mocks/mock-product'
 import { LoadStoreByIdRepository } from '@/data/protocols/db'
 import { AddProductUseCase } from '@/data/usecases/product/add-product-usecase'
 import { mockLoadStoreByIdRepository } from '../../mocks'
-import { InvalidParamError } from '@/data/errors'
+import { DataInUseError, InvalidParamError } from '@/data/errors'
 import { LoadProductByDataRepository } from '@/data/protocols/db/product/load-product-repository'
 import { mockLoadProductByDataRepository } from '../../mocks/mock-product-repository'
 
@@ -54,5 +54,12 @@ describe('AddProduct Usecase', () => {
       reference: params.reference,
       storeId: params.storeId
     })
+  })
+
+  test('Should return an error if LoadProductByDataRepository return a product', async () => {
+    const { sut, loadProductByDataRepositoryStub } = makeSut()
+    jest.spyOn(loadProductByDataRepositoryStub, 'loadByData').mockReturnValueOnce(Promise.resolve(mockProductModel()))
+    const response = await sut.add(params)
+    expect(response).toEqual(new DataInUseError('trademark and reference'))
   })
 })
