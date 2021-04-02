@@ -10,5 +10,5 @@ export type AddProductUseCaseParams = {
 }
 
 export interface AddProduct {
-  add(data: AddProductUseCaseParams): Promise<ProductModel>
+  add(data: AddProductUseCaseParams): Promise<ProductModel | Error>
 }
