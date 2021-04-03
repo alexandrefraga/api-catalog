@@ -1,10 +1,10 @@
-import { mockAddProductUseCaseParams, mockProductModel } from '../../mocks/mock-product'
-import { LoadStoreByIdRepository } from '@/data/protocols/db'
+import { LoadStoreByIdRepository, LoadProductByDataRepository, AddProductRepository } from '@/data/protocols/db'
 import { AddProductUseCase } from '@/data/usecases/product/add-product-usecase'
-import { mockLoadStoreByIdRepository } from '../../mocks'
 import { DataInUseError, InvalidParamError } from '@/data/errors'
-import { LoadProductByDataRepository } from '@/data/protocols/db/product/load-product-repository'
-import { mockLoadProductByDataRepository } from '../../mocks/mock-product-repository'
+import {
+  mockLoadStoreByIdRepository, mockAddProductRepository, mockLoadProductByDataRepository,
+  mockAddProductUseCaseParams, mockProductModel
+} from '../../mocks/'
 
 const params = mockAddProductUseCaseParams()
 
@@ -12,15 +12,18 @@ type SutTypes = {
   sut: AddProductUseCase
   loadStoreByIdRepositoryStub: LoadStoreByIdRepository
   loadProductByDataRepositoryStub: LoadProductByDataRepository
+  addProductRepositoryStub: AddProductRepository
 }
 const makeSut = (): SutTypes => {
   const loadStoreByIdRepositoryStub = mockLoadStoreByIdRepository(true)
   const loadProductByDataRepositoryStub = mockLoadProductByDataRepository(false)
-  const sut = new AddProductUseCase(loadStoreByIdRepositoryStub, loadProductByDataRepositoryStub)
+  const addProductRepositoryStub = mockAddProductRepository()
+  const sut = new AddProductUseCase(loadStoreByIdRepositoryStub, loadProductByDataRepositoryStub, addProductRepositoryStub)
   return {
     sut,
     loadStoreByIdRepositoryStub,
-    loadProductByDataRepositoryStub
+    loadProductByDataRepositoryStub,
+    addProductRepositoryStub
   }
 }
 describe('AddProduct Usecase', () => {
@@ -68,5 +71,12 @@ describe('AddProduct Usecase', () => {
     jest.spyOn(loadProductByDataRepositoryStub, 'loadByData').mockImplementationOnce(() => { throw new Error() })
     const promise = sut.add(params)
     await expect(promise).rejects.toThrow()
+  })
+
+  test('Should call AddProductRepository with correct value', async () => {
+    const { sut, addProductRepositoryStub } = makeSut()
+    const addSpy = jest.spyOn(addProductRepositoryStub, 'add')
+    await sut.add(params)
+    expect(addSpy).toHaveBeenCalledWith(params)
   })
 })
