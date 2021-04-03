@@ -4,6 +4,11 @@ import { ProductMongoRepository } from '@/infra/db/mongodb/product-repository'
 import { mockAddProductUseCaseParams } from '@/../tests/mocks'
 
 const params = mockAddProductUseCaseParams()
+const loadByDataParams = ({
+  trademark: params.trademark,
+  reference: params.reference,
+  storeId: params.storeId
+})
 
 const makeSut = (): ProductMongoRepository => {
   return new ProductMongoRepository()
@@ -31,6 +36,26 @@ describe('Product Mongo Repository', () => {
       expect(product.id).toBeTruthy()
       expect(product.trademark).toBe(params.trademark)
       expect(product.reference).toBe(params.reference)
+      expect(product.storeId).toBe(params.storeId)
+    })
+  })
+
+  describe('loadByData', () => {
+    test('Should return null if loadByData return null', async () => {
+      const fakeProduct = Object.assign({}, params, { trademark: 'other_trademark' })
+      await productCollection.insertOne(fakeProduct)
+      const sut = makeSut()
+      const product = await sut.loadByData(loadByDataParams)
+      expect(product).toBeNull()
+    })
+
+    test('Should return a product if loadByData on success', async () => {
+      await productCollection.insertOne(params)
+      const sut = makeSut()
+      const product = await sut.loadByData(loadByDataParams)
+      expect(product).toBeTruthy()
+      expect(product.id).toBeTruthy()
+      expect(product.trademark).toBe(params.trademark)
       expect(product.storeId).toBe(params.storeId)
     })
   })
