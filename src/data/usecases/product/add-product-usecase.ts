@@ -20,7 +20,7 @@ export class AddProductUseCase implements AddProduct {
     if (existProduct) {
       return new DataInUseError('trademark and reference')
     }
-    await this.addProductRepository.add(data)
-    return null
+    const product = await this.addProductRepository.add(data)
+    return product
   }
 }
