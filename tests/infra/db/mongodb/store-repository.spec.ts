@@ -39,7 +39,7 @@ describe('Store Mongo Repository', () => {
     })
 
     test('Should return a store if loadByData on success', async () => {
-      await storeCollection.insertOne(mockAddStoreParams())
+      await storeCollection.insertOne(addStoreParams)
       const sut = makeSut()
       const store = await sut.loadByData({
         company: addStoreParams.company,
@@ -56,6 +56,24 @@ describe('Store Mongo Repository', () => {
     test('Should return a store if add on success', async () => {
       const sut = makeSut()
       const store = await sut.add(addStoreParams)
+      expect(store).toBeTruthy()
+      expect(store.company).toBe(addStoreParams.company)
+      expect(store.address).toEqual(addStoreParams.address)
+    })
+  })
+
+  describe('LoadById', () => {
+    test('Should return null if loadById fail', async () => {
+      const sut = makeSut()
+      const store = await sut.loadById('any_id')
+      expect(store).toBeFalsy()
+    })
+
+    test('Should return a store if loadById on success', async () => {
+      const res = await storeCollection.insertOne(addStoreParams)
+      const id = res.ops[0]._id
+      const sut = makeSut()
+      const store = await sut.loadByData(id)
       expect(store).toBeTruthy()
       expect(store.company).toBe(addStoreParams.company)
       expect(store.address).toEqual(addStoreParams.address)
