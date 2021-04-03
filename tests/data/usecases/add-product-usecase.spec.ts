@@ -79,4 +79,17 @@ describe('AddProduct Usecase', () => {
     await sut.add(params)
     expect(addSpy).toHaveBeenCalledWith(params)
   })
+
+  test('Should AddProductUseCase throw if AddProductRepository throws', async () => {
+    const { sut, addProductRepositoryStub } = makeSut()
+    jest.spyOn(addProductRepositoryStub, 'add').mockImplementationOnce(() => { throw new Error() })
+    const promise = sut.add(params)
+    await expect(promise).rejects.toThrow()
+  })
+
+  test('Should AddProductUseCase return a product on success', async () => {
+    const { sut } = makeSut()
+    const product = await sut.add(params)
+    expect(product).toEqual(mockProductModel())
+  })
 })
