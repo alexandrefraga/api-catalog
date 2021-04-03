@@ -1,6 +1,6 @@
 import { StoreMongoRepository } from '@/infra/db/mongodb/store-repository'
 import { MongoHelper } from '@/infra/db/mongodb/mongo-helper'
-import { Collection } from 'mongodb'
+import { Collection, ObjectId } from 'mongodb'
 import MockDate from 'mockdate'
 import { mockAddStoreParams } from '@/../tests/mocks'
 
@@ -65,7 +65,8 @@ describe('Store Mongo Repository', () => {
   describe('LoadById', () => {
     test('Should return null if loadById fail', async () => {
       const sut = makeSut()
-      const store = await sut.loadById('any_id')
+      const fakeId = new ObjectId().toHexString()
+      const store = await sut.loadById(fakeId)
       expect(store).toBeFalsy()
     })
 
@@ -73,7 +74,7 @@ describe('Store Mongo Repository', () => {
       const res = await storeCollection.insertOne(addStoreParams)
       const id = res.ops[0]._id
       const sut = makeSut()
-      const store = await sut.loadByData(id)
+      const store = await sut.loadById(id)
       expect(store).toBeTruthy()
       expect(store.company).toBe(addStoreParams.company)
       expect(store.address).toEqual(addStoreParams.address)

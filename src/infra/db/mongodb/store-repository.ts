@@ -1,6 +1,7 @@
 import { AddStoreRepository, LoadStoreByDataParams, LoadStoreByDataRepository, LoadStoreByIdRepository } from '@/data/protocols/db'
 import { StoreModel } from '@/domain/models/store-model'
 import { AddStoreParams } from '@/domain/usecases/store/add-store'
+import { ObjectId } from 'bson'
 import { MongoHelper } from './mongo-helper'
 
 export class StoreMongoRepository implements AddStoreRepository, LoadStoreByIdRepository, LoadStoreByDataRepository {
@@ -12,7 +13,7 @@ export class StoreMongoRepository implements AddStoreRepository, LoadStoreByIdRe
 
   async loadById (id: string): Promise<StoreModel> {
     const storeCollection = await MongoHelper.getCollection('stores')
-    const store = await storeCollection.findOne({ id })
+    const store = await storeCollection.findOne({ _id: new ObjectId(id) })
     return store && MongoHelper.map(store)
   }
 
