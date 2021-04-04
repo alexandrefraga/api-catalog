@@ -155,7 +155,7 @@ describe('Account Mongo Repository', () => {
 
     test('Should return false if updateToken fail', async () => {
       const sut = makeSut()
-      const response = await sut.updateToken('any_token', 'invalid_id')
+      const response = await sut.updateToken('any_token', new ObjectId().toHexString())
       expect(response).toBeFalsy()
     })
   })
