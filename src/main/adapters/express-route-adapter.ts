@@ -6,13 +6,14 @@ export const adaptRoute = (controller: Controller) => {
     const request = {}
     for (const field of [
       'name', 'email', 'password', 'passwordConfirmation',
-      'company', 'tradingName', 'description', 'address', 'email', 'phoneNumber', 'geoLocalization', 'userId'
+      'company', 'tradingName', 'description', 'address', 'email', 'phoneNumber', 'geoLocalization', 'userId',
+      'details', 'trademark', 'reference', 'price'
     ]) {
       if (req.body[field]) {
         Object.assign(request, { [`${field}`]: req.body[field] })
       }
     }
-    for (const field of ['signature']) {
+    for (const field of ['signature', 'storeId']) {
       if (req.params[field]) {
         Object.assign(request, { [`${field}`]: req.params[field] })
       }

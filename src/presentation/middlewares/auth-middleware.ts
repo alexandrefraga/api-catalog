@@ -20,7 +20,6 @@ export class AuthMiddleware implements Middleware {
         attribute: this.key.attribute,
         storeId: this.key.requiredStoreId ? request.params?.storeId : null
       } : null
-
       if (token) {
         const account = await this.loadAccountByToken.load(token, keyParams)
         if (account) {
