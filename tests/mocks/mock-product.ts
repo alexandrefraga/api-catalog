@@ -20,6 +20,6 @@ export const mockAddProductUseCaseParams = (): AddProductUseCaseParams => ({
   storeId: 'valid_storeId'
 })
 
-export const mockProductModel = (): ProductModel => {
-  return Object.assign(mockAddProductUseCaseParams(), { id: 'valid_is' })
+export const mockProductModel = (id: string = 'valid_id'): ProductModel => {
+  return Object.assign(mockAddProductUseCaseParams(), { id })
 }

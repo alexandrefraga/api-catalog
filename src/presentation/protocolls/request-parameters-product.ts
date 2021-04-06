@@ -7,6 +7,6 @@ export type AddProductControllerParams = {
   storeId: string
 }
 
-export type LoadProductsByStoreIDControllerParams = {
+export type LoadProductsByStoreIdControllerParams = {
   storeId: string
 }
