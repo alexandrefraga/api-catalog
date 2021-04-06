@@ -27,5 +27,9 @@ export const MongoHelper = {
   map: (collection: any): any => {
     const { _id, ...collectionWithoutId } = collection
     return Object.assign({}, collectionWithoutId, { id: new ObjectId(_id).toHexString() })
+  },
+
+  mapAll: (arrayCollections: any[]): any[] => {
+    return arrayCollections.map(c => MongoHelper.map(c))
   }
 }

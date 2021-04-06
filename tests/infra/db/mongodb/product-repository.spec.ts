@@ -1,4 +1,4 @@
-import { Collection } from 'mongodb'
+import { Collection, ObjectId } from 'mongodb'
 import { MongoHelper } from '@/infra/db/mongodb/mongo-helper'
 import { ProductMongoRepository } from '@/infra/db/mongodb/product-repository'
 import { mockAddProductUseCaseParams } from '@/../tests/mocks'
@@ -57,6 +57,24 @@ describe('Product Mongo Repository', () => {
       expect(product.id).toBeTruthy()
       expect(product.trademark).toBe(params.trademark)
       expect(product.storeId).toBe(params.storeId)
+    })
+  })
+
+  describe('loadByStore', () => {
+    test('Should return empty array if loadByStore return null', async () => {
+      const sut = makeSut()
+      const product = await sut.loadByStore(new ObjectId().toHexString())
+      expect(product).toEqual([])
+    })
+
+    test('Should return products if loadByStore on success', async () => {
+      await productCollection.insertOne(params)
+      const sut = makeSut()
+      const product = await sut.loadByStore(params.storeId)
+      expect(product).toBeTruthy()
+      expect(product[0].id).toBeTruthy()
+      expect(product[0].trademark).toBe(params.trademark)
+      expect(product[0].storeId).toBe(params.storeId)
     })
   })
 })
