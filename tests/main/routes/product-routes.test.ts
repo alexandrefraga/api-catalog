@@ -5,11 +5,12 @@ import { Collection, ObjectId } from 'mongodb'
 import { hash } from 'bcrypt'
 import { sign } from 'jsonwebtoken'
 import env from '@/main/config/env'
-import { mockAddStoreParams } from '../../mocks'
+import { mockAddProductUseCaseParams, mockAddStoreParams } from '../../mocks'
 import { Role, TypeKey } from '@/domain/models/account-model'
 
 let storeCollection: Collection
 let accountCollection: Collection
+let productCollection: Collection
 let password: string
 describe('Product Routes', () => {
   beforeAll(async () => {
@@ -63,6 +64,45 @@ describe('Product Routes', () => {
           price: 100
         })
         .expect(200)
+    })
+  })
+
+  describe('/products/:storeId', () => {
+    beforeEach(async () => {
+      accountCollection = await MongoHelper.getCollection('accounts')
+      storeCollection = await MongoHelper.getCollection('stores')
+      productCollection = await MongoHelper.getCollection('products')
+      await storeCollection.deleteMany({})
+      await accountCollection.deleteMany({})
+      await productCollection.deleteMany({})
+    })
+
+    test('Should return 200 on get products if valid accessToken and storeId are provided', async () => {
+      const account = await accountCollection.insertOne({
+        name: 'any_name',
+        email: 'any_email@mail.com',
+        emailConfirmation: new Date(),
+        password
+      })
+      const _id = account.ops[0]._id
+      const token = await sign({ id: _id }, env.jwtSecret)
+      const store = await storeCollection.insertOne(mockAddStoreParams())
+      const storeId: string = new ObjectId(store.ops[0]._id).toHexString()
+      await accountCollection.updateOne({ _id }, { $set: { token } })
+      await productCollection.insertMany([
+        mockAddProductUseCaseParams(storeId),
+        mockAddProductUseCaseParams(storeId),
+        mockAddProductUseCaseParams('other_store_id'),
+        mockAddProductUseCaseParams(storeId)
+      ])
+      await request(app)
+        .get(`/api/products/${storeId}`)
+        .set('x-access-token', token)
+        .send()
+        .expect(200)
+        .then((res) => {
+          expect(res.body.length).toBe(3)
+        })
     })
   })
 })
