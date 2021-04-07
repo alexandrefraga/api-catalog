@@ -17,7 +17,7 @@ export class NodemailerAdapter implements MailService {
     const source = fs.readFileSync(filePath, 'utf-8').toString()
     const template = handlebars.compile(source)
     const replacements = {
-      account: data.template.props.account,
+      name: data.template.props.name,
       token: data.template.props.token,
       baseUrl: this.baseUrl
     }
