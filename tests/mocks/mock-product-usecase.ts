@@ -12,11 +12,11 @@ export const mockAddProductUseCase = (): AddProduct => {
   return new AddProductUseCaseStub()
 }
 
-export const mockLoadProductsByStoreIdUseCase = (): LoadProductsByStore => {
-  class LoadProductsByStoreIdUseCaseStub implements LoadProductsByStore {
+export const mockLoadProductsByStoreUseCase = (): LoadProductsByStore => {
+  class LoadProductsByStoreUseCaseStub implements LoadProductsByStore {
     async loadByStore (storeId: string): Promise<ProductModel[]> {
       return [mockProductModel(), mockProductModel('other_id')]
     }
   }
-  return new LoadProductsByStoreIdUseCaseStub()
+  return new LoadProductsByStoreUseCaseStub()
 }

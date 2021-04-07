@@ -11,13 +11,13 @@ export const mockAddProductControllerParams = (): AddProductControllerParams => 
   storeId: 'valid_storeId'
 })
 
-export const mockAddProductUseCaseParams = (): AddProductUseCaseParams => ({
+export const mockAddProductUseCaseParams = (storeId: string = 'valid_storeId'): AddProductUseCaseParams => ({
   description: 'any_description',
   details: 'any_details',
   trademark: 'any_trademark',
   reference: 'any-reference',
   price: 100,
-  storeId: 'valid_storeId'
+  storeId
 })
 
 export const mockProductModel = (id: string = 'valid_id'): ProductModel => {

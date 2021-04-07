@@ -1,27 +1,27 @@
-import { mockLoadProductsByStoreIdUseCase, mockProductModel, mockValidator } from '@/../tests/mocks'
+import { mockLoadProductsByStoreUseCase, mockProductModel, mockValidator } from '@/../tests/mocks'
 import { ServerError } from '@/presentation/errors'
 import { Validation } from '@/presentation/protocolls'
-import { LoadProductsByStoreIDController } from '@/presentation/controllers/product/load-products-by-storeId-controller'
+import { LoadProductsByStoreController } from '@/presentation/controllers/product/load-products-by-store-controller'
 import { InvalidParamError } from '@/data/errors'
 
 const request = { storeId: 'valid_storeId' }
 
 type SutTypes = {
-  sut: LoadProductsByStoreIDController
+  sut: LoadProductsByStoreController
   validatorStub: Validation
-  loadProductsByStoreIdUseCase
+  loadProductsByStoreUseCase
 }
 const makeSut = (): SutTypes => {
   const validatorStub = mockValidator()
-  const loadProductsByStoreIdUseCase = mockLoadProductsByStoreIdUseCase()
-  const sut = new LoadProductsByStoreIDController(validatorStub, loadProductsByStoreIdUseCase)
+  const loadProductsByStoreUseCase = mockLoadProductsByStoreUseCase()
+  const sut = new LoadProductsByStoreController(validatorStub, loadProductsByStoreUseCase)
   return {
     sut,
     validatorStub,
-    loadProductsByStoreIdUseCase
+    loadProductsByStoreUseCase
   }
 }
-describe('LoadProductsByStoreID Controller', () => {
+describe('LoadProductsByStore Controller', () => {
   test('Should call Validator with correct values', async () => {
     const { sut, validatorStub } = makeSut()
     const validateSpy = jest.spyOn(validatorStub, 'validate')
@@ -45,30 +45,30 @@ describe('LoadProductsByStoreID Controller', () => {
     expect(response.body).toEqual(new ServerError(''))
   })
 
-  test('Should call LoadProductsByStoreIdUseCase with correct values', async () => {
-    const { sut, loadProductsByStoreIdUseCase } = makeSut()
-    const loadByStoreSpy = jest.spyOn(loadProductsByStoreIdUseCase, 'loadByStore')
+  test('Should call LoadProductsByStoreUseCase with correct values', async () => {
+    const { sut, loadProductsByStoreUseCase } = makeSut()
+    const loadByStoreSpy = jest.spyOn(loadProductsByStoreUseCase, 'loadByStore')
     await sut.execute(request)
     expect(loadByStoreSpy).toHaveBeenCalledWith(request.storeId)
   })
 
-  test('Should return 403 if LoadProductsByStoreIdUseCase return a specific error', async () => {
-    const { sut, loadProductsByStoreIdUseCase } = makeSut()
-    jest.spyOn(loadProductsByStoreIdUseCase, 'loadByStore').mockReturnValueOnce(Promise.resolve(new InvalidParamError('storeId')))
+  test('Should return 403 if LoadProductsByStoreUseCase return a specific error', async () => {
+    const { sut, loadProductsByStoreUseCase } = makeSut()
+    jest.spyOn(loadProductsByStoreUseCase, 'loadByStore').mockReturnValueOnce(Promise.resolve(new InvalidParamError('storeId')))
     const response = await sut.execute(request)
     expect(response.statusCode).toBe(403)
     expect(response.body).toEqual(new InvalidParamError('storeId'))
   })
 
-  test('Should return 500 if LoadProductsByStoreIdUseCase throws', async () => {
-    const { sut, loadProductsByStoreIdUseCase } = makeSut()
-    jest.spyOn(loadProductsByStoreIdUseCase, 'loadByStore').mockImplementationOnce(() => { throw new Error() })
+  test('Should return 500 if LoadProductsByStoreUseCase throws', async () => {
+    const { sut, loadProductsByStoreUseCase } = makeSut()
+    jest.spyOn(loadProductsByStoreUseCase, 'loadByStore').mockImplementationOnce(() => { throw new Error() })
     const response = await sut.execute(request)
     expect(response.statusCode).toBe(500)
     expect(response.body).toEqual(new ServerError(''))
   })
 
-  test('Should return 200 if LoadProductsByStoreIdUseCase return products', async () => {
+  test('Should return 200 if LoadProductsByStoreUseCase return products', async () => {
     const { sut } = makeSut()
     const response = await sut.execute(request)
     expect(response.statusCode).toBe(200)
