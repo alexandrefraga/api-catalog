@@ -13,7 +13,7 @@ export const mockStoreModel = (): StoreModel => ({
     city: 'any_city'
   },
   email: 'any_email',
-  phoneNumber: ['(99)999999999', '(88)888888888'],
+  phoneNumber: ['99-999999999', '88-888888888'],
   geoLocalization: { lat: 0, lng: 0 }
 })
 
@@ -27,7 +27,7 @@ export const mockAddStoreParams = (): AddStoreParams => ({
     city: 'any_city'
   },
   email: 'any_email@mail.com',
-  phoneNumber: ['(99)999999999', '(88)888888888'],
+  phoneNumber: ['99-999999999', '88-888888888'],
   geoLocalization: { lat: 0, lng: 0 }
 })
 
