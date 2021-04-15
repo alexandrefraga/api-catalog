@@ -1,13 +1,13 @@
-import { signupPath, loginPath } from './paths'
+import { signupPath, loginPath, storePath, productPath, productsByStorePath } from './paths'
 import { badRequest, serverError, unauthorized, forbidden } from './components'
 import {
   signupParamsSchema, signupResponseSchema,
   loginResponseSchema, loginParamsSchema,
   addStoreParamsSchema, addStoreResponseSchema,
+  addProductParamsSchema, addProductResponseSchema, getProductsByStoreResponseSchema,
   apiKeyAuthSchema,
   errorSchema
 } from './schemas'
-import { storePath } from './paths/store-path'
 
 export default {
   openapi: '3.0.0',
@@ -22,12 +22,15 @@ export default {
   tags: [
     { name: 'Signup' },
     { name: 'Login' },
-    { name: 'Store' }
+    { name: 'Store' },
+    { name: 'Product' }
   ],
   paths: {
     '/signup': signupPath,
     '/login': loginPath,
-    '/addStore': storePath
+    '/addStore': storePath,
+    '/addProduct/{storeId}': productPath,
+    '/products/{storeId}': productsByStorePath
   },
   schemas: {
     signupParamsSchema,
@@ -36,6 +39,9 @@ export default {
     loginResponseSchema,
     addStoreParamsSchema,
     addStoreResponseSchema,
+    addProductParamsSchema,
+    addProductResponseSchema,
+    getProductsByStoreResponseSchema,
     apiKeyAuthSchema,
     errorSchema
   },
