@@ -1,6 +1,6 @@
 export const signupPath = {
   post: {
-    tags: ['Signup'],
+    tags: ['Account'],
     summary: 'Api para cadastrar usuário',
     requestBody: {
       content: {

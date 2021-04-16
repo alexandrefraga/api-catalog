@@ -1,5 +1,5 @@
 ##Success cases
-1. [x] **Receives** a POST request on the route */api/addProduct/:storeId*
+1. [x] **Receives** a POST request on the route */api/product/:storeId*
 2. [x] **Validates** mandatory fields: *storeId, description, trademark, reference*
 3. [x] **Validate** if there is no product with the *trademark* and *reference* provided in this store
 4. [x] **Create new product** with the data entered

@@ -20,16 +20,15 @@ export default {
     url: '/api'
   }],
   tags: [
-    { name: 'Signup' },
-    { name: 'Login' },
+    { name: 'Account' },
     { name: 'Store' },
     { name: 'Product' }
   ],
   paths: {
     '/signup': signupPath,
     '/login': loginPath,
-    '/addStore': storePath,
-    '/addProduct/{storeId}': productPath,
+    '/store': storePath,
+    '/product/{storeId}': productPath,
     '/products/{storeId}': productsByStorePath
   },
   schemas: {

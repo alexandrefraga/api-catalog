@@ -1,5 +1,5 @@
 ##Success cases
-1. [x] **Receives** a POST request on the route */api/addStore*
+1. [x] **Receives** a POST request on the route */api/store*
 2. [x] **Validates** mandatory fields: *company, tradingName, description, address, email, phoneNumber and geoLocalization*
 3. [x] **Validate** if email field is valid e-mail
 4. [x] **Validate** if there is no store with the *company, tradingName, address* provided

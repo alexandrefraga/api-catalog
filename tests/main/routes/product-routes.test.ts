@@ -22,7 +22,7 @@ describe('Product Routes', () => {
     await MongoHelper.disconnect()
   })
 
-  describe('/addProduct/:storeId', () => {
+  describe('/product/:storeId', () => {
     beforeEach(async () => {
       accountCollection = await MongoHelper.getCollection('accounts')
       storeCollection = await MongoHelper.getCollection('stores')
@@ -54,7 +54,7 @@ describe('Product Routes', () => {
         }
       })
       await request(app)
-        .post(`/api/addProduct/${storeId}`)
+        .post(`/api/product/${storeId}`)
         .set('x-access-token', token)
         .send({
           description: 'any_description',

@@ -11,6 +11,6 @@ export default (router: Router): void => {
   const keyRoute = routeKeyStoreFactory(Role.storeAdmin)
   const logedStoreAdmin = adaptMiddleware(makeAuthMiddleware(keyRoute))
   const loged = adaptMiddleware(makeAuthMiddleware())
-  router.post('/addProduct/:storeId', logedStoreAdmin, adaptRoute(makeAddProductController()))
+  router.post('/product/:storeId', logedStoreAdmin, adaptRoute(makeAddProductController()))
   router.get('/products/:storeId', loged, adaptRoute(makeLoadProductsByStoreController()))
 }

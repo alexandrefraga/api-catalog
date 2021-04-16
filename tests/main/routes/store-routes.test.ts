@@ -32,7 +32,7 @@ describe('Store Routes', () => {
     })
     test('Should return 403 on add store without accessToken', async () => {
       await request(app)
-        .post('/api/addStore')
+        .post('/api/store')
         .send(mockAddStoreParams())
         .expect(403)
     })
@@ -48,7 +48,7 @@ describe('Store Routes', () => {
       const token = await sign({ id: _id }, env.jwtSecret)
       await accountCollection.updateOne({ _id }, { $set: { token } })
       await request(app)
-        .post('/api/addStore')
+        .post('/api/store')
         .set('x-access-token', token)
         .send(mockAddStoreParams())
         .expect(200)
