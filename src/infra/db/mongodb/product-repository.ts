@@ -5,7 +5,14 @@ import { MongoHelper } from './mongo-helper'
 export class ProductMongoRepository implements AddProductRepository, LoadProductByDataRepository, LoadProductByStoreRepository {
   async add (product: AddProductRepositoryParams): Promise<ProductModel> {
     const productCollection = await MongoHelper.getCollection('products')
-    const result = await productCollection.insertOne(product)
+    const result = await productCollection.insertOne({
+      description: product.description,
+      details: product?.details,
+      trademark: product.trademark,
+      reference: product.reference,
+      price: product?.price,
+      storeId: product.storeId
+    })
     return MongoHelper.map(result.ops[0])
   }
 

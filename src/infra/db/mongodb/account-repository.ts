@@ -13,7 +13,11 @@ export class AccountMongoRepository implements AddAccountRepository, LoadAccount
   AddKeyInAccountRepository, UpdateKeyInAccountRepository {
   async add (account: AddAccountParams): Promise<AccountModel> {
     const accountCollection = await MongoHelper.getCollection('accounts')
-    const result = await accountCollection.insertOne(account)
+    const result = await accountCollection.insertOne({
+      name: account.name,
+      email: account.email,
+      password: account.password
+    })
     return MongoHelper.map(result.ops[0])
   }
 

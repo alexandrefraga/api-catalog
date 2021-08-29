@@ -7,7 +7,18 @@ import { MongoHelper } from './mongo-helper'
 export class StoreMongoRepository implements AddStoreRepository, LoadStoreByIdRepository, LoadStoreByDataRepository {
   async add (data: AddStoreParams): Promise<StoreModel> {
     const storeCollection = await MongoHelper.getCollection('stores')
-    const result = await storeCollection.insertOne(data)
+    const result = await storeCollection.insertOne({
+      company: data.company,
+      tradingName: data.tradingName,
+      description: data.description,
+      address: data.address,
+      email: data.email,
+      phoneNumber: data.phoneNumber,
+      geoLocalization: {
+        lat: data.geoLocalization.lat,
+        lng: data.geoLocalization.lng
+      }
+    })
     return MongoHelper.map(result.ops[0])
   }
 
