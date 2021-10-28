@@ -7,7 +7,7 @@ import { MongoHelper } from './mongo-helper'
 export class StoreMongoRepository implements AddStoreRepository, LoadStoreByIdRepository, LoadStoreByDataRepository {
   async add (data: AddStoreParams): Promise<StoreModel> {
     const storeCollection = await MongoHelper.getCollection('stores')
-    const result = await storeCollection.insertOne({
+    const input = {
       company: data.company,
       tradingName: data.tradingName,
       description: data.description,
@@ -18,8 +18,9 @@ export class StoreMongoRepository implements AddStoreRepository, LoadStoreByIdRe
         lat: data.geoLocalization.lat,
         lng: data.geoLocalization.lng
       }
-    })
-    return MongoHelper.map(result.ops[0])
+    }
+    const result = await storeCollection.insertOne(input)
+    return MongoHelper.mapInputWithId(input, result.insertedId)
   }
 
   async loadById (id: string): Promise<StoreModel> {

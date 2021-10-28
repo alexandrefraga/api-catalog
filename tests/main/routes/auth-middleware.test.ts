@@ -23,7 +23,7 @@ const createUserInRepository = async (keys?: Key[]): Promise<string> => {
     password,
     keys
   })
-  const _id = result.ops[0]._id
+  const _id = result.insertedId
   const token = await sign({ id: _id }, env.jwtSecret)
   await accountCollection.updateOne({ _id }, { $set: { token } })
   return token

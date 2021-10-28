@@ -18,7 +18,7 @@ export class AccountMongoRepository implements AddAccountRepository, LoadAccount
       email: account.email,
       password: account.password
     })
-    return MongoHelper.map(result.ops[0])
+    return MongoHelper.mapInputWithId(account, result.insertedId)
   }
 
   async loadByEmail (email: string, emailConfirmation?: Date): Promise<AccountModel> {

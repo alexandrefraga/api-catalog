@@ -1,7 +1,7 @@
 import request from 'supertest'
 import app from '@/main/config/app'
 import { MongoHelper } from '@/infra/db/mongodb/mongo-helper'
-import { Collection, ObjectId } from 'mongodb'
+import { Collection } from 'mongodb'
 import { hash } from 'bcrypt'
 import { sign } from 'jsonwebtoken'
 import env from '@/main/config/env'
@@ -37,10 +37,10 @@ describe('Product Routes', () => {
         emailConfirmation: new Date(),
         password
       })
-      const _id = account.ops[0]._id
+      const _id = account.insertedId
       const token = await sign({ id: _id }, env.jwtSecret)
       const store = await storeCollection.insertOne(mockAddStoreParams())
-      const storeId: string = new ObjectId(store.ops[0]._id).toHexString()
+      const storeId: string = store.insertedId.toHexString()
       await accountCollection.updateOne({ _id }, {
         $set: {
           token,
@@ -84,10 +84,10 @@ describe('Product Routes', () => {
         emailConfirmation: new Date(),
         password
       })
-      const _id = account.ops[0]._id
+      const _id = account.insertedId
       const token = await sign({ id: _id }, env.jwtSecret)
       const store = await storeCollection.insertOne(mockAddStoreParams())
-      const storeId: string = new ObjectId(store.ops[0]._id).toHexString()
+      const storeId: string = store.insertedId.toHexString()
       await accountCollection.updateOne({ _id }, { $set: { token } })
       await productCollection.insertMany([
         mockAddProductUseCaseParams(storeId),

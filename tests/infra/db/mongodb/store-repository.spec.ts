@@ -72,7 +72,7 @@ describe('Store Mongo Repository', () => {
 
     test('Should return a store if loadById on success', async () => {
       const res = await storeCollection.insertOne(addStoreParams)
-      const id = res.ops[0]._id
+      const id = res.insertedId.toHexString()
       const sut = makeSut()
       const store = await sut.loadById(id)
       expect(store).toBeTruthy()

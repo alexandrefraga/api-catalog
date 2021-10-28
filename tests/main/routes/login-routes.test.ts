@@ -240,7 +240,7 @@ describe('Login Routes', () => {
         email: 'any_email@mail.com',
         password
       })
-      const _id = result.ops[0]._id
+      const _id = result.insertedId.toHexString()
       const tokenValidation = await sign({ id: _id }, env.jwtSecret)
       await signatureCollection.insertOne({
         token: tokenValidation,

@@ -13,7 +13,7 @@ export class ProductMongoRepository implements AddProductRepository, LoadProduct
       price: product?.price,
       storeId: product.storeId
     })
-    return MongoHelper.map(result.ops[0])
+    return MongoHelper.mapInputWithId(product, result.insertedId)
   }
 
   async loadByData (data: LoadProductByDataParams): Promise<ProductModel> {

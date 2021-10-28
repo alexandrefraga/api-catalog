@@ -54,14 +54,14 @@ describe('Brcypt Adapter', () => {
 
     test('Shoul BcryptAdapter return false when bcrypt compare returns false', async () => {
       const sut = makeSut()
-      jest.spyOn(bcrypt, 'compare').mockReturnValueOnce(Promise.resolve(false))
+      jest.spyOn(bcrypt, 'compare').mockImplementationOnce(async () => Promise.resolve(false))
       const isValid = await sut.compare('any_value', 'any_hash')
       expect(isValid).toBe(false)
     })
 
     test('Shoul throw if bcrypt compare throws ', async () => {
       const sut = makeSut()
-      jest.spyOn(bcrypt, 'compare').mockReturnValueOnce(Promise.reject(new Error()))
+      jest.spyOn(bcrypt, 'compare').mockImplementationOnce(async () => Promise.reject(new Error()))
       const promise = sut.compare('any_value', 'any_hash')
       await expect(promise).rejects.toThrowError()
     })

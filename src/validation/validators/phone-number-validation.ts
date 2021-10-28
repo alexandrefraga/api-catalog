@@ -13,6 +13,7 @@ export class PhoneNumberArrayValidation implements Validation {
       let response = null
       if (input[this.fieldName]) {
         if (Array.isArray(input[this.fieldName]) && input[this.fieldName].length >= this.minLength) {
+          // eslint-disable-next-line prefer-regex-literals
           const isPhoneNumber = new RegExp('^\\d{2}-\\d{8,9}$')
           const onError: string = input[this.fieldName].find(e => {
             return typeof e === 'string' ? !isPhoneNumber.test(e) : true
