@@ -28,7 +28,7 @@ export const MongoHelper = {
     return arrayCollections.map(c => MongoHelper.map(c))
   },
 
-  mapInputWithId: (input: any, id: ObjectID): any => {
-    return Object.assign({}, input, { id: id.toHexString() })
+  mapInputWithId: (input: any, _id: ObjectID): any => {
+    return Object.assign({ ...input }, { id: _id.toHexString() })
   }
 }

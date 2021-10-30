@@ -7,7 +7,7 @@ export class SignatureTokenMongoRepository implements AddSignatureTokenRepositor
   async add (token: string, type: SignatureTypes, subject?: string): Promise<SignatureTokenModel> {
     const data = subject ? { token, type, subject } : { token, type }
     const signatureCollection = await MongoHelper.getCollection('signatures')
-    const result = await signatureCollection.insertOne(data)
+    const result = await signatureCollection.insertOne({ ...data })
     return MongoHelper.mapInputWithId(data, result.insertedId)
   }
 

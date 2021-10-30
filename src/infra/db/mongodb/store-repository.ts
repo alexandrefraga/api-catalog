@@ -19,7 +19,7 @@ export class StoreMongoRepository implements AddStoreRepository, LoadStoreByIdRe
         lng: data.geoLocalization.lng
       }
     }
-    const result = await storeCollection.insertOne(input)
+    const result = await storeCollection.insertOne({ ...input })
     return MongoHelper.mapInputWithId(input, result.insertedId)
   }
 
