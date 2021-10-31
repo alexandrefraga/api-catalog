@@ -5,20 +5,21 @@ import { MongoHelper } from './mongo-helper'
 export class ProductMongoRepository implements AddProductRepository, LoadProductByDataRepository, LoadProductByStoreRepository {
   async add (product: AddProductRepositoryParams): Promise<ProductModel> {
     const productCollection = await MongoHelper.getCollection('products')
-    const result = await productCollection.insertOne({
+    const data: AddProductRepositoryParams = {
       description: product.description,
-      details: product?.details,
       trademark: product.trademark,
       reference: product.reference,
-      price: product?.price,
       storeId: product.storeId
-    })
-    return MongoHelper.mapInputWithId(product, result.insertedId)
+    }
+    if (product.details !== undefined) data.details = product.details
+    if (product.price !== undefined) data.price = product.price
+    const result = await productCollection.insertOne(data)
+    return MongoHelper.mapInputWithId(data, result.insertedId)
   }
 
   async loadByData (data: LoadProductByDataParams): Promise<ProductModel> {
     const productCollection = await MongoHelper.getCollection('products')
-    const result = await productCollection.findOne(data)
+    const result = await productCollection.findOne({ ...data })
     return result && MongoHelper.map(result)
   }
 

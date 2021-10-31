@@ -14,12 +14,14 @@ export class AuthMiddleware implements Middleware {
   async execute (request: HttpRequest): Promise<HttpResponse> {
     try {
       const token = request.headers?.['x-access-token']
-      const keyParams: KeyParams = this.key ? {
-        typeKey: this.key.typeKey,
-        role: this.key.role,
-        attribute: this.key.attribute,
-        storeId: this.key.requiredStoreId ? request.params?.storeId : null
-      } : null
+      const keyParams: KeyParams = this.key
+        ? {
+            typeKey: this.key.typeKey,
+            role: this.key.role,
+            attribute: this.key.attribute,
+            storeId: this.key.requiredStoreId ? request.params?.storeId : null
+          }
+        : null
       if (token) {
         const account = await this.loadAccountByToken.load(token, keyParams)
         if (account) {
