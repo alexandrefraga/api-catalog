@@ -1,10 +1,11 @@
-import { Controller, SignUpRequestParameters, HttpResponse, Validation } from '../../protocolls'
+import { Controller, SignUpRequestParameters, HttpResponse } from '../../protocolls'
 import { badRequest, created, forbidden, serverError } from '@/presentation/helpers/http-helper'
 import { AddAccount } from '@/domain/usecases/account/add-account'
 import { AddSignatureToken } from '@/domain/usecases/add-signature-token'
 import { EmailInUseError } from '../../errors'
 import { SendMail } from '@/domain/usecases/send-mail-usecase'
 import { SignatureTypes } from '@/domain/models/signature-token-model'
+import { Validation } from '@/validation/protocols/validation'
 
 export class SignUpController implements Controller<SignUpRequestParameters> {
   constructor (

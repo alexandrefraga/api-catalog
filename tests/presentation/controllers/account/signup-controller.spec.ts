@@ -4,7 +4,7 @@ import { AddSignatureToken } from '@/domain/usecases/add-signature-token'
 import { SendMail } from '@/domain/usecases/send-mail-usecase'
 import { SignUpController } from '@/presentation/controllers/account/signup-controller'
 import { EmailInUseError, ServerError } from '@/presentation/errors'
-import { Validation } from '@/presentation/protocolls/validation'
+import { Validation } from '@/validation/protocols/validation'
 import { mockAccountModel, mockAddAccount, mockAddSignatureToken, mockSendMailUsecase, mockSignatureTokenModel, mockSignUpRequestParams, mockValidator } from '../../../mocks'
 
 const request = mockSignUpRequestParams()

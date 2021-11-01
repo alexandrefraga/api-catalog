@@ -1,7 +1,8 @@
 import { SignatureTypes } from '@/domain/models/signature-token-model'
 import { ValidateAccount } from '@/domain/usecases/account/validate-account'
-import { Controller, HttpResponse, ValidateAccountParams, Validation } from '@/presentation/protocolls'
+import { Controller, HttpResponse, ValidateAccountParams } from '@/presentation/protocolls'
 import { badRequest, serverError, unauthorized, success } from '../../helpers/http-helper'
+import { Validation } from '@/validation/protocols/validation'
 
 export class ValidateAccountController implements Controller<ValidateAccountParams> {
   constructor (

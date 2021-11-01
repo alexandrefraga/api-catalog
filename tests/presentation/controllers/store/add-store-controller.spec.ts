@@ -3,7 +3,7 @@ import { AddKeyInAccount } from '@/domain/usecases/account/add-key-in-account'
 import { AddStoreController } from '@/presentation/controllers/store/add-store-controller'
 import { ServerError } from '@/presentation/errors'
 import { DataInUseError } from '@/presentation/errors/data-in-use-error'
-import { Validation } from '@/presentation/protocolls'
+import { Validation } from '@/validation/protocols/validation'
 import { mockValidator, mockAddStoreUseCase, mockStoreModel, makeKeyAdminStore, mockAddKeyInAccountUseCase, mockAddStoreParameters, mockAddStoreParams } from '../../../mocks'
 import MockDate from 'mockdate'
 

@@ -4,8 +4,8 @@ import { AddKeyInAccount } from '@/domain/usecases/account/add-key-in-account'
 import { DataInUseError } from '@/presentation/errors/data-in-use-error'
 import { badRequest, forbidden, serverError, success } from '@/presentation/helpers/http-helper'
 import { storeKey } from '@/presentation/helpers/key-helper'
-import { AddStoreParameters, Controller, HttpResponse, Validation } from '@/presentation/protocolls'
-
+import { AddStoreParameters, Controller, HttpResponse } from '@/presentation/protocolls'
+import { Validation } from '@/validation/protocols/validation'
 export class AddStoreController implements Controller<AddStoreParameters> {
   constructor (
     private readonly validator: Validation,

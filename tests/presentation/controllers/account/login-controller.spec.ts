@@ -1,5 +1,5 @@
 import { Authentication } from '@/domain/usecases/account/authentication'
-import { Validation } from '@/presentation/protocolls'
+import { Validation } from '@/validation/protocols/validation'
 import { LoginController } from '@/presentation/controllers/account/login-controller'
 import { ServerError, UnauthorizedError } from '@/presentation/errors'
 import { mockValidator, mockAuthenticator, mockLoginRequestParams, mockAuthenticationResponse } from '../../../mocks'

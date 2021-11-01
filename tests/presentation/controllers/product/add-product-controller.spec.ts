@@ -4,7 +4,7 @@ import { mockAddProductUseCase } from '@/../tests/mocks/mock-product-usecase'
 import { AddProduct } from '@/domain/usecases/product/add-product'
 import { AddProductController } from '@/presentation/controllers/product/add-product-controller'
 import { InvalidParamError, ServerError } from '@/presentation/errors'
-import { Validation } from '@/presentation/protocolls'
+import { Validation } from '@/validation/protocols/validation'
 
 const request = mockAddProductUseCaseParams()
 

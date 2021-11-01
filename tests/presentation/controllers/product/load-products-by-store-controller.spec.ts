@@ -1,6 +1,6 @@
 import { mockLoadProductsByStoreUseCase, mockProductModel, mockValidator } from '@/../tests/mocks'
 import { ServerError } from '@/presentation/errors'
-import { Validation } from '@/presentation/protocolls'
+import { Validation } from '@/validation/protocols/validation'
 import { LoadProductsByStoreController } from '@/presentation/controllers/product/load-products-by-store-controller'
 import { InvalidParamError } from '@/data/errors'
 

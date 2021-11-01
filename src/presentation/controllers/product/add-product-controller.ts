@@ -1,7 +1,8 @@
 import { AddProduct } from '@/domain/usecases/product/add-product'
 import { badRequest, forbidden, serverError, success } from '@/presentation/helpers/http-helper'
-import { Controller, HttpResponse, Validation } from '@/presentation/protocolls'
+import { Controller, HttpResponse } from '@/presentation/protocolls'
 import { AddProductControllerParams } from '@/presentation/protocolls/request-parameters-product'
+import { Validation } from '@/validation/protocols/validation'
 
 export class AddProductController implements Controller<any> {
   constructor (

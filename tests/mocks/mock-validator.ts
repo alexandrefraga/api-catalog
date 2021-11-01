@@ -1,4 +1,4 @@
-import { Validation } from '@/presentation/protocolls'
+import { Validation } from '@/validation/protocols/validation'
 import { EmailValidator } from '@/validation/protocols'
 
 export const mockValidator = (): Validation => {

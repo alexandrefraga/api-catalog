@@ -1,7 +1,8 @@
 import { LoadProductsByStore } from '@/domain/usecases/product/load-product-by-store'
 import { badRequest, forbidden, serverError, success } from '@/presentation/helpers/http-helper'
-import { Controller, HttpResponse, Validation } from '@/presentation/protocolls'
+import { Controller, HttpResponse } from '@/presentation/protocolls'
 import { LoadProductsByStoreControllerParams } from '@/presentation/protocolls/request-parameters-product'
+import { Validation } from '@/validation/protocols/validation'
 
 export class LoadProductsByStoreController implements Controller<LoadProductsByStoreControllerParams> {
   constructor (

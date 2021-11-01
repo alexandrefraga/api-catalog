@@ -1,4 +1,4 @@
-import { Validation } from '@/presentation/protocolls'
+import { Validation } from '@/validation/protocols/validation'
 import { ValidationComposite } from '@/validation/validators/validation-composite'
 import { mockValidator } from '../../mocks'
 

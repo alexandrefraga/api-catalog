@@ -1,6 +1,6 @@
 import { ValidateAccount } from '@/domain/usecases/account/validate-account'
 import { ValidateAccountController } from '@/presentation/controllers/account/validate-account-controller'
-import { Validation } from '@/presentation/protocolls'
+import { Validation } from '@/validation/protocols/validation'
 import { ServerError, UnauthorizedError } from '@/presentation/errors'
 import { mockValidateAccountParams, mockValidator, mockValidateAccount } from '../../../mocks'
 import { SignatureTypes } from '@/domain/models/signature-token-model'
