@@ -3,7 +3,7 @@ import { AddKeyInAccount } from '@/domain/usecases/account/add-key-in-account'
 import { AddStoreController } from '@/presentation/controllers/store/add-store-controller'
 import { ServerError } from '@/presentation/errors'
 import { DataInUseError } from '@/presentation/errors/data-in-use-error'
-import { EmailValidation, RequiredFields } from '@/presentation/validations'
+import { EmailValidation, PhoneNumberArrayValidation, RequiredFields } from '@/presentation/validations'
 import { mockAddStoreUseCase, mockStoreModel, makeKeyAdminStore, mockAddKeyInAccountUseCase, mockAddStoreParameters, mockAddStoreParams, MockEmailValidator } from '../../../mocks'
 import MockDate from 'mockdate'
 import { Controller } from '@/presentation/controllers/controller'
@@ -51,6 +51,7 @@ describe('AddStore Controller', () => {
       'geoLocalization', 'userId', 'phoneNumber', 'email'
     ]))
     expect(validations).toContainEqual(new EmailValidation(input, 'email', MockEmailValidator()))
+    expect(validations).toContainEqual(new PhoneNumberArrayValidation(input, 'phoneNumber', 1))
   })
 
   test('Should call AddStoreUseCase with correct values', async () => {

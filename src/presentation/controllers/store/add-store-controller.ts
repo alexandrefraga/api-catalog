@@ -33,6 +33,7 @@ export class AddStoreController extends Controller {
         'geoLocalization', 'userId', 'phoneNumber', 'email'
       ])
       .emailValidation('email', this.emailValidator)
+      .phoneNumberArrayValidation('phoneNumber', 1)
       .build()
   }
 }
