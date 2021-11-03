@@ -3,24 +3,22 @@ import { AddKeyInAccount } from '@/domain/usecases/account/add-key-in-account'
 import { AddStoreController } from '@/presentation/controllers/store/add-store-controller'
 import { ServerError } from '@/presentation/errors'
 import { DataInUseError } from '@/presentation/errors/data-in-use-error'
-import { Validation } from '@/validation/protocols/validation'
-import { mockValidator, mockAddStoreUseCase, mockStoreModel, makeKeyAdminStore, mockAddKeyInAccountUseCase, mockAddStoreParameters, mockAddStoreParams } from '../../../mocks'
+import { RequiredFields } from '@/presentation/validations'
+import { mockAddStoreUseCase, mockStoreModel, makeKeyAdminStore, mockAddKeyInAccountUseCase, mockAddStoreParameters, mockAddStoreParams } from '../../../mocks'
 import MockDate from 'mockdate'
+import { Controller } from '@/presentation/controllers/controller'
 
 type SutTypes = {
   sut: AddStoreController
-  validatorStub: Validation
   addStoreUseCaseStub: AddStore
   addKeyInAccountUseCaseStub: AddKeyInAccount
 }
 const makeSut = (): SutTypes => {
-  const validatorStub = mockValidator()
   const addStoreUseCaseStub = mockAddStoreUseCase()
   const addKeyInAccountUseCaseStub = mockAddKeyInAccountUseCase()
-  const sut = new AddStoreController(validatorStub, addStoreUseCaseStub, addKeyInAccountUseCaseStub)
+  const sut = new AddStoreController(addStoreUseCaseStub, addKeyInAccountUseCaseStub)
   return {
     sut,
-    validatorStub,
     addStoreUseCaseStub,
     addKeyInAccountUseCaseStub
   }
@@ -30,42 +28,42 @@ describe('AddStore Controller', () => {
 
   afterAll(async () => { MockDate.reset() })
 
-  test('Should call Validator with correct values', async () => {
-    const { sut, validatorStub } = makeSut()
-    const validateSpy = jest.spyOn(validatorStub, 'validate')
-    const request = mockAddStoreParameters()
-    await sut.execute(request)
-    expect(validateSpy).toHaveBeenCalledWith(request)
+  it('should extend Controller', async () => {
+    const { sut } = makeSut()
+    expect(sut).toBeInstanceOf(Controller)
   })
 
-  test('Should return 400 if Validator return an error', async () => {
-    const { sut, validatorStub } = makeSut()
-    jest.spyOn(validatorStub, 'validate').mockReturnValueOnce(Promise.resolve(new Error('specific error')))
-    const response = await sut.execute(mockAddStoreParameters())
-    expect(response.statusCode).toBe(400)
-    expect(response.body).toEqual(new Error('specific error'))
-  })
-
-  test('Should return 500 if Validator throws', async () => {
-    const { sut, validatorStub } = makeSut()
-    jest.spyOn(validatorStub, 'validate').mockImplementationOnce(() => { throw new Error() })
-    const response = await sut.execute(mockAddStoreParameters())
-    expect(response.statusCode).toBe(500)
-    expect(response.body).toEqual(new ServerError(''))
+  it('should build Validators correctly', async () => {
+    const { sut } = makeSut()
+    const input = {
+      company: 'company',
+      tradingName: 'tradingName',
+      description: 'description',
+      address: 'address',
+      geoLocalization: 'geoLocalization',
+      userId: 'userId',
+      phoneNumber: ['phoneNumber'],
+      email: 'email'
+    }
+    const validations = sut.buildValidators(input)
+    expect(validations).toContainEqual(new RequiredFields(input, [
+      'company', 'tradingName', 'description', 'address',
+      'geoLocalization', 'userId', 'phoneNumber', 'email'
+    ]))
   })
 
   test('Should call AddStoreUseCase with correct values', async () => {
     const { sut, addStoreUseCaseStub } = makeSut()
     const addSpy = jest.spyOn(addStoreUseCaseStub, 'add')
     const request = mockAddStoreParameters()
-    await sut.execute(request)
+    await sut.handle(request)
     expect(addSpy).toHaveBeenCalledWith(mockAddStoreParams())
   })
 
   test('Should return 500 if AddStoreUseCase throws', async () => {
     const { sut, addStoreUseCaseStub } = makeSut()
     jest.spyOn(addStoreUseCaseStub, 'add').mockImplementationOnce(() => { throw new Error() })
-    const response = await sut.execute(mockAddStoreParameters())
+    const response = await sut.handle(mockAddStoreParameters())
     expect(response.statusCode).toBe(500)
     expect(response.body).toEqual(new ServerError(''))
   })
@@ -73,7 +71,7 @@ describe('AddStore Controller', () => {
   test('Should return 403 if AddStoreUseCase return null', async () => {
     const { sut, addStoreUseCaseStub } = makeSut()
     jest.spyOn(addStoreUseCaseStub, 'add').mockReturnValueOnce(Promise.resolve(null))
-    const response = await sut.execute(mockAddStoreParameters())
+    const response = await sut.handle(mockAddStoreParameters())
     expect(response.statusCode).toBe(403)
     expect(response.body).toEqual(new DataInUseError(''))
   })
@@ -81,21 +79,21 @@ describe('AddStore Controller', () => {
   test('Should call AddKeyInAccount with correct values', async () => {
     const { sut, addKeyInAccountUseCaseStub } = makeSut()
     const addKeySpy = jest.spyOn(addKeyInAccountUseCaseStub, 'add')
-    await sut.execute(mockAddStoreParameters())
+    await sut.handle(mockAddStoreParameters())
     expect(addKeySpy).toHaveBeenCalledWith(mockAddStoreParameters().userId, makeKeyAdminStore())
   })
 
   test('Should return 500 if AddKeyInAccount throws', async () => {
     const { sut, addKeyInAccountUseCaseStub } = makeSut()
     jest.spyOn(addKeyInAccountUseCaseStub, 'add').mockImplementationOnce(() => { throw new Error() })
-    const response = await sut.execute(mockAddStoreParameters())
+    const response = await sut.handle(mockAddStoreParameters())
     expect(response.statusCode).toBe(500)
     expect(response.body).toEqual(new ServerError(''))
   })
 
   test('Should return 200 if AddStoreUseCase return a store', async () => {
     const { sut } = makeSut()
-    const response = await sut.execute(mockAddStoreParameters())
+    const response = await sut.handle(mockAddStoreParameters())
     expect(response.statusCode).toBe(200)
     expect(response.body).toEqual(mockStoreModel())
   })

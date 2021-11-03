@@ -1,7 +1,7 @@
-import { Controller } from '@/presentation/protocolls'
+import { Controller } from '@/presentation/controllers/controller'
 import { Request, Response } from 'express'
 
-export const adaptRoute = (controller: Controller) => {
+export const expressAdaptRoute = (controller: Controller) => {
   return async (req: Request, res: Response) => {
     const request = {}
     for (const field of [
@@ -18,7 +18,7 @@ export const adaptRoute = (controller: Controller) => {
         Object.assign(request, { [`${field}`]: req.params[field] })
       }
     }
-    const httpResponse = await controller.execute(request)
+    const httpResponse = await controller.handle(request)
     if (httpResponse.statusCode >= 200 && httpResponse.statusCode <= 299) {
       res.status(httpResponse.statusCode).json(httpResponse.body)
     } else {

@@ -1,6 +1,6 @@
 import { HttpResponse } from '@/presentation/protocolls'
 import { badRequest, serverError } from '@/presentation/helpers/http-helper'
-import { Validation } from '@/presentation/validations/validation'
+import { Validation } from '@/presentation/protocolls/validation'
 
 export abstract class Controller {
   abstract perform (httpRequest: any): Promise<HttpResponse>
@@ -12,7 +12,7 @@ export abstract class Controller {
   async handle (httpRequest: any): Promise<HttpResponse> {
     try {
       const error = await this.validate(httpRequest)
-      if (error !== undefined) {
+      if (error !== null) {
         return badRequest(error)
       }
       return await this.perform(httpRequest)
@@ -21,8 +21,8 @@ export abstract class Controller {
     }
   }
 
-  private async validate (httpRequest: any): Promise<Error | undefined> {
+  private async validate (httpRequest: any): Promise<Error | null> {
     const response = await Promise.all(this.buildValidators(httpRequest).map(async v => await v.validate()))
-    return Array.isArray(response) ? response.reduce((ac, e) => ac ?? e, undefined) : response
+    return Array.isArray(response) ? response.reduce((ac, e) => ac || e, null) : response
   }
 }

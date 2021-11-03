@@ -5,27 +5,19 @@ import { LogErrorMongoRepository } from '@/infra/db/mongodb/log-error-repository
 import { StoreMongoRepository } from '@/infra/db/mongodb/store-repository'
 import { LogControllerDecorator } from '@/main/decorator/log-controller-decorator'
 import { AddStoreController } from '@/presentation/controllers/store/add-store-controller'
-import { Controller } from '@/presentation/protocolls'
-import { EmailValidation, RequiredFieldValidation, ValidationComposite, PhoneNumberArrayValidation } from '@/validation/validators'
-import { EmailValidatorAdapter } from '@/infra/validators/email-validator-adapter'
+import { Controller } from '@/presentation/controllers/controller'
+// import { EmailValidation, PhoneNumberArrayValidation } from '@/validation/validators'
+// import { EmailValidatorAdapter } from '@/infra/validators/email-validator-adapter'
 
 export const makeAddStoreController = (): Controller => {
-  const validator = new ValidationComposite([
-    new RequiredFieldValidation('company'),
-    new RequiredFieldValidation('tradingName'),
-    new RequiredFieldValidation('description'),
-    new RequiredFieldValidation('address'),
-    new RequiredFieldValidation('geoLocalization'),
-    new RequiredFieldValidation('userId'),
-    new PhoneNumberArrayValidation('phoneNumber', 1),
-    new EmailValidation(new EmailValidatorAdapter(), 'email')
-  ])
+  // const phoneValidation = new PhoneNumberArrayValidation('phoneNumber', 1)
+  // const emailValidation = new EmailValidation(new EmailValidatorAdapter(), 'email')
   const loadStoreRepository = new StoreMongoRepository()
   const addStoreRepository = new StoreMongoRepository()
   const addStore = new AddStoreUseCase(loadStoreRepository, addStoreRepository)
   const addKeyRepository = new AccountMongoRepository()
   const addKeyInAccountUsecase = new AddKeyInAccountUseCase(addKeyRepository)
-  const addStoreController = new AddStoreController(validator, addStore, addKeyInAccountUsecase)
+  const addStoreController = new AddStoreController(addStore, addKeyInAccountUsecase)
   const logErrorRepository = new LogErrorMongoRepository()
   return new LogControllerDecorator(addStoreController, logErrorRepository)
 }

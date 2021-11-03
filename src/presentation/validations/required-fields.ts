@@ -1,4 +1,4 @@
-import { Validation } from './validation'
+import { Validation } from '../protocolls/validation'
 
 export class RequiredFields implements Validation {
   constructor (
@@ -6,11 +6,11 @@ export class RequiredFields implements Validation {
     private readonly fieldName: string[]
   ) {}
 
-  async validate (): Promise<Error | undefined> {
+  async validate (): Promise<Error> {
     return new Promise(resolve => {
       this.fieldName.forEach(field => {
         if (this.input[field] === undefined) {
-          resolve(new Error(`Missing parameter: ${field}`))
+          resolve(new Error(`Missing param: ${field}`))
         }
       })
       resolve(null)

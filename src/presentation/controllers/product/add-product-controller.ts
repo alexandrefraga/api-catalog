@@ -1,28 +1,26 @@
 import { AddProduct } from '@/domain/usecases/product/add-product'
-import { badRequest, forbidden, serverError, success } from '@/presentation/helpers/http-helper'
-import { Controller, HttpResponse } from '@/presentation/protocolls'
+import { forbidden, success } from '@/presentation/helpers/http-helper'
+import { HttpResponse, Validation } from '@/presentation/protocolls'
 import { AddProductControllerParams } from '@/presentation/protocolls/request-parameters-product'
-import { Validation } from '@/validation/protocols/validation'
+import { ValidationsBuilder } from '@/presentation/validations'
+import { Controller } from '@/presentation/controllers/controller'
 
-export class AddProductController implements Controller<any> {
+export class AddProductController extends Controller {
   constructor (
-    private readonly validator: Validation,
     private readonly addProductUsecase: AddProduct
-  ) {}
+  ) { super() }
 
-  async execute (data: AddProductControllerParams): Promise<HttpResponse> {
-    try {
-      const error = await this.validator.validate(data)
-      if (error) {
-        return badRequest(error)
-      }
-      const productOrError = await this.addProductUsecase.add(data)
-      if (productOrError instanceof Error) {
-        return forbidden(productOrError)
-      }
-      return success(productOrError)
-    } catch (error) {
-      return serverError(error)
+  async perform (data: AddProductControllerParams): Promise<HttpResponse> {
+    const productOrError = await this.addProductUsecase.add(data)
+    if (productOrError instanceof Error) {
+      return forbidden(productOrError)
     }
+    return success(productOrError)
+  }
+
+  override buildValidators (httpRequest: any): Validation[] {
+    return ValidationsBuilder.of(httpRequest)
+      .requiredFields(['description', 'trademark', 'reference', 'storeId'])
+      .build()
   }
 }

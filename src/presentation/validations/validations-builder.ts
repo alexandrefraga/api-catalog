@@ -1,6 +1,7 @@
-import { Validation } from './validation'
+import { Validation } from '../protocolls/validation'
 import { RequiredFields } from './required-fields'
-import { RequiredFieldsAndCompareValues } from '.'
+import { EmailValidation, RequiredFieldsAndCompareValues } from '.'
+import { EmailValidator } from '../protocolls/emailValidator'
 
 export class ValidationsBuilder {
   private readonly validations: any[] = []
@@ -19,6 +20,11 @@ export class ValidationsBuilder {
 
   requiredFieldsAndCompareValues (field: string, fieldCompare: string): ValidationsBuilder {
     this.validations.push(new RequiredFieldsAndCompareValues(this.data, field, fieldCompare))
+    return this
+  }
+
+  emailValidation (field: string, validator: EmailValidator): ValidationsBuilder {
+    this.validations.push(new EmailValidation(this.data, field, validator))
     return this
   }
 

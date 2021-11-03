@@ -1,9 +1,8 @@
-import { Validation } from '@/validation/protocols/validation'
-import { EmailValidator } from '@/validation/protocols'
+import { Validation, EmailValidator } from '@/presentation/protocolls'
 
 export const mockValidator = (): Validation => {
   class ValidatorStub implements Validation {
-    async validate (input: any): Promise<Error> {
+    async validate (): Promise<Error> {
       return null
     }
   }
@@ -12,7 +11,7 @@ export const mockValidator = (): Validation => {
 
 export const MockEmailValidator = (): EmailValidator => {
   class FakeEmailValidator implements EmailValidator {
-    isValid (email: string): boolean { return true }
+    isValid (): boolean { return true }
   }
   return new FakeEmailValidator()
 }

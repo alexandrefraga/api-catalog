@@ -1,28 +1,26 @@
 import { LoadProductsByStore } from '@/domain/usecases/product/load-product-by-store'
-import { badRequest, forbidden, serverError, success } from '@/presentation/helpers/http-helper'
-import { Controller, HttpResponse } from '@/presentation/protocolls'
+import { forbidden, success } from '@/presentation/helpers/http-helper'
+import { HttpResponse, Validation } from '@/presentation/protocolls'
 import { LoadProductsByStoreControllerParams } from '@/presentation/protocolls/request-parameters-product'
-import { Validation } from '@/validation/protocols/validation'
+import { ValidationsBuilder } from '@/presentation/validations'
+import { Controller } from '@/presentation/controllers/controller'
 
-export class LoadProductsByStoreController implements Controller<LoadProductsByStoreControllerParams> {
+export class LoadProductsByStoreController extends Controller {
   constructor (
-    private readonly validator: Validation,
     private readonly loadProductsByStoreUseCase: LoadProductsByStore
-  ) {}
+  ) { super() }
 
-  async execute (data: LoadProductsByStoreControllerParams): Promise<HttpResponse> {
-    try {
-      const error = await this.validator.validate(data)
-      if (error) {
-        return badRequest(error)
-      }
-      const productOrError = await this.loadProductsByStoreUseCase.loadByStore(data.storeId)
-      if (productOrError instanceof Error) {
-        return forbidden(productOrError)
-      }
-      return success(productOrError)
-    } catch (error) {
-      return serverError(error)
+  async perform (data: LoadProductsByStoreControllerParams): Promise<HttpResponse> {
+    const productOrError = await this.loadProductsByStoreUseCase.loadByStore(data.storeId)
+    if (productOrError instanceof Error) {
+      return forbidden(productOrError)
     }
+    return success(productOrError)
+  }
+
+  override buildValidators (httpRequest: any): Validation[] {
+    return ValidationsBuilder.of(httpRequest)
+      .requiredFields(['storeId'])
+      .build()
   }
 }

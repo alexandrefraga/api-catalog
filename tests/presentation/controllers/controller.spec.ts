@@ -21,11 +21,7 @@ describe('Controller', () => {
 
   it('should return 400 if validation fails', async () => {
     jest.spyOn(sut, 'buildValidators').mockReturnValueOnce([
-      {
-        validate: async () => {
-          return Promise.resolve(new Error('validation fail'))
-        }
-      }
+      { validate: async () => Promise.resolve(new Error('validation fail')) }
     ])
     const httpResponse = await sut.handle({ token: 'any_token' })
     expect(httpResponse).toEqual({

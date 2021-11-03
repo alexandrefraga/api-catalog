@@ -1,27 +1,27 @@
 import { Authentication } from '@/domain/usecases/account/authentication'
-import { Controller, HttpResponse, LoginRequestParameters } from '@/presentation/protocolls'
-import { badRequest, serverError, success, unauthorized } from '@/presentation/helpers/http-helper'
-import { Validation } from '@/validation/protocols/validation'
+import { EmailValidator, HttpResponse, LoginRequestParameters, Validation } from '@/presentation/protocolls'
+import { success, unauthorized } from '@/presentation/helpers/http-helper'
+import { Controller } from '@/presentation/controllers/controller'
+import { ValidationsBuilder } from '@/presentation/validations'
 
-export class LoginController implements Controller<LoginRequestParameters> {
+export class LoginController extends Controller {
   constructor (
-    private readonly validator: Validation,
+    private readonly emailValidator: EmailValidator,
     private readonly authenticator: Authentication
-  ) {}
+  ) { super() }
 
-  async execute (data: LoginRequestParameters): Promise<HttpResponse> {
-    try {
-      const error = await this.validator.validate(data)
-      if (error) {
-        return badRequest(error)
-      }
-      const authenticationResponse = await this.authenticator.auth(data)
-      if (!authenticationResponse) {
-        return unauthorized()
-      }
-      return success(authenticationResponse)
-    } catch (error) {
-      return serverError(error)
+  async perform (data: LoginRequestParameters): Promise<HttpResponse> {
+    const authenticationResponse = await this.authenticator.auth(data)
+    if (!authenticationResponse) {
+      return unauthorized()
     }
+    return success(authenticationResponse)
+  }
+
+  override buildValidators (httpRequest: any): Validation[] {
+    return ValidationsBuilder.of(httpRequest)
+      .requiredFields(['password'])
+      .emailValidation('email', this.emailValidator)
+      .build()
   }
 }

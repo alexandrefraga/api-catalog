@@ -4,7 +4,7 @@ describe('Required Fields Validation', () => {
   it('Should return an Error if validation fails', async () => {
     const sut = new RequiredFields({}, ['any_field'])
     const promise = sut.validate()
-    await expect(promise).resolves.toEqual(new Error('Missing parameter: any_field'))
+    await expect(promise).resolves.toEqual(new Error('Missing param: any_field'))
   })
 
   it('Should returns null if validation succeeds', async () => {
