@@ -1,7 +1,9 @@
 import { Validation } from '../protocolls/validation'
 import { RequiredFields } from './required-fields'
-import { EmailValidation, RequiredFieldsAndCompareValues } from '.'
+import { EmailValidation } from './email-validation'
+import { RequiredFieldsAndCompareValues } from './required-fields-and-compare-values'
 import { EmailValidator } from '../protocolls/emailValidator'
+import { PhoneNumberArrayValidation } from './phone-number-validation'
 
 export class ValidationsBuilder {
   private readonly validations: any[] = []
@@ -25,6 +27,11 @@ export class ValidationsBuilder {
 
   emailValidation (field: string, validator: EmailValidator): ValidationsBuilder {
     this.validations.push(new EmailValidation(this.data, field, validator))
+    return this
+  }
+
+  phoneNumberArrayValidation (field: string, minLength: number): ValidationsBuilder {
+    this.validations.push(new PhoneNumberArrayValidation(this.data, field, minLength))
     return this
   }
 
