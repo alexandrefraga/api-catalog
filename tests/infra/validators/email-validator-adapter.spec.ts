@@ -1,4 +1,4 @@
-import { EmailValidator } from '@/validation/protocols'
+import { EmailValidator } from '@/presentation/protocolls'
 import { EmailValidatorAdapter } from '@/infra/validators/email-validator-adapter'
 import validator from 'validator'
 
