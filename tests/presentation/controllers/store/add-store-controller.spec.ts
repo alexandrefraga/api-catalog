@@ -3,8 +3,8 @@ import { AddKeyInAccount } from '@/domain/usecases/account/add-key-in-account'
 import { AddStoreController } from '@/presentation/controllers/store/add-store-controller'
 import { ServerError } from '@/presentation/errors'
 import { DataInUseError } from '@/presentation/errors/data-in-use-error'
-import { RequiredFields } from '@/presentation/validations'
-import { mockAddStoreUseCase, mockStoreModel, makeKeyAdminStore, mockAddKeyInAccountUseCase, mockAddStoreParameters, mockAddStoreParams } from '../../../mocks'
+import { EmailValidation, RequiredFields } from '@/presentation/validations'
+import { mockAddStoreUseCase, mockStoreModel, makeKeyAdminStore, mockAddKeyInAccountUseCase, mockAddStoreParameters, mockAddStoreParams, MockEmailValidator } from '../../../mocks'
 import MockDate from 'mockdate'
 import { Controller } from '@/presentation/controllers/controller'
 
@@ -16,7 +16,7 @@ type SutTypes = {
 const makeSut = (): SutTypes => {
   const addStoreUseCaseStub = mockAddStoreUseCase()
   const addKeyInAccountUseCaseStub = mockAddKeyInAccountUseCase()
-  const sut = new AddStoreController(addStoreUseCaseStub, addKeyInAccountUseCaseStub)
+  const sut = new AddStoreController(MockEmailValidator(), addStoreUseCaseStub, addKeyInAccountUseCaseStub)
   return {
     sut,
     addStoreUseCaseStub,
@@ -50,6 +50,7 @@ describe('AddStore Controller', () => {
       'company', 'tradingName', 'description', 'address',
       'geoLocalization', 'userId', 'phoneNumber', 'email'
     ]))
+    expect(validations).toContainEqual(new EmailValidation(input, 'email', MockEmailValidator()))
   })
 
   test('Should call AddStoreUseCase with correct values', async () => {
