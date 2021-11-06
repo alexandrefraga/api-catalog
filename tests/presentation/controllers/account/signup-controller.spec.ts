@@ -5,31 +5,36 @@ import { SendMail } from '@/domain/usecases/send-mail-usecase'
 import { SignUpController } from '@/presentation/controllers/account/signup-controller'
 import { EmailInUseError, ServerError } from '@/presentation/errors'
 import { Controller } from '@/presentation/controllers/controller'
-import { mockAccountModel, mockAddAccount, mockAddSignatureToken, MockEmailValidator, mockSendMailUsecase, mockSignatureTokenModel, mockSignUpRequestParams } from '../../../mocks'
+import { mockAccountModel, mockAddAccount, mockAddSignatureToken, MockEmailValidator, mockSendMailUsecase, mockSignatureTokenModel } from '../../../mocks'
 import { EmailValidation, RequiredFields, RequiredFieldsAndCompareValues } from '@/presentation/validations'
 import { EmailValidator } from '@/presentation/protocolls'
 
-const request = mockSignUpRequestParams()
+const request = {
+  name: 'any_name',
+  email: 'any_email@mail.com',
+  password: 'any_password',
+  passwordConfirmation: 'any_password'
+}
 
 type SutTypes = {
   sut: SignUpController
   emailValidator: EmailValidator
   addAccountStub: AddAccount
-  addSignatureTokenStub: AddSignatureToken
+  addAccountSignatureStub: AddSignatureToken
   sendMailUsecaseStub: SendMail
 }
 
 const makeSut = (): SutTypes => {
   const emailValidator = MockEmailValidator()
   const addAccountStub = mockAddAccount()
-  const addSignatureTokenStub = mockAddSignatureToken(SignatureTypes.account)
+  const addAccountSignatureStub = mockAddSignatureToken(SignatureTypes.account)
   const sendMailUsecaseStub = mockSendMailUsecase()
-  const sut = new SignUpController(emailValidator, addAccountStub, addSignatureTokenStub, sendMailUsecaseStub)
+  const sut = new SignUpController(emailValidator, addAccountStub, addAccountSignatureStub, sendMailUsecaseStub)
   return {
     sut,
     emailValidator,
     addAccountStub,
-    addSignatureTokenStub,
+    addAccountSignatureStub,
     sendMailUsecaseStub
   }
 }
@@ -53,7 +58,7 @@ describe('SignUpController', () => {
     expect(validations).toContainEqual(new EmailValidation(input, 'email', MockEmailValidator()))
   })
 
-  test('Should call AddAccount with correct values', async () => {
+  it('Should call AddAccount with correct values', async () => {
     const { sut, addAccountStub } = makeSut()
     const addSpy = jest.spyOn(addAccountStub, 'add')
     await sut.handle(request)
@@ -64,7 +69,7 @@ describe('SignUpController', () => {
     })
   })
 
-  test('Should return 500 if AddAccount throws', async () => {
+  it('Should return 500 if AddAccount throws', async () => {
     const { sut, addAccountStub } = makeSut()
     jest.spyOn(addAccountStub, 'add').mockImplementationOnce(() => { throw new Error() })
     const httpResponse = await sut.handle(request)
@@ -72,7 +77,7 @@ describe('SignUpController', () => {
     expect(httpResponse.body).toEqual(new ServerError('any'))
   })
 
-  test('Should return 403 if AddAccount returns null', async () => {
+  it('Should return 403 if AddAccount returns null', async () => {
     const { sut, addAccountStub } = makeSut()
     jest.spyOn(addAccountStub, 'add').mockReturnValueOnce(Promise.resolve(null))
     const httpResponse = await sut.handle(request)
@@ -80,22 +85,22 @@ describe('SignUpController', () => {
     expect(httpResponse.body).toEqual(new EmailInUseError())
   })
 
-  test('Should call AddSignatureToken with correct values', async () => {
-    const { sut, addSignatureTokenStub } = makeSut()
-    const addSpy = jest.spyOn(addSignatureTokenStub, 'add')
+  it('Should call AddAccountSignature with correct values', async () => {
+    const { sut, addAccountSignatureStub } = makeSut()
+    const addSpy = jest.spyOn(addAccountSignatureStub, 'add')
     await sut.handle(request)
-    expect(addSpy).toHaveBeenCalledWith('valid_id', SignatureTypes.account, 'email validation')
+    expect(addSpy).toHaveBeenCalledWith('valid_id')
   })
 
-  test('Should return 500 if AddSignatureToken throws', async () => {
-    const { sut, addSignatureTokenStub } = makeSut()
-    jest.spyOn(addSignatureTokenStub, 'add').mockImplementationOnce(() => { throw new Error() })
+  it('Should return 500 if AddAccountSignature throws', async () => {
+    const { sut, addAccountSignatureStub } = makeSut()
+    jest.spyOn(addAccountSignatureStub, 'add').mockImplementationOnce(() => { throw new Error() })
     const httpResponse = await sut.handle(request)
     expect(httpResponse.statusCode).toBe(500)
     expect(httpResponse.body).toEqual(new ServerError(''))
   })
 
-  test('Should call SendMailUseCase with correct values', async () => {
+  it('Should call SendMailUseCase with correct values', async () => {
     const { sut, sendMailUsecaseStub } = makeSut()
     const sendSpy = jest.spyOn(sendMailUsecaseStub, 'send')
     await sut.handle(request)
@@ -109,7 +114,7 @@ describe('SignUpController', () => {
     expect(sendSpy).toHaveBeenCalledWith(data)
   })
 
-  test('Should return 500 if SendMailUseCase throws', async () => {
+  it('Should return 500 if SendMailUseCase throws', async () => {
     const { sut, sendMailUsecaseStub } = makeSut()
     jest.spyOn(sendMailUsecaseStub, 'send').mockImplementationOnce(() => { throw new Error() })
     const httpResponse = await sut.handle(request)
@@ -117,7 +122,7 @@ describe('SignUpController', () => {
     expect(httpResponse.body).toEqual(new ServerError(''))
   })
 
-  test('Should return 201 if valid data is provided', async () => {
+  it('Should return 201 if valid data is provided', async () => {
     const { sut } = makeSut()
     const httpResponse = await sut.handle(request)
     expect(httpResponse.statusCode).toBe(201)

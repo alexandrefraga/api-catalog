@@ -2,8 +2,9 @@ import { KeyParams, KeyRoute } from '@/domain/models/account-model'
 import { LoadAccountByToken } from '@/domain/usecases/account/load-account-by-Token'
 import { AccessDeniedError } from '../errors'
 import { forbidden, serverError, success } from '../helpers/http-helper'
-import { HttpRequest, HttpResponse } from '../protocolls'
+import { HttpRequest } from '../protocolls'
 import { Middleware } from '../protocolls/middleware'
+import { HttpResponse } from '@/presentation/controllers/controller'
 
 export class AuthMiddleware implements Middleware {
   constructor (

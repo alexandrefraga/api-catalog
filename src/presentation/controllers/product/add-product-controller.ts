@@ -1,17 +1,25 @@
+import { Controller, HttpResponse } from '@/presentation/controllers/controller'
 import { AddProduct } from '@/domain/usecases/product/add-product'
 import { forbidden, success } from '@/presentation/helpers/http-helper'
-import { HttpResponse, Validation } from '@/presentation/protocolls'
-import { AddProductControllerParams } from '@/presentation/protocolls/request-parameters-product'
+import { Validation } from '@/presentation/protocolls'
 import { ValidationsBuilder } from '@/presentation/validations'
-import { Controller } from '@/presentation/controllers/controller'
 
-export class AddProductController extends Controller {
+type AddProductParams = {
+  description: string
+  details?: string
+  trademark: string
+  reference: string
+  price?: number
+  storeId: string
+}
+
+export class AddProductController extends Controller<AddProductParams> {
   constructor (
     private readonly addProductUsecase: AddProduct
   ) { super() }
 
-  async perform (data: AddProductControllerParams): Promise<HttpResponse> {
-    const productOrError = await this.addProductUsecase.add(data)
+  async perform (data: AddProductParams): Promise<HttpResponse> {
+    const productOrError = await this.addProductUsecase.add({ ...data })
     if (productOrError instanceof Error) {
       return forbidden(productOrError)
     }

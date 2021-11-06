@@ -1,6 +1,6 @@
 import { Authentication, AuthenticationParameters, AuthenticationResponse } from '@/domain/usecases/account/authentication'
-import { Encrypter, HasherComparer } from '../../protocols/criptography'
-import { LoadAccountByEmailRepository, UpdateTokenRepository } from '../../protocols/db'
+import { Encrypter, HasherComparer } from '@/data/protocols/criptography'
+import { LoadAccountByEmailRepository, UpdateTokenRepository } from '@/data/protocols/db'
 
 export class AuthenticationUseCase implements Authentication {
   constructor (
@@ -10,10 +10,10 @@ export class AuthenticationUseCase implements Authentication {
     private readonly updateTokenRepository: UpdateTokenRepository
   ) {}
 
-  async auth (data: AuthenticationParameters): Promise<AuthenticationResponse> {
-    const account = await this.loadAccountByEmailRepository.loadByEmail(data.email, new Date())
+  async auth ({ email, password }: AuthenticationParameters): Promise<AuthenticationResponse> {
+    const account = await this.loadAccountByEmailRepository.loadByEmail(email, new Date())
     if (account) {
-      const isValidPassword = await this.hasherComparer.compare(data.password, account.password)
+      const isValidPassword = await this.hasherComparer.compare(password, account.password)
       if (isValidPassword) {
         const token = await this.encrypter.encrypt(JSON.stringify({ id: account.id }))
         const inserted = await this.updateTokenRepository.updateToken(token, account.id)

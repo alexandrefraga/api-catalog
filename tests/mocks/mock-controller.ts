@@ -1,6 +1,5 @@
 import { success } from '@/presentation/helpers/http-helper'
-import { HttpResponse } from '@/presentation/protocolls'
-import { Controller } from '@/presentation/controllers/controller'
+import { Controller, HttpResponse } from '@/presentation/controllers/controller'
 
 export const mockController = (): Controller => {
   class ControllerStub extends Controller {

@@ -1,6 +1,5 @@
 import { AccountModel, Key, KeyParams } from '@/domain/models/account-model'
 import { AddAccount, AddAccountParams } from '@/domain/usecases/account/add-account'
-import { ValidateAccount } from '@/domain/usecases/account/validate-account'
 import { Authentication, AuthenticationParameters, AuthenticationResponse } from '@/domain/usecases/account/authentication'
 import { mockAccountModel } from './mock-account'
 import { LoadAccountByToken } from '@/domain/usecases/account/load-account-by-Token'
@@ -27,15 +26,6 @@ export const mockAuthenticator = (): Authentication => {
     }
   }
   return new AuthenticatorStub()
-}
-
-export const mockValidateAccount = (): ValidateAccount => {
-  class ValidateAccountStub implements ValidateAccount {
-    async validate (token: string): Promise<boolean> {
-      return Promise.resolve(true)
-    }
-  }
-  return new ValidateAccountStub()
 }
 
 export const mockLoadAccountByToken = (): LoadAccountByToken => {

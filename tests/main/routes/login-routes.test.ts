@@ -3,7 +3,6 @@ import app from '@/main/config/app'
 import env from '@/main/config/env'
 import { MongoHelper } from '@/infra/db/mongodb/mongo-helper'
 import { EmailInUseError, InvalidParamError, MissingParamError, UnauthorizedError } from '@/presentation/errors'
-import { mockLoginRequestParams, mockSignUpRequestParams } from '../../mocks'
 import request from 'supertest'
 import { Collection } from 'mongodb'
 import { hash } from 'bcrypt'
@@ -21,8 +20,12 @@ beforeEach(() => {
   nodemailer.createTransport.mockClear()
 })
 
-const fakeSignupParams = mockSignUpRequestParams()
-const fakeLoginParams = mockLoginRequestParams()
+const fakeSignupParams = {
+  name: 'any_name',
+  email: 'any_email@mail.com',
+  password: 'any_password',
+  passwordConfirmation: 'any_password'
+}
 let accountCollection: Collection
 let signatureCollection: Collection
 let password: string
@@ -43,7 +46,7 @@ describe('Login Routes', () => {
       accountCollection = await MongoHelper.getCollection('accounts')
       await accountCollection.deleteMany({})
     })
-    test('Should return 201 on signup', async () => {
+    it('Should return 201 on signup', async () => {
       await request(app)
         .post('/api/signup')
         .send(fakeSignupParams)
@@ -54,7 +57,7 @@ describe('Login Routes', () => {
         })
     })
 
-    test('Should return 400 on signup if name no is provided', async () => {
+    it('Should return 400 on signup if name no is provided', async () => {
       await request(app)
         .post('/api/signup')
         .send({
@@ -68,7 +71,7 @@ describe('Login Routes', () => {
         })
     })
 
-    test('Should return 400 on signup if password no is provided', async () => {
+    it('Should return 400 on signup if password no is provided', async () => {
       await request(app)
         .post('/api/signup')
         .send({
@@ -82,7 +85,7 @@ describe('Login Routes', () => {
         })
     })
 
-    test('Should return 400 on signup if passwordConfirmation no is provided', async () => {
+    it('Should return 400 on signup if passwordConfirmation no is provided', async () => {
       await request(app)
         .post('/api/signup')
         .send({
@@ -96,7 +99,7 @@ describe('Login Routes', () => {
         })
     })
 
-    test('Should return 400 on signup if email no is provided', async () => {
+    it('Should return 400 on signup if email no is provided', async () => {
       await request(app)
         .post('/api/signup')
         .send({
@@ -110,7 +113,7 @@ describe('Login Routes', () => {
         })
     })
 
-    test('Should return 400 on signup if invalid email is provided', async () => {
+    it('Should return 400 on signup if invalid email is provided', async () => {
       await request(app)
         .post('/api/signup')
         .send({
@@ -125,7 +128,7 @@ describe('Login Routes', () => {
         })
     })
 
-    test('Should return 403 on signup if email in use', async () => {
+    it('Should return 403 on signup if email in use', async () => {
       const password = await hash('any_value', 12)
       await accountCollection.insertOne({
         name: 'any_name',
@@ -156,14 +159,17 @@ describe('Login Routes', () => {
     afterAll(async () => {
       await accountCollection.deleteMany({})
     })
-    test('Should return 200 on login', async () => {
+    it('Should return 200 on login', async () => {
       await request(app)
         .post('/api/login')
-        .send(fakeLoginParams)
+        .send({
+          email: 'any_email@mail.com',
+          password: 'any_password'
+        })
         .expect(200)
     })
 
-    test('Should return 401 on login if an unregistered email is provided', async () => {
+    it('Should return 401 on login if an unregistered email is provided', async () => {
       await request(app)
         .post('/api/login')
         .send({
@@ -176,7 +182,7 @@ describe('Login Routes', () => {
         })
     })
 
-    test('Should return 401 on login if a incorrect password is provided', async () => {
+    it('Should return 401 on login if a incorrect password is provided', async () => {
       await request(app)
         .post('/api/login')
         .send({
@@ -189,7 +195,7 @@ describe('Login Routes', () => {
         })
     })
 
-    test('Should return 400 on login if invalid email is provided', async () => {
+    it('Should return 400 on login if invalid email is provided', async () => {
       await request(app)
         .post('/api/login')
         .send({
@@ -202,7 +208,7 @@ describe('Login Routes', () => {
         })
     })
 
-    test('Should return 400 on login if email no is provided', async () => {
+    it('Should return 400 on login if email no is provided', async () => {
       await request(app)
         .post('/api/login')
         .send({
@@ -214,7 +220,7 @@ describe('Login Routes', () => {
         })
     })
 
-    test('Should return 400 on login if password no is provided', async () => {
+    it('Should return 400 on login if password no is provided', async () => {
       await request(app)
         .post('/api/login')
         .send({
@@ -234,7 +240,7 @@ describe('Login Routes', () => {
       await accountCollection.deleteMany({})
       await signatureCollection.deleteMany({})
     })
-    test('Should return 200 on confirmation', async () => {
+    it('Should return 200 on confirmation', async () => {
       const result = await accountCollection.insertOne({
         name: 'any_name',
         email: 'any_email@mail.com',

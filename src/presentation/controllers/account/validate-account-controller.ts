@@ -1,17 +1,16 @@
-import { SignatureTypes } from '@/domain/models/signature-token-model'
+import { Controller, HttpResponse } from '@/presentation/controllers/controller'
 import { ValidateAccount } from '@/domain/usecases/account/validate-account'
-import { HttpResponse, ValidateAccountParams, Validation } from '@/presentation/protocolls'
+import { Validation } from '@/presentation/protocolls'
 import { unauthorized, success } from '../../helpers/http-helper'
-import { Controller } from '@/presentation/controllers/controller'
 import { ValidationsBuilder } from '@/presentation/validations'
 
-export class ValidateAccountController extends Controller {
+export class ValidateAccountController extends Controller<{ signature: string }> {
   constructor (
     private readonly validateAccount: ValidateAccount
   ) { super() }
 
-  async perform (data: ValidateAccountParams): Promise<HttpResponse> {
-    const validated = await this.validateAccount.validate(data.signature, SignatureTypes.account)
+  async perform ({ signature }: { signature: string }): Promise<HttpResponse> {
+    const validated = await this.validateAccount.validate(signature)
     if (!validated) {
       return unauthorized()
     }

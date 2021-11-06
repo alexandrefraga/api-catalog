@@ -32,14 +32,14 @@ describe('LoadProductsByStore Controller', () => {
     expect(validations).toContainEqual(new RequiredFields(input, ['storeId']))
   })
 
-  test('Should call LoadProductsByStoreUseCase with correct values', async () => {
+  it('Should call LoadProductsByStoreUseCase with correct values', async () => {
     const { sut, loadProductsByStoreUseCase } = makeSut()
     const loadByStoreSpy = jest.spyOn(loadProductsByStoreUseCase, 'loadByStore')
     await sut.handle(request)
     expect(loadByStoreSpy).toHaveBeenCalledWith(request.storeId)
   })
 
-  test('Should return 403 if LoadProductsByStoreUseCase return a specific error', async () => {
+  it('Should return 403 if LoadProductsByStoreUseCase return a specific error', async () => {
     const { sut, loadProductsByStoreUseCase } = makeSut()
     jest.spyOn(loadProductsByStoreUseCase, 'loadByStore').mockReturnValueOnce(Promise.resolve(new InvalidParamError('storeId')))
     const response = await sut.handle(request)
@@ -47,7 +47,7 @@ describe('LoadProductsByStore Controller', () => {
     expect(response.body).toEqual(new InvalidParamError('storeId'))
   })
 
-  test('Should return 500 if LoadProductsByStoreUseCase throws', async () => {
+  it('Should return 500 if LoadProductsByStoreUseCase throws', async () => {
     const { sut, loadProductsByStoreUseCase } = makeSut()
     jest.spyOn(loadProductsByStoreUseCase, 'loadByStore').mockImplementationOnce(() => { throw new Error() })
     const response = await sut.handle(request)
@@ -55,7 +55,7 @@ describe('LoadProductsByStore Controller', () => {
     expect(response.body).toEqual(new ServerError(''))
   })
 
-  test('Should return 200 if LoadProductsByStoreUseCase return products', async () => {
+  it('Should return 200 if LoadProductsByStoreUseCase return products', async () => {
     const { sut } = makeSut()
     const response = await sut.handle(request)
     expect(response.statusCode).toBe(200)

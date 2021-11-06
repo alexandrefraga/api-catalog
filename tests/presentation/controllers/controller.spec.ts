@@ -1,5 +1,4 @@
-import { Controller } from '@/presentation/controllers/controller'
-import { HttpResponse } from '@/presentation/protocolls'
+import { Controller, HttpResponse } from '@/presentation/controllers/controller'
 import { ServerError } from '@/presentation/errors'
 
 class ControllerStub extends Controller {

@@ -1,17 +1,22 @@
+import { Controller, HttpResponse } from '@/presentation/controllers/controller'
 import { Authentication } from '@/domain/usecases/account/authentication'
-import { EmailValidator, HttpResponse, LoginRequestParameters, Validation } from '@/presentation/protocolls'
+import { EmailValidator, Validation } from '@/presentation/protocolls'
 import { success, unauthorized } from '@/presentation/helpers/http-helper'
-import { Controller } from '@/presentation/controllers/controller'
 import { ValidationsBuilder } from '@/presentation/validations'
 
-export class LoginController extends Controller {
+export type LoginParams = {
+  email: string
+  password: string
+}
+
+export class LoginController extends Controller<LoginParams> {
   constructor (
     private readonly emailValidator: EmailValidator,
     private readonly authenticator: Authentication
   ) { super() }
 
-  async perform (data: LoginRequestParameters): Promise<HttpResponse> {
-    const authenticationResponse = await this.authenticator.auth(data)
+  async perform ({ email, password }: LoginParams): Promise<HttpResponse> {
+    const authenticationResponse = await this.authenticator.auth({ email, password })
     if (!authenticationResponse) {
       return unauthorized()
     }

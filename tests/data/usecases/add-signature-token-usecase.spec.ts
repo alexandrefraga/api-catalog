@@ -1,5 +1,5 @@
 import { AddSignatureTokenUseCase } from '@/data/usecases/add-signature-token-usecase'
-import { SignatureTypes } from '@/domain/models/signature-token-model'
+import { SignatureTypes, SignatureSubjectTypes } from '@/domain/models/signature-token-model'
 import { AddSignatureToken } from '@/domain/usecases/add-signature-token'
 import { mockAccountModel, mockEncrypter, mockAddSignatureTokenRepository, mockSignatureTokenModel } from '../../mocks'
 import { Encrypter } from '../protocols/criptography'
@@ -24,45 +24,49 @@ const makeSut = (): SutTypes => {
   }
 }
 describe('AddSignatureToken Usecase', () => {
-  test('Should call Encrypter with correct value', async () => {
+  it('Should call Encrypter with correct value', async () => {
     const { sut, encrypterStub } = makeSut()
     const encryptSpy = jest.spyOn(encrypterStub, 'encrypt')
-    await sut.add(account.id, SignatureTypes.account, 'any_subject')
+    await sut.add(account.id)
     const encryptParam = JSON.stringify({ id: account.id })
     expect(encryptSpy).toHaveBeenCalledWith(encryptParam)
   })
 
-  test('Should throw if Encrypter throws', async () => {
+  it('Should throw if Encrypter throws', async () => {
     const { sut, encrypterStub } = makeSut()
     jest.spyOn(encrypterStub, 'encrypt').mockImplementationOnce(() => { throw new Error() })
-    const promise = sut.add(account.id, SignatureTypes.account, 'any_subject')
+    const promise = sut.add(account.id)
     await expect(promise).rejects.toThrow()
   })
 
-  test('Should call AddSignatureTokenRepository with correct values ', async () => {
+  it('Should call AddSignatureTokenRepository with correct values ', async () => {
     const { sut, addSignatureTokenRepositoryStub } = makeSut()
     const updateTokenSpy = jest.spyOn(addSignatureTokenRepositoryStub, 'add')
-    await sut.add(account.id, SignatureTypes.account, 'any_subject')
-    expect(updateTokenSpy).toHaveBeenCalledWith(await mockEncrypter().encrypt(''), SignatureTypes.account, 'any_subject')
+    await sut.add(account.id)
+    expect(updateTokenSpy).toHaveBeenCalledWith(
+      await mockEncrypter().encrypt(''),
+      SignatureTypes.account,
+      SignatureSubjectTypes.emailConfirmation
+    )
   })
 
-  test('Should throw if AddSignatureTokenRepository throws', async () => {
+  it('Should throw if AddSignatureTokenRepository throws', async () => {
     const { sut, addSignatureTokenRepositoryStub } = makeSut()
     jest.spyOn(addSignatureTokenRepositoryStub, 'add').mockImplementationOnce(() => { throw new Error() })
-    const promise = sut.add(account.id, SignatureTypes.account, 'any_subject')
+    const promise = sut.add(account.id)
     await expect(promise).rejects.toThrow()
   })
 
-  test('Should throw if AddSignatureTokenRepository return null', async () => {
+  it('Should throw if AddSignatureTokenRepository return null', async () => {
     const { sut, addSignatureTokenRepositoryStub } = makeSut()
     jest.spyOn(addSignatureTokenRepositoryStub, 'add').mockReturnValueOnce(Promise.resolve(null))
-    const promise = sut.add(account.id, SignatureTypes.account, 'any_subject')
+    const promise = sut.add(account.id)
     await expect(promise).rejects.toThrow()
   })
 
-  test('Should return SignatureToken model on success', async () => {
+  it('Should return SignatureToken model on success', async () => {
     const { sut } = makeSut()
-    const response = await sut.add(account.id, SignatureTypes.account, 'any_subject')
+    const response = await sut.add(account.id)
     expect(response.token).toBe(mockSignatureTokenModel(SignatureTypes.account).token)
   })
 })

@@ -7,11 +7,11 @@ import { UpdateUsedSignatureByTokenRepository } from '../../protocols/db/update-
 export class ValidateAccountUseCase implements ValidateAccount {
   constructor (
     private readonly decrypter: Decrypter,
-    private readonly signatureByTokenRepository: UpdateUsedSignatureByTokenRepository,
+    private readonly signatureRepository: UpdateUsedSignatureByTokenRepository,
     private readonly emailRepository: UpdateEmailRepository
   ) {}
 
-  async validate (token: string, type: SignatureTypes): Promise<boolean> {
+  async validate (token: string): Promise<boolean> {
     let accountId: string
     try {
       const decryptedToken = await this.decrypter.decrypt(token)
@@ -19,7 +19,7 @@ export class ValidateAccountUseCase implements ValidateAccount {
     } catch (error) {
       return null
     }
-    const updatedSignature = await this.signatureByTokenRepository.updateUsed(token, type)
+    const updatedSignature = await this.signatureRepository.updateUsed(token, SignatureTypes.account)
     if (updatedSignature) {
       const updatedEmail = await this.emailRepository.updateEmail(accountId, new Date())
       return updatedEmail

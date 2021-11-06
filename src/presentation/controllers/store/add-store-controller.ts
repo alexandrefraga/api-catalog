@@ -1,12 +1,12 @@
+import { Controller, HttpResponse } from '@/presentation/controllers/controller'
 import { Role } from '@/domain/models/account-model'
 import { AddStore } from '@/domain/usecases/store/add-store'
 import { AddKeyInAccount } from '@/domain/usecases/account/add-key-in-account'
 import { DataInUseError } from '@/presentation/errors/data-in-use-error'
 import { forbidden, success } from '@/presentation/helpers/http-helper'
 import { storeKey } from '@/presentation/helpers/key-helper'
-import { AddStoreParameters, EmailValidator, HttpResponse, Validation } from '@/presentation/protocolls'
+import { AddStoreParameters, EmailValidator, Validation } from '@/presentation/protocolls'
 import { ValidationsBuilder } from '@/presentation/validations'
-import { Controller } from '@/presentation/controllers/controller'
 
 export class AddStoreController extends Controller {
   constructor (

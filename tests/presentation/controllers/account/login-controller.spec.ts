@@ -1,10 +1,10 @@
-import { Authentication } from '@/domain/usecases/account/authentication'
-import { LoginController } from '@/presentation/controllers/account/login-controller'
-import { ServerError, UnauthorizedError } from '@/presentation/errors'
-import { mockAuthenticator, mockLoginRequestParams, mockAuthenticationResponse, MockEmailValidator } from '../../../mocks'
 import { Controller } from '@/presentation/controllers/controller'
-import { EmailValidation, RequiredFields } from '@/presentation/validations'
+import { LoginController, LoginParams } from '@/presentation/controllers/account/login-controller'
 import { EmailValidator } from '@/presentation/protocolls'
+import { EmailValidation, RequiredFields } from '@/presentation/validations'
+import { ServerError, UnauthorizedError } from '@/presentation/errors'
+import { Authentication } from '@/domain/usecases/account/authentication'
+import { mockAuthenticator, mockAuthenticationResponse, MockEmailValidator } from '../../../mocks'
 
 type SutTypes = {
   sut: LoginController
@@ -23,6 +23,10 @@ const makeSut = (): SutTypes => {
   }
 }
 describe('LoginController', () => {
+  let input: LoginParams
+  beforeAll(() => {
+    input = { email: 'any_email@mail.com', password: 'any_password' }
+  })
   it('should extend Controller', async () => {
     const { sut } = makeSut()
     expect(sut).toBeInstanceOf(Controller)
@@ -30,39 +34,37 @@ describe('LoginController', () => {
 
   it('should build Validators correctly', async () => {
     const { sut } = makeSut()
-    const input = { email: 'any_email', password: 'any_password' }
     const validations = sut.buildValidators(input)
     expect(validations).toContainEqual(new RequiredFields(input, ['password']))
     expect(validations).toContainEqual(new EmailValidation(input, 'email', MockEmailValidator()))
   })
 
-  test('Should call Authenticator with correct values', async () => {
+  it('Should call Authenticator with correct values', async () => {
     const { sut, authenticatorStub } = makeSut()
     const authSpy = jest.spyOn(authenticatorStub, 'auth')
-    const request = mockLoginRequestParams()
-    await sut.handle(request)
-    expect(authSpy).toHaveBeenCalledWith(request)
+    await sut.handle(input)
+    expect(authSpy).toHaveBeenCalledWith(input)
   })
 
-  test('Should return 500 if Authenticator throws', async () => {
+  it('Should return 500 if Authenticator throws', async () => {
     const { sut, authenticatorStub } = makeSut()
     jest.spyOn(authenticatorStub, 'auth').mockImplementationOnce(() => { throw new Error() })
-    const httpResponse = await sut.handle(mockLoginRequestParams())
+    const httpResponse = await sut.handle(input)
     expect(httpResponse.statusCode).toBe(500)
     expect(httpResponse.body).toEqual(new ServerError(''))
   })
 
-  test('Should return 401 if authentication reject credentials', async () => {
+  it('Should return 401 if authentication reject credentials', async () => {
     const { sut, authenticatorStub } = makeSut()
     jest.spyOn(authenticatorStub, 'auth').mockReturnValueOnce(Promise.resolve(null))
-    const httpResponse = await sut.handle(mockLoginRequestParams())
+    const httpResponse = await sut.handle(input)
     expect(httpResponse.statusCode).toBe(401)
     expect(httpResponse.body).toEqual(new UnauthorizedError())
   })
 
-  test('Should return 200 on success', async () => {
+  it('Should return 200 on success', async () => {
     const { sut } = makeSut()
-    const httpResponse = await sut.handle(mockLoginRequestParams())
+    const httpResponse = await sut.handle(input)
     expect(httpResponse.statusCode).toBe(200)
     expect(httpResponse.body).toEqual(mockAuthenticationResponse())
   })
