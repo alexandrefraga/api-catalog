@@ -11,14 +11,10 @@ import { AddKeyInAccountRepository } from '@/data/protocols/db/account/add-key-i
 export class AccountMongoRepository implements AddAccountRepository, LoadAccountByEmailRepository,
   LoadAccountByTokenRepository, UpdateTokenRepository, UpdateEmailRepository, LoadAccountByKeyRepository,
   AddKeyInAccountRepository, UpdateKeyInAccountRepository {
-  async add (account: AddAccountParams): Promise<AccountModel> {
+  async add (account: AddAccountParams): Promise<{ id: string }> {
     const accountCollection = await MongoHelper.getCollection('accounts')
-    const result = await accountCollection.insertOne({
-      name: account.name,
-      email: account.email,
-      password: account.password
-    })
-    return MongoHelper.mapInputWithId(account, result.insertedId)
+    const { insertedId } = await accountCollection.insertOne({ ...account })
+    return { id: insertedId.toHexString() }
   }
 
   async loadByEmail (email: string, emailConfirmation?: Date): Promise<AccountModel> {

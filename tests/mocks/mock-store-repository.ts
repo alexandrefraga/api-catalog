@@ -15,8 +15,8 @@ export const mockLoadStoreByDataRepository = (): LoadStoreByDataRepository => {
 
 export const mockAddStoreRepository = (): AddStoreRepository => {
   class AddStoreRepositoryStub implements AddStoreRepository {
-    async add (data: AddStoreParams): Promise<StoreModel> {
-      return mockStoreModel()
+    async add (data: AddStoreParams): Promise<{ id: string }> {
+      return { id: mockStoreModel().id }
     }
   }
   return new AddStoreRepositoryStub()

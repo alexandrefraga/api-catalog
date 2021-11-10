@@ -1,6 +1,7 @@
-import { Collection, ObjectId } from 'mongodb'
-import { MongoHelper } from '@/infra/db/mongodb/mongo-helper'
 import { ProductMongoRepository } from '@/infra/db/mongodb/product-repository'
+import { MongoHelper } from '@/infra/db/mongodb/mongo-helper'
+import { Collection, ObjectId } from 'mongodb'
+
 import { mockAddProductUseCaseParams } from '@/../tests/mocks'
 
 const params = mockAddProductUseCaseParams()
@@ -29,39 +30,16 @@ describe('Product Mongo Repository', () => {
     await MongoHelper.disconnect()
   })
   describe('add', () => {
-    test('Should return a product if add on success', async () => {
+    it('Should return a product if add on success', async () => {
       const sut = makeSut()
       const product = await sut.add(params)
       expect(product).toBeTruthy()
       expect(product.id).toBeTruthy()
-      expect(product.trademark).toBe(params.trademark)
-      expect(product.details).toBe(params.details)
-      expect(product.reference).toBe(params.reference)
-      expect(product.price).toBe(params.price)
-      expect(product.storeId).toBe(params.storeId)
-    })
-    test('Should return a product without optionals when params optionals undefined', async () => {
-      const sut = makeSut()
-      const paramsOptionalsUndefined = Object.assign({}, params, { price: undefined, details: undefined })
-      const product = await sut.add(paramsOptionalsUndefined)
-      expect(product).toBeTruthy()
-      expect(product.price).toBeUndefined()
-      expect(product.details).toBeUndefined()
-      expect(product.storeId).toBe(params.storeId)
-    })
-    test('Should return a product without optionals when params without optionals', async () => {
-      const sut = makeSut()
-      const { price, details, ...paramsWithoutOptionals } = params
-      const product = await sut.add(paramsWithoutOptionals)
-      expect(product).toBeTruthy()
-      expect(product.price).toBeUndefined()
-      expect(product.details).toBeUndefined()
-      expect(product.storeId).toBe(params.storeId)
     })
   })
 
   describe('loadByData', () => {
-    test('Should return null if loadByData return null', async () => {
+    it('Should return null if loadByData return null', async () => {
       const fakeProduct = Object.assign({}, params, { trademark: 'other_trademark' })
       await productCollection.insertOne(fakeProduct)
       const sut = makeSut()
@@ -69,7 +47,7 @@ describe('Product Mongo Repository', () => {
       expect(product).toBeNull()
     })
 
-    test('Should return a product if loadByData on success', async () => {
+    it('Should return a product if loadByData on success', async () => {
       await productCollection.insertOne(params)
       const sut = makeSut()
       const product = await sut.loadByData(loadByDataParams)
@@ -81,13 +59,13 @@ describe('Product Mongo Repository', () => {
   })
 
   describe('loadByStore', () => {
-    test('Should return empty array if loadByStore return null', async () => {
+    it('Should return empty array if loadByStore return null', async () => {
       const sut = makeSut()
       const product = await sut.loadByStore(new ObjectId().toHexString())
       expect(product).toEqual([])
     })
 
-    test('Should return products if loadByStore on success', async () => {
+    it('Should return products if loadByStore on success', async () => {
       await productCollection.insertOne(params)
       const sut = makeSut()
       const product = await sut.loadByStore(params.storeId)

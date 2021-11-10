@@ -25,29 +25,23 @@ describe('Signature Token Mongo Repository', () => {
     MockDate.reset()
   })
   describe('add', () => {
-    test('Should return an signature if add on success', async () => {
+    it('Should return an signature if add on success', async () => {
       const sut = makeSut()
       const signature = await sut.add('any_token', SignatureTypes.account, 'any_subject')
       expect(signature).toBeTruthy()
       expect(signature.id).toBeTruthy()
-      expect(signature.token).toBe('any_token')
-      expect(signature.type).toBe('account')
-      expect(signature.subject).toBe('any_subject')
     })
 
-    test('Should return an signature without subject if add on success', async () => {
+    it('Should return an signature without subject if add on success', async () => {
       const sut = makeSut()
       const signature = await sut.add('any_token', SignatureTypes.account)
       expect(signature).toBeTruthy()
       expect(signature.id).toBeTruthy()
-      expect(signature.token).toBe('any_token')
-      expect(signature.type).toBe('account')
-      expect(signature.subject).toBeFalsy()
     })
   })
 
   describe('updateUsed', () => {
-    test('Should return true if update on success', async () => {
+    it('Should return true if update on success', async () => {
       await signatureCollection.insertOne({ token: 'any_token', type: SignatureTypes.account })
       const sut = makeSut()
       const updated = await sut.updateUsed('any_token', SignatureTypes.account)

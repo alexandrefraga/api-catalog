@@ -9,8 +9,8 @@ export class LoadProductsByStoreController extends Controller<{ storeId: string 
     private readonly loadProductsByStoreUseCase: LoadProductsByStore
   ) { super() }
 
-  async perform (data: { storeId: string }): Promise<HttpResponse> {
-    const productOrError = await this.loadProductsByStoreUseCase.loadByStore(data.storeId)
+  async perform (request: { storeId: string }): Promise<HttpResponse> {
+    const productOrError = await this.loadProductsByStoreUseCase.loadByStore(request)
     if (productOrError instanceof Error) {
       return forbidden(productOrError)
     }

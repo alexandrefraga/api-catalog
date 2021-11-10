@@ -20,7 +20,7 @@ const makeSut = (): SutTypes => {
 }
 const addStoreParams = mockAddStoreParams()
 describe('AddStore UseCase', () => {
-  test('Should call loadStoreByDataRepository with correct values', async () => {
+  it('Should call loadStoreByDataRepository with correct values', async () => {
     const { sut, loadStoreByDataRepositoryStub } = makeSut()
     const loadByDataSpy = jest.spyOn(loadStoreByDataRepositoryStub, 'loadByData')
     await sut.add(addStoreParams)
@@ -35,35 +35,35 @@ describe('AddStore UseCase', () => {
     })
   })
 
-  test('Should return null if loadStoreByDataRepository return a store', async () => {
+  it('Should return null if loadStoreByDataRepository return a store', async () => {
     const { sut, loadStoreByDataRepositoryStub } = makeSut()
     jest.spyOn(loadStoreByDataRepositoryStub, 'loadByData').mockReturnValueOnce(Promise.resolve(mockStoreModel()))
     const response = await sut.add(addStoreParams)
     expect(response).toBeNull()
   })
 
-  test('Should throw if loadStoreByDataRepository throws', async () => {
+  it('Should throw if loadStoreByDataRepository throws', async () => {
     const { sut, loadStoreByDataRepositoryStub } = makeSut()
     jest.spyOn(loadStoreByDataRepositoryStub, 'loadByData').mockImplementationOnce(() => { throw new Error() })
     const promise = sut.add(addStoreParams)
     await expect(promise).rejects.toThrow()
   })
 
-  test('Should call addStoreRepository with correct values', async () => {
+  it('Should call addStoreRepository with correct values', async () => {
     const { sut, addStoreRepositoryStub } = makeSut()
     const addSpy = jest.spyOn(addStoreRepositoryStub, 'add')
     await sut.add(addStoreParams)
     expect(addSpy).toHaveBeenCalledWith(addStoreParams)
   })
 
-  test('Should throw if AddStoreRepository throws', async () => {
+  it('Should throw if AddStoreRepository throws', async () => {
     const { sut, addStoreRepositoryStub } = makeSut()
     jest.spyOn(addStoreRepositoryStub, 'add').mockImplementationOnce(() => { throw new Error() })
     const promise = sut.add(addStoreParams)
     await expect(promise).rejects.toThrow()
   })
 
-  test('Should return a store on success', async () => {
+  it('Should return a store on success', async () => {
     const { sut } = makeSut()
     const store = await sut.add(addStoreParams)
     expect(store).toEqual(mockStoreModel())

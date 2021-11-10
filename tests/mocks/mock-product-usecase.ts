@@ -14,7 +14,7 @@ export const mockAddProductUseCase = (): AddProduct => {
 
 export const mockLoadProductsByStoreUseCase = (): LoadProductsByStore => {
   class LoadProductsByStoreUseCaseStub implements LoadProductsByStore {
-    async loadByStore (storeId: string): Promise<ProductModel[]> {
+    async loadByStore (data: { storeId: string }): Promise<ProductModel[]> {
       return [mockProductModel(), mockProductModel('other_id')]
     }
   }

@@ -15,8 +15,8 @@ export class LoginController extends Controller<LoginParams> {
     private readonly authenticator: Authentication
   ) { super() }
 
-  async perform ({ email, password }: LoginParams): Promise<HttpResponse> {
-    const authenticationResponse = await this.authenticator.auth({ email, password })
+  async perform (request: LoginParams): Promise<HttpResponse> {
+    const authenticationResponse = await this.authenticator.auth(request)
     if (!authenticationResponse) {
       return unauthorized()
     }

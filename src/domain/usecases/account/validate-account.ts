@@ -1,3 +1,3 @@
 export interface ValidateAccount {
-  validate (token: string): Promise<boolean>
+  validate (data: { signature: string }): Promise<boolean>
 }

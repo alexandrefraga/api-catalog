@@ -7,7 +7,7 @@ import { RequiredFields } from '@/presentation/validations'
 const validateParams = { signature: 'any_token' }
 
 class ValidateAccountStub implements ValidateAccount {
-  async validate (token: string): Promise<boolean> {
+  async validate (data: { signature: string }): Promise<boolean> {
     return Promise.resolve(true)
   }
 }
@@ -44,7 +44,7 @@ describe('ValidateAccount Controller', () => {
     const { sut, validateAccountStub } = makeSut()
     const validateSpy = jest.spyOn(validateAccountStub, 'validate')
     await sut.handle(validateParams)
-    expect(validateSpy).toHaveBeenCalledWith(validateParams.signature)
+    expect(validateSpy).toHaveBeenCalledWith(validateParams)
   })
 
   it('Should return 500 if DbValidateAccount throws', async () => {

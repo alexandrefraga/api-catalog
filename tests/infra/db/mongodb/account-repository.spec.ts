@@ -29,32 +29,28 @@ describe('Account Mongo Repository', () => {
     MockDate.reset()
   })
   describe('add', () => {
-    test('Should return an account if add on success', async () => {
+    it('Should return an accountId if add on success', async () => {
       const sut = makeSut()
       const account = await sut.add(mockAddAccountParams())
-      expect(account).toBeTruthy()
       expect(account.id).toBeTruthy()
-      expect(account.name).toBe(mockAddAccountParams().name)
-      expect(account.email).toBe(mockAddAccountParams().email)
-      expect(account.password).toBe(mockAddAccountParams().password)
     })
   })
 
   describe('loadByEmail', () => {
-    test('Should return null if loadByEmail fail', async () => {
+    it('Should return null if loadByEmail fail', async () => {
       const sut = makeSut()
       const account = await sut.loadByEmail(mockAddAccountParams().email, new Date())
       expect(account).toBeFalsy()
     })
 
-    test('Should return null if loadByEmail dont return an confirmated account', async () => {
+    it('Should return null if loadByEmail dont return an confirmated account', async () => {
       await accountCollection.insertOne(mockAddAccountParams())
       const sut = makeSut()
       const account = await sut.loadByEmail(mockAddAccountParams().email, new Date())
       expect(account).toBeNull()
     })
 
-    test('Should return null if the confirmation date is later than the seach date', async () => {
+    it('Should return null if the confirmation date is later than the seach date', async () => {
       const accountConfirmated = Object.assign({}, mockAddAccountParams(), { emailConfirmation: new Date() })
       const result = await accountCollection.insertOne(accountConfirmated)
       const fakeAccount = await accountCollection.findOne({ _id: result.insertedId })
@@ -63,7 +59,7 @@ describe('Account Mongo Repository', () => {
       expect(account).toBeNull()
     })
 
-    test('Should return an account if loadByEmail on success', async () => {
+    it('Should return an account if loadByEmail on success', async () => {
       await accountCollection.insertOne(mockAddAccountParams())
       const sut = makeSut()
       const account = await sut.loadByEmail(mockAddAccountParams().email)
@@ -74,7 +70,7 @@ describe('Account Mongo Repository', () => {
       expect(account.password).toBe(mockAddAccountParams().password)
     })
 
-    test('Should return an account confirmated if loadByEmail on success', async () => {
+    it('Should return an account confirmated if loadByEmail on success', async () => {
       const accountConfirmated = Object.assign({}, mockAddAccountParams(), { emailConfirmation: new Date() })
       await accountCollection.insertOne(accountConfirmated)
       const sut = makeSut()
@@ -89,13 +85,13 @@ describe('Account Mongo Repository', () => {
   })
 
   describe('loadByToken', () => {
-    test('Should return null if loadByToken fail', async () => {
+    it('Should return null if loadByToken fail', async () => {
       const sut = makeSut()
       const account = await sut.loadByToken('any_token')
       expect(account).toBeFalsy()
     })
 
-    test('Should return null if invalid token is provided', async () => {
+    it('Should return null if invalid token is provided', async () => {
       const fakeAccount = Object.assign({}, mockAddAccountParams(), { token: 'any_token', role: Role.systemAdmin })
       await accountCollection.insertOne(fakeAccount)
       const sut = makeSut()
@@ -103,7 +99,7 @@ describe('Account Mongo Repository', () => {
       expect(account).toBeFalsy()
     })
 
-    test('Should return null if no match in the required role ', async () => {
+    it('Should return null if no match in the required role ', async () => {
       const fakeAccount = Object.assign({}, mockAddAccountParams(), { token: 'any_token' })
       await accountCollection.insertOne(fakeAccount)
       const sut = makeSut()
@@ -111,7 +107,7 @@ describe('Account Mongo Repository', () => {
       expect(account).toBeFalsy()
     })
 
-    test('Should return an account if no is required role', async () => {
+    it('Should return an account if no is required role', async () => {
       const fakeAccount = Object.assign({}, mockAddAccountParams(), { token: 'any_token' })
       await accountCollection.insertOne(fakeAccount)
       const sut = makeSut()
@@ -119,7 +115,7 @@ describe('Account Mongo Repository', () => {
       expect(account).toBeTruthy()
     })
 
-    test('Should return the admin account with any role', async () => {
+    it('Should return the admin account with any role', async () => {
       const fakeAccount = Object.assign({}, mockAddAccountParams(), { token: 'any_token', role: Role.systemAdmin })
       await accountCollection.insertOne(fakeAccount)
       const sut = makeSut()
@@ -127,7 +123,7 @@ describe('Account Mongo Repository', () => {
       expect(account).toBeTruthy()
     })
 
-    test('Should return an account if loadByToken on success', async () => {
+    it('Should return an account if loadByToken on success', async () => {
       const fakeAccount = Object.assign({}, mockAddAccountParams(), { token: 'any_token', role: Role.systemAdmin })
       await accountCollection.insertOne(fakeAccount)
       const sut = makeSut()
@@ -141,7 +137,7 @@ describe('Account Mongo Repository', () => {
   })
 
   describe('updateToken', () => {
-    test('Should return true and update the account with a token if updateToken success', async () => {
+    it('Should return true and update the account with a token if updateToken success', async () => {
       const sut = makeSut()
       const result = await accountCollection.insertOne(mockAddAccountParams())
       const fakeAccount = await accountCollection.findOne({ _id: result.insertedId })
@@ -153,7 +149,7 @@ describe('Account Mongo Repository', () => {
       expect(account.token).toBe('any_token')
     })
 
-    test('Should return false if updateToken fail', async () => {
+    it('Should return false if updateToken fail', async () => {
       const sut = makeSut()
       const response = await sut.updateToken('any_token', new ObjectId().toHexString())
       expect(response).toBeFalsy()
@@ -161,7 +157,7 @@ describe('Account Mongo Repository', () => {
   })
 
   describe('updateEmail', () => {
-    test('Should return true and update the email as confirmed if updateEmail success', async () => {
+    it('Should return true and update the email as confirmed if updateEmail success', async () => {
       const sut = makeSut()
       const result = await accountCollection.insertOne(mockAddAccountParams())
       const fakeAccount = await accountCollection.findOne({ _id: result.insertedId })
@@ -173,7 +169,7 @@ describe('Account Mongo Repository', () => {
       expect(account.emailConfirmation).toEqual(new Date())
     })
 
-    test('Should return false if updateEmail fail', async () => {
+    it('Should return false if updateEmail fail', async () => {
       const sut = makeSut()
       const invalidId = new ObjectId().toHexString()
       const response = await sut.updateEmail(invalidId, new Date(), 'any_email')
@@ -182,13 +178,13 @@ describe('Account Mongo Repository', () => {
   })
 
   describe('loadByKey', () => {
-    test('Should return null if loadByKey fail', async () => {
+    it('Should return null if loadByKey fail', async () => {
       const sut = makeSut()
       const account = await sut.loadByKey('any_token')
       expect(account).toBeNull()
     })
 
-    test('Should return null if no required key and invalid token is provided', async () => {
+    it('Should return null if no required key and invalid token is provided', async () => {
       const fakeAccount = Object.assign({}, mockAddAccountParams(), { token: 'any_token' })
       await accountCollection.insertOne(fakeAccount)
       const sut = makeSut()
@@ -196,7 +192,7 @@ describe('Account Mongo Repository', () => {
       expect(account).toBeNull()
     })
 
-    test('Should return an account if no required key on success', async () => {
+    it('Should return an account if no required key on success', async () => {
       const fakeAccount = Object.assign({}, mockAddAccountParams(), { token: 'any_token' })
       await accountCollection.insertOne(fakeAccount)
       const sut = makeSut()
@@ -204,7 +200,7 @@ describe('Account Mongo Repository', () => {
       expect(account).toBeTruthy()
     })
 
-    test('Should return null if is required key and invalid token is provided', async () => {
+    it('Should return null if is required key and invalid token is provided', async () => {
       const fakeAccount = Object.assign({}, mockAddAccountParams(), { token: 'any_token', keys: [makeKeyAdmin()] })
       await accountCollection.insertOne(fakeAccount)
       const sut = makeSut()
@@ -212,7 +208,7 @@ describe('Account Mongo Repository', () => {
       expect(account).toBeNull()
     })
 
-    test('Should return null if valid token is provided and no match in the required key', async () => {
+    it('Should return null if valid token is provided and no match in the required key', async () => {
       const fakeAccount = Object.assign({}, mockAddAccountParams(), { token: 'any_token' })
       await accountCollection.insertOne(fakeAccount)
       const sut = makeSut()
@@ -220,7 +216,7 @@ describe('Account Mongo Repository', () => {
       expect(account).toBeNull()
     })
 
-    test('Should return null if invalid token is provided and match in the required key', async () => {
+    it('Should return null if invalid token is provided and match in the required key', async () => {
       const fakeAccount = Object.assign({}, mockAddAccountParams(), { token: 'any_token', keys: [makeKeyAdmin()] })
       await accountCollection.insertOne(fakeAccount)
       const sut = makeSut()
@@ -228,7 +224,7 @@ describe('Account Mongo Repository', () => {
       expect(account).toBeNull()
     })
 
-    test('Should return null if no set storeId in required key type store', async () => {
+    it('Should return null if no set storeId in required key type store', async () => {
       const fakeAccount = Object.assign({}, mockAddAccountParams(), { token: 'any_token', keys: [makeKeyAdmin()] })
       await accountCollection.insertOne(fakeAccount)
       const sut = makeSut()
@@ -236,7 +232,7 @@ describe('Account Mongo Repository', () => {
       expect(account).toBeNull()
     })
 
-    test('Should return the app admin account with any key required', async () => {
+    it('Should return the app admin account with any key required', async () => {
       const fakeAccount = Object.assign({}, mockAddAccountParams(), { token: 'any_token', keys: [makeKeyAdmin()] })
       await accountCollection.insertOne(fakeAccount)
       const sut = makeSut()
@@ -249,7 +245,7 @@ describe('Account Mongo Repository', () => {
       expect(account3).toBeTruthy()
     })
 
-    test('Should return the app operator account with a correct key or a store key required', async () => {
+    it('Should return the app operator account with a correct key or a store key required', async () => {
       const fakeAccount = Object.assign({}, mockAddAccountParams(), { token: 'any_token', keys: [makeKeyOperator()] })
       await accountCollection.insertOne(fakeAccount)
       const sut = makeSut()
@@ -261,7 +257,7 @@ describe('Account Mongo Repository', () => {
       expect(account3).toBeTruthy()
     })
 
-    test('Should return the store admin account with a correct key or an operator store key required', async () => {
+    it('Should return the store admin account with a correct key or an operator store key required', async () => {
       const fakeAccount = Object.assign({}, mockAddAccountParams(), { token: 'any_token', keys: [makeKeyAdminStore()] })
       await accountCollection.insertOne(fakeAccount)
       const sut = makeSut()
@@ -271,7 +267,7 @@ describe('Account Mongo Repository', () => {
       expect(account2).toBeTruthy()
     })
 
-    test('Should return an account if valid token is provided and match in the required key', async () => {
+    it('Should return an account if valid token is provided and match in the required key', async () => {
       const fakeAccount = Object.assign({}, mockAddAccountParams(), { token: 'any_token', keys: [makeKeyOperatorStore()] })
       await accountCollection.insertOne(fakeAccount)
       const sut = makeSut()
@@ -285,7 +281,7 @@ describe('Account Mongo Repository', () => {
   })
 
   describe('addKey', () => {
-    test('Should return true if add key in account', async () => {
+    it('Should return true if add key in account', async () => {
       const fakeAccount = Object.assign({}, mockAddAccountParams(), { token: 'any_token' })
       const res = await accountCollection.insertOne(fakeAccount)
       const idAccount = res.insertedId
@@ -296,7 +292,7 @@ describe('Account Mongo Repository', () => {
       // expect(account).toEqual(Object.assign(fakeAccount, { keys: [makeKeyAdminStore()] }))
     })
 
-    test('Should return false if add key fail', async () => {
+    it('Should return false if add key fail', async () => {
       const sut = makeSut()
       const invalidId = new ObjectId().toHexString()
       const response = await sut.addKey(invalidId, makeKeyAdminStore())
@@ -305,7 +301,7 @@ describe('Account Mongo Repository', () => {
   })
 
   describe('updateKey', () => {
-    test('Should return true if update key in account', async () => {
+    it('Should return true if update key in account', async () => {
       const key = makeKeyOperator()
       const otherKey = Object.assign(makeKeyOperatorStore(), { id: 9999 })
       const fakeAccount = Object.assign({}, mockAddAccountParams(), { token: 'any_token', keys: [key, otherKey] })

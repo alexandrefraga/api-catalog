@@ -38,14 +38,14 @@ describe('AddProduct Controller', () => {
     expect(validations).toContainEqual(new RequiredFields(input, ['description', 'trademark', 'reference', 'storeId']))
   })
 
-  test('Should call AddProductUseCase with correct values', async () => {
+  it('Should call AddProductUseCase with correct values', async () => {
     const { sut, addProductUseCaseStub } = makeSut()
     const addSpy = jest.spyOn(addProductUseCaseStub, 'add')
     await sut.handle(request)
     expect(addSpy).toHaveBeenCalledWith(request)
   })
 
-  test('Should return 403 if AddProductUseCase return an error', async () => {
+  it('Should return 403 if AddProductUseCase return an error', async () => {
     const { sut, addProductUseCaseStub } = makeSut()
     jest.spyOn(addProductUseCaseStub, 'add').mockReturnValueOnce(Promise.resolve(new Error('specific error')))
     const response = await sut.handle(request)
@@ -53,7 +53,7 @@ describe('AddProduct Controller', () => {
     expect(response.body).toEqual(new Error('specific error'))
   })
 
-  test('Should return 403 if AddProductUseCase return a specific error', async () => {
+  it('Should return 403 if AddProductUseCase return a specific error', async () => {
     const { sut, addProductUseCaseStub } = makeSut()
     jest.spyOn(addProductUseCaseStub, 'add').mockReturnValueOnce(Promise.resolve(new InvalidParamError('email')))
     const response = await sut.handle(request)
@@ -61,7 +61,7 @@ describe('AddProduct Controller', () => {
     expect(response.body).toEqual(new InvalidParamError('email'))
   })
 
-  test('Should return 500 if AddProductUseCase throws', async () => {
+  it('Should return 500 if AddProductUseCase throws', async () => {
     const { sut, addProductUseCaseStub } = makeSut()
     jest.spyOn(addProductUseCaseStub, 'add').mockImplementationOnce(() => { throw new Error() })
     const response = await sut.handle(request)
@@ -69,7 +69,7 @@ describe('AddProduct Controller', () => {
     expect(response.body).toEqual(new ServerError(''))
   })
 
-  test('Should return 200 if AddProductUseCase return a product', async () => {
+  it('Should return 200 if AddProductUseCase return a product', async () => {
     const { sut } = makeSut()
     const response = await sut.handle(request)
     expect(response.statusCode).toBe(200)

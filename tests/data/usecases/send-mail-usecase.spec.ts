@@ -21,14 +21,14 @@ const makeSut = (): SutTypes => {
   }
 }
 describe('SendMail Usecase', () => {
-  test('Should call MailService with correct values', async () => {
+  it('Should call MailService with correct values', async () => {
     const { sut, mailServiceStub } = makeSut()
     const sendSpy = jest.spyOn(mailServiceStub, 'send')
     await sut.send(sendMailParams)
     expect(sendSpy).toBeCalledWith(nodemailerAdaptSendParams(sendMailParams, mailTemplate))
   })
 
-  test('Should DbAddAccount throw if MailService throws', async () => {
+  it('Should DbAddAccount throw if MailService throws', async () => {
     const { sut, mailServiceStub } = makeSut()
     jest.spyOn(mailServiceStub, 'send').mockImplementationOnce(() => { throw new Error() })
     const promise = sut.send(sendMailParams)

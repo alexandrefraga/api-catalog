@@ -14,7 +14,7 @@ const makeSut = (): SutTypes => {
   }
 }
 describe('Nodemailer Adapter', () => {
-  test('Should throw if fs throws', async () => {
+  it('Should throw if fs throws', async () => {
     const { sut } = makeSut()
     jest.spyOn(fs, 'readFileSync').mockImplementationOnce(() => { throw new Error() })
     const promise = sut.send(mockMailServiceParams())

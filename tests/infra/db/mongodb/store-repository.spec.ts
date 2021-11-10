@@ -28,7 +28,7 @@ describe('Store Mongo Repository', () => {
   })
 
   describe('LoadByData', () => {
-    test('Should return null if loadByData fail', async () => {
+    it('Should return null if loadByData fail', async () => {
       const sut = makeSut()
       const store = await sut.loadByData({
         company: addStoreParams.company,
@@ -38,7 +38,7 @@ describe('Store Mongo Repository', () => {
       expect(store).toBeFalsy()
     })
 
-    test('Should return a store if loadByData on success', async () => {
+    it('Should return a store if loadByData on success', async () => {
       await storeCollection.insertOne(addStoreParams)
       const sut = makeSut()
       const store = await sut.loadByData({
@@ -53,24 +53,22 @@ describe('Store Mongo Repository', () => {
   })
 
   describe('Add', () => {
-    test('Should return a store if add on success', async () => {
+    it('Should return a store if add on success', async () => {
       const sut = makeSut()
-      const store = await sut.add(addStoreParams)
-      expect(store).toBeTruthy()
-      expect(store.company).toBe(addStoreParams.company)
-      expect(store.address).toEqual(addStoreParams.address)
+      const { id } = await sut.add(addStoreParams)
+      expect(id).toBeTruthy()
     })
   })
 
   describe('LoadById', () => {
-    test('Should return null if loadById fail', async () => {
+    it('Should return null if loadById fail', async () => {
       const sut = makeSut()
       const fakeId = new ObjectId().toHexString()
       const store = await sut.loadById(fakeId)
       expect(store).toBeFalsy()
     })
 
-    test('Should return a store if loadById on success', async () => {
+    it('Should return a store if loadById on success', async () => {
       const res = await storeCollection.insertOne(addStoreParams)
       const id = res.insertedId.toHexString()
       const sut = makeSut()

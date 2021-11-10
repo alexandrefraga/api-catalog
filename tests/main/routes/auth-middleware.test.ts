@@ -47,7 +47,7 @@ describe('Auth Middleware', () => {
     MockDate.reset()
   })
 
-  test('Should return OK if a loged user is required', async () => {
+  it('Should return OK if a loged user is required', async () => {
     const token = await createUserInRepository()
     const logedAuth = adaptMiddleware(makeAuthMiddleware())
     app.post('/test_auth_loged', logedAuth, (req, res) => { res.status(200).send(req.body) })
@@ -61,7 +61,7 @@ describe('Auth Middleware', () => {
       })
   })
 
-  test('Should return OK if an system administrator user accesses the route and a correct key is required', async () => {
+  it('Should return OK if an system administrator user accesses the route and a correct key is required', async () => {
     const token = await createUserInRepository([makeKeyAdmin()])
     const logedAdmin = adaptMiddleware(makeAuthMiddleware(makeKeyRouteAdmin()))
     app.post('/test_auth_admin', logedAdmin, (req, res) => { res.status(200).send() })
@@ -72,7 +72,7 @@ describe('Auth Middleware', () => {
       .expect(200)
   })
 
-  test('Should return OK if an system operator user accesses the route and a correct key is required', async () => {
+  it('Should return OK if an system operator user accesses the route and a correct key is required', async () => {
     const token = await createUserInRepository([makeKeyOperator()])
     const logedOperator = adaptMiddleware(makeAuthMiddleware(makeKeyRouteOperator()))
     app.post('/test_auth_operator', logedOperator, (req, res) => { res.status(200).send() })
@@ -83,7 +83,7 @@ describe('Auth Middleware', () => {
       .expect(200)
   })
 
-  test('Should return OK if an store administrator user accesses the route and a correct key is required', async () => {
+  it('Should return OK if an store administrator user accesses the route and a correct key is required', async () => {
     const token = await createUserInRepository([makeKeyAdminStore()])
     const logedAdminStore = adaptMiddleware(makeAuthMiddleware(makeKeyRouteAdminStore()))
     app.post('/test_auth_adm_store/:storeId', logedAdminStore, (req, res) => { res.status(200).send() })
@@ -94,7 +94,7 @@ describe('Auth Middleware', () => {
       .expect(200)
   })
 
-  test('Should return OK if an store operator user accesses the route and a correct key is required', async () => {
+  it('Should return OK if an store operator user accesses the route and a correct key is required', async () => {
     const token = await createUserInRepository([makeKeyOperatorStore(), makeKeyOperatorStore('other_id')])
     const logedOperatorStore = adaptMiddleware(makeAuthMiddleware(makeKeyRouteOperatorStore()))
     app.post('/test_auth_op_store/:storeId', logedOperatorStore, (req, res) => { res.status(200).send() })

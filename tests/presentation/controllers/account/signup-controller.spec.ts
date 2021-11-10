@@ -5,7 +5,7 @@ import { SendMail } from '@/domain/usecases/send-mail-usecase'
 import { SignUpController } from '@/presentation/controllers/account/signup-controller'
 import { EmailInUseError, ServerError } from '@/presentation/errors'
 import { Controller } from '@/presentation/controllers/controller'
-import { mockAccountModel, mockAddAccount, mockAddSignatureToken, MockEmailValidator, mockSendMailUsecase, mockSignatureTokenModel } from '../../../mocks'
+import { mockAccountModel, mockAddAccount, MockEmailValidator, mockSendMailUsecase } from '../../../mocks'
 import { EmailValidation, RequiredFields, RequiredFieldsAndCompareValues } from '@/presentation/validations'
 import { EmailValidator } from '@/presentation/protocolls'
 
@@ -14,6 +14,15 @@ const request = {
   email: 'any_email@mail.com',
   password: 'any_password',
   passwordConfirmation: 'any_password'
+}
+
+const mockAddAccountSignatureUsecase = (type: SignatureTypes): AddSignatureToken => {
+  class AddSignatureTokenStub implements AddSignatureToken {
+    async add (data: { id: string }): Promise<{ token: string }> {
+      return Promise.resolve({ token: 'encrypted_value' })
+    }
+  }
+  return new AddSignatureTokenStub()
 }
 
 type SutTypes = {
@@ -27,7 +36,7 @@ type SutTypes = {
 const makeSut = (): SutTypes => {
   const emailValidator = MockEmailValidator()
   const addAccountStub = mockAddAccount()
-  const addAccountSignatureStub = mockAddSignatureToken(SignatureTypes.account)
+  const addAccountSignatureStub = mockAddAccountSignatureUsecase(SignatureTypes.account)
   const sendMailUsecaseStub = mockSendMailUsecase()
   const sut = new SignUpController(emailValidator, addAccountStub, addAccountSignatureStub, sendMailUsecaseStub)
   return {
@@ -65,7 +74,8 @@ describe('SignUpController', () => {
     expect(addSpy).toHaveBeenCalledWith({
       name: request.name,
       email: request.email,
-      password: request.password
+      password: request.password,
+      passwordConfirmation: request.passwordConfirmation
     })
   })
 
@@ -89,7 +99,7 @@ describe('SignUpController', () => {
     const { sut, addAccountSignatureStub } = makeSut()
     const addSpy = jest.spyOn(addAccountSignatureStub, 'add')
     await sut.handle(request)
-    expect(addSpy).toHaveBeenCalledWith('valid_id')
+    expect(addSpy).toHaveBeenCalledWith({ id: 'valid_id' })
   })
 
   it('Should return 500 if AddAccountSignature throws', async () => {
@@ -109,7 +119,7 @@ describe('SignUpController', () => {
       subject: `Account confirmation to ${name}`,
       name,
       email,
-      token: mockSignatureTokenModel(SignatureTypes.account).token
+      token: 'encrypted_value'
     }
     expect(sendSpy).toHaveBeenCalledWith(data)
   })

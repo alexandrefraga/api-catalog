@@ -7,26 +7,26 @@ export type HttpResponse = {
 }
 
 export abstract class Controller<T = any> {
-  abstract perform (httpRequest: T): Promise<HttpResponse>
+  abstract perform (request: T): Promise<HttpResponse>
 
-  buildValidators (httpRequest: T): Validation[] {
+  buildValidators (request: T): Validation[] {
     return []
   }
 
-  async handle (httpRequest: T): Promise<HttpResponse> {
+  async handle (request: T): Promise<HttpResponse> {
     try {
-      const error = await this.validate(httpRequest)
+      const error = await this.validate(request)
       if (error !== null) {
         return badRequest(error)
       }
-      return await this.perform(httpRequest)
+      return await this.perform(request)
     } catch (error: any) {
       return serverError(error)
     }
   }
 
-  private async validate (httpRequest: T): Promise<Error | null> {
-    const response = await Promise.all(this.buildValidators(httpRequest).map(async v => await v.validate()))
+  private async validate (request: T): Promise<Error | null> {
+    const response = await Promise.all(this.buildValidators(request).map(async v => await v.validate()))
     return Array.isArray(response) ? response.reduce((ac, e) => ac || e, null) : response
   }
 }

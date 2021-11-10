@@ -9,13 +9,26 @@ export class AddStoreUseCase implements AddStore {
     private readonly addStoreRepository: AddStoreRepository
   ) {}
 
-  async add (data: AddStoreParams): Promise<StoreModel> {
+  async add (request: AddStoreParams): Promise<StoreModel> {
+    const data = this.map(request)
     const { company, tradingName, address } = data
-    const exist = await this.loadStoreRepository.loadByData({ company, tradingName, address })
-    if (!exist) {
-      const store = await this.addStoreRepository.add(data)
-      return store
+    const exists = await this.loadStoreRepository.loadByData({ company, tradingName, address })
+    if (!exists) {
+      const storeId = await this.addStoreRepository.add(data)
+      return Object.assign({}, data, storeId)
     }
     return null
+  }
+
+  map (request: AddStoreParams): AddStoreParams {
+    return {
+      company: request.company,
+      tradingName: request.tradingName,
+      description: request.description,
+      address: request.address,
+      email: request.email,
+      phoneNumber: request.phoneNumber,
+      geoLocalization: request.geoLocalization
+    }
   }
 }

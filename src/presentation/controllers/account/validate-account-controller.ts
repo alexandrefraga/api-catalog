@@ -9,8 +9,8 @@ export class ValidateAccountController extends Controller<{ signature: string }>
     private readonly validateAccount: ValidateAccount
   ) { super() }
 
-  async perform ({ signature }: { signature: string }): Promise<HttpResponse> {
-    const validated = await this.validateAccount.validate(signature)
+  async perform (request: { signature: string }): Promise<HttpResponse> {
+    const validated = await this.validateAccount.validate(request)
     if (!validated) {
       return unauthorized()
     }

@@ -29,8 +29,8 @@ export const mockLoadProductByStoreRepository = (response: boolean): LoadProduct
 
 export const mockAddProductRepository = (): AddProductRepository => {
   class AddProductRepositoryStub implements AddProductRepository {
-    async add (data: LoadProductByDataParams): Promise<ProductModel> {
-      return Promise.resolve(mockProductModel())
+    async add (data: LoadProductByDataParams): Promise<{ id: string }> {
+      return Promise.resolve({ id: mockProductModel().id })
     }
   }
   return new AddProductRepositoryStub()

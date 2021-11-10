@@ -25,7 +25,7 @@ describe('LogError Mongo Repository', () => {
     await MongoHelper.disconnect()
   })
 
-  test('Should create an error log with correct stack on success', async () => {
+  it('Should create an error log with correct stack on success', async () => {
     const { sut } = makeSut()
     await sut.saveLog('any_stack')
     const error = await errorCollection.findOne({ stack: 'any_stack' })

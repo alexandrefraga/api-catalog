@@ -22,12 +22,12 @@ export class SignUpController extends Controller<SignUpParams> {
     private readonly sendMail: SendMail
   ) { super() }
 
-  async perform ({ name, email, password }: SignUpParams): Promise<HttpResponse> {
-    const account = await this.addAccount.add({ name, email, password })
+  async perform (request: SignUpParams): Promise<HttpResponse> {
+    const account = await this.addAccount.add(request)
     if (!account) {
       return forbidden(new EmailInUseError())
     }
-    const { token } = await this.addAccountSignature.add(account.id)
+    const { token } = await this.addAccountSignature.add({ id: account.id })
     await this.sendMail.send({
       name: account.name,
       email: account.email,

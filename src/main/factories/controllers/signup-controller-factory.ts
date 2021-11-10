@@ -8,7 +8,7 @@ import { EmailValidatorAdapter } from '@/infra/validators/email-validator-adapte
 import { NodemailerAdapter } from '@/infra/service/nodemailer-adapter'
 import { LogControllerDecorator } from '@/main/decorator/log-controller-decorator'
 import env from '@/main/config/env'
-import { AddSignatureTokenUseCase } from '@/data/usecases/add-signature-token-usecase'
+import { AddAccountSignatureUseCase } from '@/data/usecases/account/add-account-signature-usecase'
 import { SignatureTokenMongoRepository } from '@/infra/db/mongodb/signature-token-repository'
 import { SendMailUseCase } from '@/data/usecases/send-mail-usecase'
 import { nodemailerAdaptSendParams } from '@/infra/service/nodemailer-helper'
@@ -23,7 +23,7 @@ export const makeSignUpControler = (): Controller => {
   const mailService = new NodemailerAdapter(env.mailParams, env.mailFrom, env.baseUrl)
   const addAccount = new AddAccountUseCase(hasher, addAccountRepository, loadAccountByEmailRepository)
   const addSignaturetokenRepository = new SignatureTokenMongoRepository()
-  const addSignature = new AddSignatureTokenUseCase(encrypter, addSignaturetokenRepository)
+  const addSignature = new AddAccountSignatureUseCase(encrypter, addSignaturetokenRepository)
   const sendMail = new SendMailUseCase(mailService, 'mail', nodemailerAdaptSendParams)
   const signUpController = new SignUpController(emailValidator, addAccount, addSignature, sendMail)
   const logErrorMongoRepository = new LogErrorMongoRepository()

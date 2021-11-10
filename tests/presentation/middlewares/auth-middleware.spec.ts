@@ -24,20 +24,20 @@ const makeSut = (key?: KeyRoute): SutTypes => {
   }
 }
 describe('Auth Middleware', () => {
-  test('Should return 403 if no x-access-token no exists in headers', async () => {
+  it('Should return 403 if no x-access-token no exists in headers', async () => {
     const { sut } = makeSut()
     const response = await sut.execute({})
     expect(response).toEqual(forbidden(new AccessDeniedError()))
   })
 
-  test('Should return 403 if LoadAccountByToken returns null', async () => {
+  it('Should return 403 if LoadAccountByToken returns null', async () => {
     const { sut, loadAccountByTokenStub } = makeSut()
     jest.spyOn(loadAccountByTokenStub, 'load').mockReturnValueOnce(Promise.resolve(null))
     const response = await sut.execute(fakeRequest())
     expect(response).toEqual(forbidden(new AccessDeniedError()))
   })
 
-  test('Should call LoadAccountByToken with correct values if a key is provided with requiredStoreId equal to true', async () => {
+  it('Should call LoadAccountByToken with correct values if a key is provided with requiredStoreId equal to true', async () => {
     const keyRoute = makeKeyRouteAdminStore()
     const { sut, loadAccountByTokenStub } = makeSut(keyRoute)
     const loadByTokenSpy = jest.spyOn(loadAccountByTokenStub, 'load')
@@ -45,7 +45,7 @@ describe('Auth Middleware', () => {
     expect(loadByTokenSpy).toHaveBeenCalledWith('any_token', makeKeyParamsAdminStore())
   })
 
-  test('Should call LoadAccountByToken with correct values if a key is provided with requiredStoreId equal to false', async () => {
+  it('Should call LoadAccountByToken with correct values if a key is provided with requiredStoreId equal to false', async () => {
     const keyRoute = makeKeyRouteAdmin()
     const { sut, loadAccountByTokenStub } = makeSut(keyRoute)
     const loadByTokenSpy = jest.spyOn(loadAccountByTokenStub, 'load')
@@ -53,14 +53,14 @@ describe('Auth Middleware', () => {
     expect(loadByTokenSpy).toHaveBeenCalledWith('any_token', makeKeyParamsAdmin())
   })
 
-  test('Should call LoadAccountByToken with correct values if a key no is provided', async () => {
+  it('Should call LoadAccountByToken with correct values if a key no is provided', async () => {
     const { sut, loadAccountByTokenStub } = makeSut()
     const loadByTokenSpy = jest.spyOn(loadAccountByTokenStub, 'load')
     await sut.execute(fakeRequest())
     expect(loadByTokenSpy).toHaveBeenCalledWith('any_token', null)
   })
 
-  test('Should call LoadAccountByToken with correct values if no params in request', async () => {
+  it('Should call LoadAccountByToken with correct values if no params in request', async () => {
     const keyRoute = makeKeyRouteAdminStore()
     const { sut, loadAccountByTokenStub } = makeSut(keyRoute)
     const loadByTokenSpy = jest.spyOn(loadAccountByTokenStub, 'load')
@@ -73,14 +73,14 @@ describe('Auth Middleware', () => {
     })
   })
 
-  test('Should return 500 LoadAccountByToken trows', async () => {
+  it('Should return 500 LoadAccountByToken trows', async () => {
     const { sut, loadAccountByTokenStub } = makeSut()
     jest.spyOn(loadAccountByTokenStub, 'load').mockImplementationOnce(() => { throw new Error() })
     const response = await sut.execute(fakeRequest())
     expect(response).toEqual(serverError(new Error()))
   })
 
-  test('Should return 200 on success', async () => {
+  it('Should return 200 on success', async () => {
     const { sut } = makeSut()
     const response = await sut.execute(fakeRequest())
     expect(response).toEqual(success({ userId: mockAccountModel().id }))

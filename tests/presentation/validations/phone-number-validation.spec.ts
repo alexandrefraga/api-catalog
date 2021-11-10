@@ -3,31 +3,31 @@ import { MissingParamError } from '@/presentation/errors'
 import { PhoneNumberArrayValidation } from '@/presentation/validations/phone-number-validation'
 
 describe('Phone Number Validation', () => {
-  test('Should return error if validation fails', async () => {
+  it('Should return error if validation fails', async () => {
     const sut = new PhoneNumberArrayValidation({}, 'phoneNumber', 0)
     const response = await sut.validate()
     expect(response).toEqual(new MissingParamError('phoneNumber'))
   })
 
-  test('Should return error if an array not is provided', async () => {
+  it('Should return error if an array not is provided', async () => {
     const sut = new PhoneNumberArrayValidation({ phoneNumber: '51-999999999' }, 'phoneNumber', 0)
     const response = await sut.validate()
     expect(response).toEqual(new InvalidParamError('phoneNumber'))
   })
 
-  test('Should return error if a min length array not is provided', async () => {
+  it('Should return error if a min length array not is provided', async () => {
     const sut = new PhoneNumberArrayValidation({ phoneNumber: [] }, 'phoneNumber', 1)
     const response = await sut.validate()
     expect(response).toEqual(new InvalidParamError('phoneNumber'))
   })
 
-  test('Should return null if is valid data array', async () => {
+  it('Should return null if is valid data array', async () => {
     const sut = new PhoneNumberArrayValidation({ phoneNumber: ['51-88888888', '51-999999999'] }, 'phoneNumber', 1)
     const response = await sut.validate()
     expect(response).toBeNull()
   })
 
-  test('Should return error if is invalid data array', async () => {
+  it('Should return error if is invalid data array', async () => {
     let sut = new PhoneNumberArrayValidation({ phoneNumber: ['51-88888888', '51-7777777', '51-999999999'] }, 'phoneNumber', 1)
     const response1 = await sut.validate()
     expect(response1).toEqual(new InvalidParamError('phoneNumber: 51-7777777'))

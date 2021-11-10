@@ -30,7 +30,7 @@ describe('Product Routes', () => {
       await accountCollection.deleteMany({})
     })
 
-    test('Should return 200 on add product if valid accessToken and storeId are provided', async () => {
+    it('Should return 200 on add product if valid accessToken and storeId are provided', async () => {
       const account = await accountCollection.insertOne({
         name: 'any_name',
         email: 'any_email@mail.com',
@@ -77,7 +77,7 @@ describe('Product Routes', () => {
       await productCollection.deleteMany({})
     })
 
-    test('Should return 200 on get products if valid accessToken and storeId are provided', async () => {
+    it('Should return 200 on get products if valid accessToken and storeId are provided', async () => {
       const account = await accountCollection.insertOne({
         name: 'any_name',
         email: 'any_email@mail.com',

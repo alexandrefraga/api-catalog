@@ -9,6 +9,6 @@ export class SendMailUseCase implements SendMail {
   ) {}
 
   async send (data: SendMailParams): Promise<void> {
-    await this.mailService.send(this.adaptParams(data, this.mailTemplate))
+    await this.mailService.send(this.adaptParams({ ...data }, this.mailTemplate))
   }
 }

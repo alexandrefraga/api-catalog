@@ -36,7 +36,7 @@ describe('LoadProductsByStore Controller', () => {
     const { sut, loadProductsByStoreUseCase } = makeSut()
     const loadByStoreSpy = jest.spyOn(loadProductsByStoreUseCase, 'loadByStore')
     await sut.handle(request)
-    expect(loadByStoreSpy).toHaveBeenCalledWith(request.storeId)
+    expect(loadByStoreSpy).toHaveBeenCalledWith(request)
   })
 
   it('Should return 403 if LoadProductsByStoreUseCase return a specific error', async () => {

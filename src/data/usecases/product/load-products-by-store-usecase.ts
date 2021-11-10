@@ -9,8 +9,8 @@ export class LoadProductsByStoreUseCase implements LoadProductsByStore {
     private readonly loadProductByStoreRepository: LoadProductByStoreRepository
   ) {}
 
-  async loadByStore (storeId: string): Promise<ProductModel[] | Error> {
-    const store = await this.loadStoreByIdRepository.loadById(storeId)
+  async loadByStore (data: { storeId: string }): Promise<ProductModel[] | Error> {
+    const store = await this.loadStoreByIdRepository.loadById(data.storeId)
     if (!store) {
       return new InvalidParamError('storeId')
     }

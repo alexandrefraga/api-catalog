@@ -22,21 +22,21 @@ describe('AddKeyInAccount Usecase', () => {
   beforeAll(async () => { MockDate.set(new Date()) })
   afterAll(async () => { MockDate.reset() })
 
-  test('Should call AddKeyInAccountRepository with correct values', async () => {
+  it('Should call AddKeyInAccountRepository with correct values', async () => {
     const { sut, addKeyInAccountRepositoryStub } = makeSut()
     const addKeySpy = jest.spyOn(addKeyInAccountRepositoryStub, 'addKey')
     await sut.add('any_id', makeKeyAdminStore())
     expect(addKeySpy).toHaveBeenCalledWith('any_id', makeKeyAdminStore())
   })
 
-  test('Should trow if AddKeyInAccountRepository throws', async () => {
+  it('Should trow if AddKeyInAccountRepository throws', async () => {
     const { sut, addKeyInAccountRepositoryStub } = makeSut()
     jest.spyOn(addKeyInAccountRepositoryStub, 'addKey').mockImplementationOnce(() => { throw new Error() })
     const promise = sut.add('any_id', makeKeyAdminStore())
     await expect(promise).rejects.toThrow()
   })
 
-  test('Should trow if AddKeyInAccountRepository return false', async () => {
+  it('Should trow if AddKeyInAccountRepository return false', async () => {
     const { sut, addKeyInAccountRepositoryStub } = makeSut()
     jest.spyOn(addKeyInAccountRepositoryStub, 'addKey').mockReturnValueOnce(Promise.resolve(false))
     const promise = sut.add('any_id', makeKeyAdminStore())

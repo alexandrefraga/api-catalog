@@ -5,22 +5,10 @@ import { ObjectId } from 'bson'
 import { MongoHelper } from './mongo-helper'
 
 export class StoreMongoRepository implements AddStoreRepository, LoadStoreByIdRepository, LoadStoreByDataRepository {
-  async add (data: AddStoreParams): Promise<StoreModel> {
+  async add (data: AddStoreParams): Promise<{ id: string }> {
     const storeCollection = await MongoHelper.getCollection('stores')
-    const input = {
-      company: data.company,
-      tradingName: data.tradingName,
-      description: data.description,
-      address: data.address,
-      email: data.email,
-      phoneNumber: data.phoneNumber,
-      geoLocalization: {
-        lat: data.geoLocalization.lat,
-        lng: data.geoLocalization.lng
-      }
-    }
-    const result = await storeCollection.insertOne({ ...input })
-    return MongoHelper.mapInputWithId(input, result.insertedId)
+    const { insertedId } = await storeCollection.insertOne({ ...data })
+    return { id: insertedId.toHexString() }
   }
 
   async loadById (id: string): Promise<StoreModel> {
@@ -31,7 +19,7 @@ export class StoreMongoRepository implements AddStoreRepository, LoadStoreByIdRe
 
   async loadByData (data: LoadStoreByDataParams): Promise<StoreModel> {
     const storeCollection = await MongoHelper.getCollection('stores')
-    const store = await storeCollection.findOne(data)
+    const store = await storeCollection.findOne({ ...data })
     return store && MongoHelper.map(store)
   }
 }

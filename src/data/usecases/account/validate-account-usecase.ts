@@ -11,15 +11,15 @@ export class ValidateAccountUseCase implements ValidateAccount {
     private readonly emailRepository: UpdateEmailRepository
   ) {}
 
-  async validate (token: string): Promise<boolean> {
+  async validate ({ signature }: { signature: string }): Promise<boolean> {
     let accountId: string
     try {
-      const decryptedToken = await this.decrypter.decrypt(token)
+      const decryptedToken = await this.decrypter.decrypt(signature)
       accountId = decryptedToken.id
     } catch (error) {
       return null
     }
-    const updatedSignature = await this.signatureRepository.updateUsed(token, SignatureTypes.account)
+    const updatedSignature = await this.signatureRepository.updateUsed(signature, SignatureTypes.account)
     if (updatedSignature) {
       const updatedEmail = await this.emailRepository.updateEmail(accountId, new Date())
       return updatedEmail

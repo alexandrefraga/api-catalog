@@ -30,14 +30,14 @@ describe('Store Routes', () => {
       await storeCollection.deleteMany({})
       await accountCollection.deleteMany({})
     })
-    test('Should return 403 on add store without accessToken', async () => {
+    it('Should return 403 on add store without accessToken', async () => {
       await request(app)
         .post('/api/store')
         .send(mockAddStoreParams())
         .expect(403)
     })
 
-    test('Should return 200 on addStore if valid accessToken is provided', async () => {
+    it('Should return 200 on addStore if valid accessToken is provided', async () => {
       const result = await accountCollection.insertOne({
         name: 'any_name',
         email: 'any_email@mail.com',

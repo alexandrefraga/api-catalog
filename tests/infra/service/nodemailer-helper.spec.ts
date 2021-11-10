@@ -2,7 +2,7 @@ import { nodemailerAdaptSendParams as adaptParams } from '@/infra/service/nodema
 import { mockSendMailParams } from '../../mocks/mock-send-mail'
 
 describe('Nodemailer Helper', () => {
-  test('Should return mail service params if correct data is provided', () => {
+  it('Should return mail service params if correct data is provided', () => {
     const mailServiceParams = adaptParams(mockSendMailParams(), 'mail')
     const { subject, name, email, token } = mockSendMailParams()
     expect(mailServiceParams).toEqual({

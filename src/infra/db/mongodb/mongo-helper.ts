@@ -1,4 +1,3 @@
-import { ObjectID } from 'bson'
 import { Collection, MongoClient, ObjectId } from 'mongodb'
 
 export const MongoHelper = {
@@ -26,9 +25,5 @@ export const MongoHelper = {
 
   mapAll: (arrayCollections: any[]): any[] => {
     return arrayCollections.map(c => MongoHelper.map(c))
-  },
-
-  mapInputWithId: (input: any, _id: ObjectID): any => {
-    return Object.assign({ ...input }, { id: _id.toHexString() })
   }
 }
