@@ -39,6 +39,9 @@ describe('AddProduct Controller', () => {
       { input, field: 'description', minLength: 10, maxLength: 200, required: true }
     ))
     expect(validations).toContainEqual(new StringValidation(
+      { input, field: 'details', minLength: 10, maxLength: 200, required: false }
+    ))
+    expect(validations).toContainEqual(new StringValidation(
       { input, field: 'trademark', minLength: 3, maxLength: 30, required: true }
     ))
     expect(validations).toContainEqual(new StringValidation(
