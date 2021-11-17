@@ -33,6 +33,7 @@ export class AddProductController extends Controller<AddProductParams> {
       .stringValidations({ field: 'trademark', minLength: 3, maxLength: 30, required: true })
       .stringValidations({ field: 'reference', minLength: 1, maxLength: 30, required: true })
       .stringValidations({ field: 'storeId', minLength: 1, maxLength: 30, required: true })
+      .numberValidations({ field: 'price', required: false })
       .build()
   }
 }

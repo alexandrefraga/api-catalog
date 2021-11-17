@@ -1,6 +1,7 @@
 import { InvalidParamError } from '@/data/errors'
 import { MissingParamError } from '@/presentation/errors'
 import { Validation } from '@/presentation/protocolls'
+
 export class PhoneNumberArrayValidation implements Validation {
   constructor (
     private readonly input: any,

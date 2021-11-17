@@ -1,5 +1,5 @@
-import { MissingParamError } from '@/presentation/errors'
 import { RequiredField } from '@/presentation/validations'
+import { MissingParamError } from '@/presentation/errors'
 
 describe('RequiredField Validation', () => {
   it('Should return a MissingParamError if a required field not is provided', async () => {

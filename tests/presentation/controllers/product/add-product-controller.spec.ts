@@ -3,7 +3,7 @@ import { mockAddProductUseCase } from '@/../tests/mocks/mock-product-usecase'
 import { AddProduct } from '@/domain/usecases/product/add-product'
 import { AddProductController } from '@/presentation/controllers/product/add-product-controller'
 import { InvalidParamError, ServerError } from '@/presentation/errors'
-import { StringValidation } from '@/presentation/validations'
+import { NumberValidation, StringValidation } from '@/presentation/validations'
 import { Controller } from '@/presentation/controllers/controller'
 
 const request = mockAddProductUseCaseParams()
@@ -49,6 +49,9 @@ describe('AddProduct Controller', () => {
     ))
     expect(validations).toContainEqual(new StringValidation(
       { input, field: 'storeId', minLength: 1, maxLength: 30, required: true }
+    ))
+    expect(validations).toContainEqual(new NumberValidation(
+      { input, field: 'price', required: false }
     ))
   })
 

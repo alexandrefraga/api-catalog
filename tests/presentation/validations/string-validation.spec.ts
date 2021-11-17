@@ -1,7 +1,8 @@
 import { StringValidation } from '@/presentation/validations/string-validation'
+import { MissingParamError, InvalidParamError } from '@/presentation/errors'
 
-describe('Required Fields Validation', () => {
-  it('Should return an error of missing param when a required param is not provided', async () => {
+describe('String Validation', () => {
+  it('Should return a MissingParamError when a required param is not provided', async () => {
     const sut = new StringValidation({
       input: {},
       field: 'field',
@@ -10,10 +11,10 @@ describe('Required Fields Validation', () => {
       required: true
     })
     const promise = sut.validate()
-    await expect(promise).resolves.toEqual(new Error('Missing param: field'))
+    await expect(promise).resolves.toEqual(new MissingParamError('field'))
   })
 
-  describe('Type', () => {
+  describe('Type checking', () => {
     [
       {
         input: { field: 2021 },
@@ -30,14 +31,14 @@ describe('Required Fields Validation', () => {
         required: false
       }
     ].forEach(async params => {
-      it('Should returns an error of type if value is not string', async () => {
+      it('Should returns a InvalidParamError if value is not string', async () => {
         const promise = new StringValidation(params).validate()
-        await expect(promise).resolves.toEqual(new Error('Requires string type: field'))
+        await expect(promise).resolves.toEqual(new InvalidParamError('field'))
       })
     })
   })
 
-  describe('Length', () => {
+  describe('Length checking', () => {
     [
       {
         input: { field: 'short_length' },
@@ -54,9 +55,9 @@ describe('Required Fields Validation', () => {
         required: false
       }
     ].forEach(async params => {
-      it('Should returns an error of length to a value from invalid length', async () => {
+      it('Should returns a InvalidParamError to a value from invalid length', async () => {
         const promise = new StringValidation({ ...params }).validate()
-        await expect(promise).resolves.toEqual(new Error('Invalid length: field'))
+        await expect(promise).resolves.toEqual(new InvalidParamError('field'))
       })
     })
   })
