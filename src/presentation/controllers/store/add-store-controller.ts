@@ -45,6 +45,8 @@ export class AddStoreController extends Controller<AddStoreParams> {
       .stringValidations({ field: 'tradingName', minLength: 2, maxLength: 20, required: true })
       .stringValidations({ field: 'description', minLength: 10, maxLength: 200, required: true })
       .stringValidations({ field: 'userId', minLength: 1, maxLength: 30, required: true })
+      .requiredField('address')
+      .requiredField('geoLocalization')
       .emailValidation('email', this.emailValidator)
       .phoneNumberArrayValidation('phoneNumber', 1)
       .build()

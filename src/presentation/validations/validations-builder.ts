@@ -1,6 +1,7 @@
 import { Validation } from '../protocolls/validation'
 import { StringValidation } from './string-validation'
 import { EmailValidation } from './email-validation'
+import { RequiredField } from './required-field'
 import { RequiredFieldsAndCompareValues } from './required-fields-and-compare-values'
 import { EmailValidator } from '../protocolls/emailValidator'
 import { PhoneNumberArrayValidation } from './phone-number-validation'
@@ -17,6 +18,11 @@ export class ValidationsBuilder {
 
   stringValidations (params: {field: string, minLength: number, maxLength: number, required: boolean}): ValidationsBuilder {
     this.validations.push(new StringValidation({ input: this.data, ...params }))
+    return this
+  }
+
+  requiredField (field: string): ValidationsBuilder {
+    this.validations.push(new RequiredField(this.data, field))
     return this
   }
 
