@@ -1,5 +1,5 @@
 import { Validation } from '../protocolls/validation'
-import { RequiredFields } from './required-fields'
+import { StringValidation } from './string-validation'
 import { EmailValidation } from './email-validation'
 import { RequiredFieldsAndCompareValues } from './required-fields-and-compare-values'
 import { EmailValidator } from '../protocolls/emailValidator'
@@ -15,8 +15,8 @@ export class ValidationsBuilder {
     return new ValidationsBuilder(data)
   }
 
-  requiredFields (fields: string[]): ValidationsBuilder {
-    this.validations.push(new RequiredFields(this.data, fields))
+  stringValidations (params: {field: string, minLength: number, maxLength: number, required: boolean}): ValidationsBuilder {
+    this.validations.push(new StringValidation({ input: this.data, ...params }))
     return this
   }
 

@@ -6,7 +6,7 @@ import { SignUpController } from '@/presentation/controllers/account/signup-cont
 import { EmailInUseError, ServerError } from '@/presentation/errors'
 import { Controller } from '@/presentation/controllers/controller'
 import { mockAccountModel, mockAddAccount, MockEmailValidator, mockSendMailUsecase } from '../../../mocks'
-import { EmailValidation, RequiredFields, RequiredFieldsAndCompareValues } from '@/presentation/validations'
+import { EmailValidation, StringValidation, RequiredFieldsAndCompareValues } from '@/presentation/validations'
 import { EmailValidator } from '@/presentation/protocolls'
 
 const request = {
@@ -62,7 +62,20 @@ describe('SignUpController', () => {
       passwordConfirmation: 'any_password'
     }
     const validations = sut.buildValidators(input)
-    expect(validations).toContainEqual(new RequiredFields(input, ['name']))
+    expect(validations).toContainEqual(new StringValidation({
+      input,
+      field: 'name',
+      minLength: 3,
+      maxLength: 30,
+      required: true
+    }))
+    expect(validations).toContainEqual(new StringValidation({
+      input,
+      field: 'password',
+      minLength: 6,
+      maxLength: 12,
+      required: true
+    }))
     expect(validations).toContainEqual(new RequiredFieldsAndCompareValues(input, 'password', 'passwordConfirmation'))
     expect(validations).toContainEqual(new EmailValidation(input, 'email', MockEmailValidator()))
   })

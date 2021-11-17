@@ -25,7 +25,12 @@ export class LoginController extends Controller<LoginParams> {
 
   override buildValidators (httpRequest: any): Validation[] {
     return ValidationsBuilder.of(httpRequest)
-      .requiredFields(['password'])
+      .stringValidations({
+        field: 'password',
+        minLength: 6,
+        maxLength: 12,
+        required: true
+      })
       .emailValidation('email', this.emailValidator)
       .build()
   }

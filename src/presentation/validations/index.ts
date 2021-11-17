@@ -1,5 +1,5 @@
 export * from './validations-builder'
-export * from './required-fields'
+export * from './string-validation'
 export * from './required-fields-and-compare-values'
 export * from './email-validation'
 export * from './phone-number-validation'

@@ -1,0 +1,75 @@
+import { StringValidation } from '@/presentation/validations/string-validation'
+
+describe('Required Fields Validation', () => {
+  it('Should return an error of missing param when a required param is not provided', async () => {
+    const sut = new StringValidation({
+      input: {},
+      field: 'field',
+      minLength: 4,
+      maxLength: 15,
+      required: true
+    })
+    const promise = sut.validate()
+    await expect(promise).resolves.toEqual(new Error('Missing param: field'))
+  })
+
+  describe('Type', () => {
+    [
+      {
+        input: { field: 2021 },
+        field: 'field',
+        minLength: 4,
+        maxLength: 15,
+        required: true
+      },
+      {
+        input: { field: 2021 },
+        field: 'field',
+        minLength: 4,
+        maxLength: 15,
+        required: false
+      }
+    ].forEach(async params => {
+      it('Should returns an error of type if value is not string', async () => {
+        const promise = new StringValidation(params).validate()
+        await expect(promise).resolves.toEqual(new Error('Requires string type: field'))
+      })
+    })
+  })
+
+  describe('Length', () => {
+    [
+      {
+        input: { field: 'short_length' },
+        field: 'field',
+        minLength: 20,
+        maxLength: 40,
+        required: true
+      },
+      {
+        input: { field: 'long_length' },
+        field: 'field',
+        minLength: 4,
+        maxLength: 10,
+        required: false
+      }
+    ].forEach(async params => {
+      it('Should returns an error of length to a value from invalid length', async () => {
+        const promise = new StringValidation({ ...params }).validate()
+        await expect(promise).resolves.toEqual(new Error('Invalid length: field'))
+      })
+    })
+  })
+
+  it('Should returns null if validation succeeds', async () => {
+    const sut = new StringValidation({
+      input: { field: 'any_value' },
+      field: 'field',
+      minLength: 4,
+      maxLength: 15,
+      required: true
+    })
+    const promise = sut.validate()
+    await expect(promise).resolves.toBeNull()
+  })
+})

@@ -1,6 +1,6 @@
 import { mockLoadProductsByStoreUseCase, mockProductModel } from '@/../tests/mocks'
 import { ServerError } from '@/presentation/errors'
-import { RequiredFields } from '@/presentation/validations'
+import { StringValidation } from '@/presentation/validations'
 import { LoadProductsByStoreController } from '@/presentation/controllers/product/load-products-by-store-controller'
 import { InvalidParamError } from '@/data/errors'
 import { Controller } from '@/presentation/controllers/controller'
@@ -29,7 +29,9 @@ describe('LoadProductsByStore Controller', () => {
     const { sut } = makeSut()
     const input = { storeId: 'any_storeId' }
     const validations = sut.buildValidators(input)
-    expect(validations).toContainEqual(new RequiredFields(input, ['storeId']))
+    expect(validations).toContainEqual(new StringValidation(
+      { input, field: 'storeId', minLength: 1, maxLength: 30, required: true }
+    ))
   })
 
   it('Should call LoadProductsByStoreUseCase with correct values', async () => {

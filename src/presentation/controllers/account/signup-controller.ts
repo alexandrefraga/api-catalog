@@ -39,7 +39,8 @@ export class SignUpController extends Controller<SignUpParams> {
 
   override buildValidators (httpRequest: any): Validation[] {
     return ValidationsBuilder.of(httpRequest)
-      .requiredFields(['name'])
+      .stringValidations({ field: 'name', minLength: 3, maxLength: 30, required: true })
+      .stringValidations({ field: 'password', minLength: 6, maxLength: 12, required: true })
       .requiredFieldsAndCompareValues('password', 'passwordConfirmation')
       .emailValidation('email', this.emailValidator)
       .build()

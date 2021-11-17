@@ -19,7 +19,7 @@ export class LoadProductsByStoreController extends Controller<{ storeId: string 
 
   override buildValidators (httpRequest: any): Validation[] {
     return ValidationsBuilder.of(httpRequest)
-      .requiredFields(['storeId'])
+      .stringValidations({ field: 'storeId', minLength: 1, maxLength: 30, required: true })
       .build()
   }
 }

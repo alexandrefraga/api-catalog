@@ -3,7 +3,7 @@ import { mockAddProductUseCase } from '@/../tests/mocks/mock-product-usecase'
 import { AddProduct } from '@/domain/usecases/product/add-product'
 import { AddProductController } from '@/presentation/controllers/product/add-product-controller'
 import { InvalidParamError, ServerError } from '@/presentation/errors'
-import { RequiredFields } from '@/presentation/validations'
+import { StringValidation } from '@/presentation/validations'
 import { Controller } from '@/presentation/controllers/controller'
 
 const request = mockAddProductUseCaseParams()
@@ -35,7 +35,18 @@ describe('AddProduct Controller', () => {
       storeId: 'any'
     }
     const validations = sut.buildValidators(input)
-    expect(validations).toContainEqual(new RequiredFields(input, ['description', 'trademark', 'reference', 'storeId']))
+    expect(validations).toContainEqual(new StringValidation(
+      { input, field: 'description', minLength: 10, maxLength: 200, required: true }
+    ))
+    expect(validations).toContainEqual(new StringValidation(
+      { input, field: 'trademark', minLength: 3, maxLength: 30, required: true }
+    ))
+    expect(validations).toContainEqual(new StringValidation(
+      { input, field: 'reference', minLength: 1, maxLength: 30, required: true }
+    ))
+    expect(validations).toContainEqual(new StringValidation(
+      { input, field: 'storeId', minLength: 1, maxLength: 30, required: true }
+    ))
   })
 
   it('Should call AddProductUseCase with correct values', async () => {

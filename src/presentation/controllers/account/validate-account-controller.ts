@@ -18,6 +18,11 @@ export class ValidateAccountController extends Controller<{ signature: string }>
   }
 
   override buildValidators (httpRequest: any): Validation[] {
-    return ValidationsBuilder.of(httpRequest).requiredFields(['signature']).build()
+    return ValidationsBuilder.of(httpRequest).stringValidations({
+      field: 'signature',
+      minLength: 20,
+      maxLength: 600,
+      required: true
+    }).build()
   }
 }

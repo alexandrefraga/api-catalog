@@ -3,7 +3,7 @@ import { AddKeyInAccount } from '@/domain/usecases/account/add-key-in-account'
 import { AddStoreController } from '@/presentation/controllers/store/add-store-controller'
 import { ServerError } from '@/presentation/errors'
 import { DataInUseError } from '@/presentation/errors/data-in-use-error'
-import { EmailValidation, PhoneNumberArrayValidation, RequiredFields } from '@/presentation/validations'
+import { EmailValidation, PhoneNumberArrayValidation, StringValidation } from '@/presentation/validations'
 import { mockAddStoreUseCase, mockStoreModel, makeKeyAdminStore, mockAddKeyInAccountUseCase, MockEmailValidator } from '../../../mocks'
 import MockDate from 'mockdate'
 import { Controller } from '@/presentation/controllers/controller'
@@ -61,10 +61,18 @@ describe('AddStore Controller', () => {
       email: 'email'
     }
     const validations = sut.buildValidators(input)
-    expect(validations).toContainEqual(new RequiredFields(input, [
-      'company', 'tradingName', 'description', 'address',
-      'geoLocalization', 'userId', 'phoneNumber', 'email'
-    ]))
+    expect(validations).toContainEqual(new StringValidation(
+      { input, field: 'company', minLength: 3, maxLength: 50, required: true }
+    ))
+    expect(validations).toContainEqual(new StringValidation(
+      { input, field: 'tradingName', minLength: 2, maxLength: 20, required: true }
+    ))
+    expect(validations).toContainEqual(new StringValidation(
+      { input, field: 'description', minLength: 10, maxLength: 200, required: true }
+    ))
+    expect(validations).toContainEqual(new StringValidation(
+      { input, field: 'userId', minLength: 1, maxLength: 30, required: true }
+    ))
     expect(validations).toContainEqual(new EmailValidation(input, 'email', MockEmailValidator()))
     expect(validations).toContainEqual(new PhoneNumberArrayValidation(input, 'phoneNumber', 1))
   })

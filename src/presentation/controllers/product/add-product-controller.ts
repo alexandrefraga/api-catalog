@@ -28,7 +28,10 @@ export class AddProductController extends Controller<AddProductParams> {
 
   override buildValidators (httpRequest: any): Validation[] {
     return ValidationsBuilder.of(httpRequest)
-      .requiredFields(['description', 'trademark', 'reference', 'storeId'])
+      .stringValidations({ field: 'description', minLength: 10, maxLength: 200, required: true })
+      .stringValidations({ field: 'trademark', minLength: 3, maxLength: 30, required: true })
+      .stringValidations({ field: 'reference', minLength: 1, maxLength: 30, required: true })
+      .stringValidations({ field: 'storeId', minLength: 1, maxLength: 30, required: true })
       .build()
   }
 }

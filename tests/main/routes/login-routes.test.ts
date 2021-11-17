@@ -81,7 +81,7 @@ describe('Login Routes', () => {
         })
         .expect(400)
         .then(response => {
-          expect(response.body).toEqual({ error: new MissingParamError('password or passwordConfirmation').message })
+          expect(response.body).toEqual({ error: new MissingParamError('password').message })
         })
     })
 
@@ -187,7 +187,7 @@ describe('Login Routes', () => {
         .post('/api/login')
         .send({
           email: 'any_email@mail.com',
-          password: 'incorrect_password'
+          password: 'incorrect'
         })
         .expect(401)
         .then(response => {

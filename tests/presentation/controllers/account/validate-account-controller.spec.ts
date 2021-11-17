@@ -2,9 +2,9 @@ import { ValidateAccount } from '@/domain/usecases/account/validate-account'
 import { ValidateAccountController } from '@/presentation/controllers/account/validate-account-controller'
 import { ServerError, UnauthorizedError } from '@/presentation/errors'
 import { Controller } from '@/presentation/controllers/controller'
-import { RequiredFields } from '@/presentation/validations'
+import { StringValidation } from '@/presentation/validations'
 
-const validateParams = { signature: 'any_token' }
+const validateParams = { signature: 'any_token_with_long_length' }
 
 class ValidateAccountStub implements ValidateAccount {
   async validate (data: { signature: string }): Promise<boolean> {
@@ -37,7 +37,13 @@ describe('ValidateAccount Controller', () => {
     const { sut } = makeSut()
     const input = { signature: 'any_token' }
     const validations = sut.buildValidators(input)
-    expect(validations).toContainEqual(new RequiredFields(input, ['signature']))
+    expect(validations).toContainEqual(new StringValidation({
+      input,
+      field: 'signature',
+      minLength: 20,
+      maxLength: 600,
+      required: true
+    }))
   })
 
   it('Should call ValidateAccount with correct signature', async () => {

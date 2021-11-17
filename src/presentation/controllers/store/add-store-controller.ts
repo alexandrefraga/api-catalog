@@ -41,10 +41,10 @@ export class AddStoreController extends Controller<AddStoreParams> {
 
   override buildValidators (httpRequest: any): Validation[] {
     return ValidationsBuilder.of(httpRequest)
-      .requiredFields([
-        'company', 'tradingName', 'description', 'address',
-        'geoLocalization', 'userId', 'phoneNumber', 'email'
-      ])
+      .stringValidations({ field: 'company', minLength: 3, maxLength: 50, required: true })
+      .stringValidations({ field: 'tradingName', minLength: 2, maxLength: 20, required: true })
+      .stringValidations({ field: 'description', minLength: 10, maxLength: 200, required: true })
+      .stringValidations({ field: 'userId', minLength: 1, maxLength: 30, required: true })
       .emailValidation('email', this.emailValidator)
       .phoneNumberArrayValidation('phoneNumber', 1)
       .build()

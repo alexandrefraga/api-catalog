@@ -1,7 +1,7 @@
 import { Controller } from '@/presentation/controllers/controller'
 import { LoginController, LoginParams } from '@/presentation/controllers/account/login-controller'
 import { EmailValidator } from '@/presentation/protocolls'
-import { EmailValidation, RequiredFields } from '@/presentation/validations'
+import { EmailValidation, StringValidation } from '@/presentation/validations'
 import { ServerError, UnauthorizedError } from '@/presentation/errors'
 import { Authentication } from '@/domain/usecases/account/authentication'
 import { mockAuthenticator, mockAuthenticationResponse, MockEmailValidator } from '../../../mocks'
@@ -35,7 +35,13 @@ describe('LoginController', () => {
   it('should build Validators correctly', async () => {
     const { sut } = makeSut()
     const validations = sut.buildValidators(input)
-    expect(validations).toContainEqual(new RequiredFields(input, ['password']))
+    expect(validations).toContainEqual(new StringValidation({
+      input,
+      field: 'password',
+      minLength: 6,
+      maxLength: 12,
+      required: true
+    }))
     expect(validations).toContainEqual(new EmailValidation(input, 'email', MockEmailValidator()))
   })
 
