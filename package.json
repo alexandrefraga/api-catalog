@@ -1,8 +1,23 @@
 {
   "name": "api_catalog",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "API using Clean Architecture and TDD",
+  "keywords": [
+    "clean architecture",
+    "clean code",
+    "tdd",
+    "solid",
+    "design patterns",
+    "node",
+    "typescript",
+    "jest"
+  ],
+  "author": {
+    "name": "Alexandre Fraga",
+    "email": "alexandrenfraga@yahoo.com.br"
+  },
+  "license": "ISC",
+  "main": "dist/main/server.js",
   "scripts": {
     "start": "node dist/main/server.js",
     "build": "rimraf dist && tsc -p tsconfig-build.json",
@@ -19,9 +34,6 @@
     "check": "npm-check -s -u",
     "prepare": "husky install"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "devDependencies": {
     "@shelf/jest-mongodb": "2.1.0",
     "@types/bcrypt": "5.0.0",
@@ -50,7 +62,8 @@
     "rimraf": "3.0.2",
     "supertest": "6.1.6",
     "ts-jest": "27.0.7",
-    "typescript": "^4.4.2"
+    "typescript": "^4.4.2",
+    "dotenv": "^10.0.0"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
