@@ -27,6 +27,6 @@ export abstract class Controller<T = any> {
 
   private async validate (request: T): Promise<Error | null> {
     const response = await Promise.all(this.buildValidators(request).map(async v => await v.validate()))
-    return Array.isArray(response) ? response.reduce((ac, e) => ac || e, null) : response
+    return response.reduce((ac, e) => ac || e, null)
   }
 }

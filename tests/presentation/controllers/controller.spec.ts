@@ -38,6 +38,12 @@ describe('Controller', () => {
     })
   })
 
+  it('should validate return null', async () => {
+    // eslint-disable-next-line @typescript-eslint/dot-notation
+    const result = await sut['validate']({ token: 'any_token' })
+    expect(result).toBeNull()
+  })
+
   it('should return same result as perform', async () => {
     const httpResponse = await sut.handle({ token: 'any_token' })
     expect(httpResponse).toEqual({ statusCode: 200, body: 'any_data' })
